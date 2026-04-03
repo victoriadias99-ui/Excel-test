@@ -1,0 +1,46 @@
+.img-responsive {
+    width: 80%;
+    max-width: 127px;
+    height: 70%;
+}
+
+@media only screen and (min-width: 1000px) {
+    .nav-item.active .nav-link::before {
+        display: block;
+        position: relative;
+        top: -1.51rem;
+        left: 0rem;
+        width: 100%;
+        height: 1px;
+        background-color: #ac32e4;
+        content: '';
+    }
+}
+
+.navbar-nav .nav-item.active .nav-link {
+    color: #ac32e4;
+    text-decoration: none;
+}
+
+.navbar {
+    min-height: 40px;
+    text-transform: uppercase;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 540;
+    font-size: 0.95em;
+    text-decoration: none;
+}
+
+.navbar a {
+    text-decoration: none;
+}
+
+.dropdown-menu {
+    margin-top: 0;
+}
+
+a.dropdown-item:hover {
+    background-color: #000;
+    font-weight: bold;
+    color: #fff!important;
+}

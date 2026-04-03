@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="google-site-verification" content="sVk708HLkFaamx5q_YGfwrpVOSMpkSuh6XJhfMkaHc4">
+  <meta charset="utf-8">
+  <title>Aprende Excel | Comunidad Online </title>
+  <!-- SEO Meta Tags-->
+  <meta name="description" content="Aprendé de 0 a 100 Microsoft Excel a través de videos desde la comunidad de tu casa">
+  <meta name="keywords" content="aprende excel, cursos online de microsoft excel, curso aprender excel, aprende excel cursos">
+  <meta name="author" content="Aprende Excel">
+  <!-- Viewport-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Favicon and Touch Icons-->
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="mask-icon" color="#343b43" href="safari-pinned-tab.svg">
+  <meta name="msapplication-TileColor" content="#603cba">
+  <meta name="theme-color" content="#ffffff">
+  <!-- Vendor Styles including: Font Icons, Plugins, etc.-->
+  <link rel="stylesheet" media="screen" href="css/vendor.min.css">
+  <!-- Main Theme Styles + Bootstrap-->
+  <link rel="stylesheet" media="screen" href="css/theme.min.css">
+  <script src="js/modernizr.min.js"></script>
+
+
+</head>
+
+<body style="padding-top: 0px;">
+   
+   <!-- MENU MOBILE -->
+  <div class="offcanvas-container is-triggered offcanvas-container-reverse" id="mobile-menu"><span class="offcanvas-close"><i class="fe-icon-x"></i></span>
+    <div class="offcanvas-scrollable-area border-top" style="height:calc(100% - 235px); top: 144px;">
+      <!-- Mobile Menu-->
+      <div class="accordion mobile-menu" id="accordion-menu">
+        <!-- Inicio-->
+        <div class="card">
+          <div class="card-header"><a class="mobile-menu-link" href="index.html">Inicio</a></div>
+        </div>
+        <!-- Blog-->
+        <div class="card">
+          <div class="card-header"><a class="mobile-menu-link active" href="ayuda.html">Ayuda</a> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN MENU MOBILE -->
+  <!-- Remove "navbar-sticky" class to make navigation bar scrollable with the page.-->
+  <header class="navbar-wrapper navbar-boxed navbar-sticky navbar-stuck">
+    <div class="container-fluid">
+      <div class="d-table-cell align-middle pr-md-3"><a class="navbar-brand mr-1" href="index.html"><img src="img/logojpg.jpg" alt="Logo" class="mx-2"></a></div>
+      <div class="d-table-cell w-100 align-middle pl-md-3">
+        <div class="navbar justify-content-end justify-content-lg-between">
+            
+          <!-- Main Menu-->
+          <ul class="navbar-nav d-none d-lg-block">
+            <!-- Home-->
+            <li class="nav-item mega-dropdown-toggle "><a class="nav-link" href="index.html">Inicio</a>
+               
+            </li>
+             <li class="nav-item mega-dropdown-toggle active"><a class="nav-link" href="ayuda.html">Ayuda</a>
+               
+            </li>
+          </ul>
+          <div>
+            <ul class="navbar-buttons d-inline-block align-middle">
+              <li class="d-block d-lg-none" style=""><a href="#mobile-menu" data-toggle="offcanvas"><i class="fe-icon-menu"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Page Content-->
+ 
+   
+  <!-- CTA #1-->
+  <section class="py-5 mt-5" style="	background-color: #;	background-image: url(&quot;img/fondo3.jpg&quot;);	background-position: top left;	background-size: 100%;	background-repeat: no-repeat;"  >
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-xl-5 col-md-6 offset-xl-1"><img class="d-block mx-auto img-thumb border rounded img-thumbnail" src="img/laptopconlogo.jpg" alt="CreateX Marketing"></div>
+        <div class="col-xl-4 col-md-6 text-center text-md-left py-5" style="">
+          <h2 class="h3 block-title text-white" id="gr">¿Compraste un curso y no te llegó?</h2>
+           <h2 class="h3 block-title text-dark" id="ch">¿Compraste un curso y no te llegó?</h2>
+              <p class="text-white lead" id="gr">Por favor brindanos el e-mail que utilizaste para comprar el curso o bien el email de Mercado Pago con el cual realizaste la compra<br></p>
+              <p class="text-dark lead" id="ch">Por favor brindanos el e-mail que utilizaste para comprar el curso o bien el email de Mercado Pago con el cual realizaste la compra<br></p>
+
+
+            <form class="text-left pt-3" id="reclamosForm">
+				     <div class="form-row">
+                    <div class="form-group col-12">
+						<select  class="form-control-lg col" name="curso" id="curso" required="">
+						  <option value="" disabled="disabled" selected="">Seleccione Curso</option>
+						  <option value="excel">Excel nivel inicial</option>
+						  <option value="excel_intermedio">Excel nivel intermedio</option>
+						</select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-12">
+					
+                      <input type="email" class="form-control-lg col" id="email" placeholder="E-mail*" name="email" required="">
+					  <p id="hint"></p>
+                    </div>
+                  </div>
+				  <div class="form">
+					<button type="button" id="verificarBtn" style="cursor:pointer" class="hvr-sweep-to-right w-100 py-3 btn-success">Verificar
+					<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="spinnerVerificar" hidden="false"></span>
+					</button>
+				</div>
+                  <div class="loading" id="spinnerloading">
+                    <div class="loader"></div>
+                  </div>
+                </form>
+         </div>
+      </div>
+    </div>
+      
+  </section>
+    
+    <div class="py-5 text-center" style="background-color:#38a650;" >
+    <div class="container py-5">
+         <div class="col-md-12">
+          <div> <a class="btn btn-lg btn-block col-md-4 mx-auto" href="index.html" target="_blank" style="background-color:white;">👉 Volver al inicio</a></div>
+        </div>
+        
+    </div>
+  </div>
+  <!-- Footer-->
+  <footer class="pt-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 pb-4 pt-5 mb-2"><a class="navbar-brand d-inline-block mb-4" href="index.html"><img src="img/logojpg.jpg" alt="CreateX"></a>
+          <ul class="list-icon text-sm pb-2" style="">
+            <li><i class="fe-icon-map-pin text-muted"></i><a class="navi-link" href="#">Devoto, Ciudad de Buenos Aires</a></li>
+            <li><i class="fe-icon-phone text-muted"></i></li>
+            <li><i class="fe-icon-mail text-muted"></i><a class="navi-link" href="mailto:hola@aprende-excel.com">hola@aprende-excel.com</a></li>
+          </ul>
+          <a class="social-btn sb-style-6 sb-facebook" href="https://www.facebook.com/aprende.excel.argentina/" target="_blank"><i class="socicon-facebook"></i></a>
+          <a class="social-btn sb-style-6 sb-instagram" href="https://www.instagram.com/aprende.excel.arg"><i class="socicon-instagram"></i></a>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </footer>
+  <!-- Back To Top Button-->
+  <a class="scroll-to-top-btn" href="#"><i class="fe-icon-chevron-up"></i></a>
+  <script src="js/vendor.min.js"></script>
+  <script src="js/theme.min.js"></script>
+    
+    <script src="curso1/vendor/jquery/mailcheck.js"></script>
+  <script src="curso1/vendor/lib/form-validation/jquery.validate.min.js"></script>
+  <script src="curso1/vendor/reclamos.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+     
+  
+</body>
+
+</html>

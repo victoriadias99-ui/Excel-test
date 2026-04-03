@@ -1,0 +1,152 @@
+.elementor-1721 .elementor-element.elementor-element-6163e12.elementor-column > .elementor-widget-wrap{justify-content:center;}.elementor-1721 .elementor-element.elementor-element-282fea5{text-align:center;z-index:0;top:66px;}.elementor-1721 .elementor-element.elementor-element-282fea5 > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}.elementor-1721 .elementor-element.elementor-element-9233d56{text-align:center;}.elementor-1721 .elementor-element.elementor-element-9233d56 .elementor-heading-title{color:#FFFFFF;font-family:"GTWalsheim", Sans-serif;font-size:55px;font-weight:800;}.elementor-1721 .elementor-element.elementor-element-9233d56 > .elementor-widget-container{margin:30px 0px 0px 0px;}.elementor-1721 .elementor-element.elementor-element-9233d56 > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}.elementor-1721 .elementor-element.elementor-element-88be66d{text-align:center;}.elementor-1721 .elementor-element.elementor-element-88be66d .elementor-heading-title{color:#FFFFFF;font-family:"GTWalsheim", Sans-serif;font-size:55px;font-weight:800;}.elementor-1721 .elementor-element.elementor-element-88be66d > .elementor-widget-container{margin:30px 0px 0px 0px;}.elementor-1721 .elementor-element.elementor-element-88be66d > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}.elementor-1721 .elementor-element.elementor-element-69f7ca0 > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}.elementor-1721 .elementor-element.elementor-element-69f7ca0{width:500px;max-width:500px;}.elementor-1721 .elementor-element.elementor-element-7cfbc8e > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}.elementor-1721 .elementor-element.elementor-element-7cfbc8e{width:500px;max-width:500px;}@media(max-width:767px){.elementor-1721 .elementor-element.elementor-element-282fea5{text-align:center;width:90%;max-width:90%;top:105px;}.elementor-1721 .elementor-element.elementor-element-282fea5 img{height:20px;}.elementor-1721 .elementor-element.elementor-element-9233d56 .elementor-heading-title{font-size:40px;}.elementor-1721 .elementor-element.elementor-element-9233d56 > .elementor-widget-container{margin:80px 0px 40px 0px;}.elementor-1721 .elementor-element.elementor-element-88be66d .elementor-heading-title{font-size:40px;}.elementor-1721 .elementor-element.elementor-element-88be66d > .elementor-widget-container{margin:80px 0px 40px 0px;}}/* Start custom CSS for jet-myaccount-login-form, class: .elementor-element-69f7ca0 */.elementor-1721 .elementor-element.elementor-element-69f7ca0 h2 {
+    display: none;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 form {
+    border: 0px;
+    font-family: "GTWalsheim", Sans-serif;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 label {
+    color: white;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 button {
+    background-color: #3AACC4;
+    border: 2px #3AACC4 solid;
+    color: white;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 button:hover {
+    background-color: #000000;
+    border: 2px #3AACC4 solid;
+    color: #3AACC4;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 input {
+    background-color: #00000000 !important;
+    color: white;
+}/* End custom CSS */
+/* Start custom CSS for jet-myaccount-registration-form, class: .elementor-element-7cfbc8e */.elementor-1721 .elementor-element.elementor-element-7cfbc8e h2 {
+    display: none;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e form {
+    border: 0px;
+    font-family: "GTWalsheim", Sans-serif;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e label {
+    color: white;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e button {
+    background-color: #3AACC4;
+    border: 2px #3AACC4 solid;
+    color: white;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e button:hover {
+    background-color: #000000;
+    border: 2px #3AACC4 solid;
+    color: #3AACC4;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e input {
+    background-color: #00000000 !important;
+    color: white;
+}/* End custom CSS */
+/* Start custom CSS for jet-myaccount-login-form, class: .elementor-element-69f7ca0 */.elementor-1721 .elementor-element.elementor-element-69f7ca0 h2 {
+    display: none;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 form {
+    border: 0px;
+    font-family: "GTWalsheim", Sans-serif;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 label {
+    color: white;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 button {
+    background-color: #3AACC4;
+    border: 2px #3AACC4 solid;
+    color: white;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 button:hover {
+    background-color: #000000;
+    border: 2px #3AACC4 solid;
+    color: #3AACC4;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-69f7ca0 input {
+    background-color: #00000000 !important;
+    color: white;
+}/* End custom CSS */
+/* Start custom CSS for jet-myaccount-registration-form, class: .elementor-element-7cfbc8e */.elementor-1721 .elementor-element.elementor-element-7cfbc8e h2 {
+    display: none;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e form {
+    border: 0px;
+    font-family: "GTWalsheim", Sans-serif;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e label {
+    color: white;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e button {
+    background-color: #3AACC4;
+    border: 2px #3AACC4 solid;
+    color: white;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e button:hover {
+    background-color: #000000;
+    border: 2px #3AACC4 solid;
+    color: #3AACC4;
+    border-radius: 5px;
+}
+
+.elementor-1721 .elementor-element.elementor-element-7cfbc8e input {
+    background-color: #00000000 !important;
+    color: white;
+}/* End custom CSS */
+/* Start Custom Fonts CSS */@font-face {
+	font-family: 'GTWalsheim';
+	font-style: normal;
+	font-weight: normal;
+	font-display: auto;
+	src: url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Regular.woff2') format('woff2'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Regular.woff') format('woff'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Regular.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'GTWalsheim';
+	font-style: normal;
+	font-weight: bold;
+	font-display: auto;
+	src: url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Bold.woff2') format('woff2'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Bold.woff') format('woff'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Bold.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'GTWalsheim';
+	font-style: normal;
+	font-weight: 800;
+	font-display: auto;
+	src: url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Black.woff2') format('woff2'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Black.woff') format('woff'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Black.ttf') format('truetype');
+}
+/* End Custom Fonts CSS */

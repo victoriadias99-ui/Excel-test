@@ -1,0 +1,183 @@
+<?php
+if (isset($_GET['test'])) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+
+// SDK de Stripe
+require_once dirname(__DIR__) . '/n-libraries/vendor/autoload.php';
+
+include("ApiFacebookEvents.php");
+include("../n-includes/conexion.php");
+include("../n-includes/class.autonum.php");
+
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+$curso  = $_GET['curso'];
+$pack   = isset($_GET['pack']) ? $_GET['pack'] : $curso;
+if ($curso != $pack) {
+    $curso = $pack;
+}
+$dir      = $_GET['dir'];
+$nombre   = $_GET['nombre'];
+$apellido = $_GET['apellido'];
+$celular  = $_GET['celular'];
+$email    = $_GET['email'];
+$descuento = $_GET['descuento'];
+
+$urlcurso = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $dir . '/';
+$urlRoot  = 'https://' . $_SERVER['HTTP_HOST'] . '/';
+
+if (isset($_GET['test'])) {
+    echo '$urlcurso = ' . $urlcurso . '<br>';
+    echo '$urlRoot = '  . $urlRoot  . '<br>';
+}
+
+// IP del visitante (compatible con Cloudflare)
+if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+    $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+} elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+}
+$ip = explode(',', str_replace(' ', '', $ip))[0];
+
+try {
+    $cnx = OpenCon();
+
+    // Actualizar IP con el email
+    $stmt = $cnx->prepare("UPDATE `ip_visita` SET `correo` = ? WHERE `ip` = ? AND `id_producto` = ?");
+    $stmt->execute([$email, $ip, $_GET['curso']]);
+
+    // Generar ID de venta
+    $auto_num = new auto_num($cnx, $curso);
+    $id_venta = $auto_num->get_id();
+
+    // Traer datos del curso (ahora usa STRIPE_SECRET_KEY en vez de ACCESS_TOKEN_MP)
+    $stmt = $cnx->prepare("SELECT TITULO, DESCRIPCION, PRECIO_UNITARIO, STRIPE_SECRET_KEY FROM cursos_detalle WHERE CURSO = ?");
+    $stmt->bindValue(1, $curso, PDO::PARAM_STR);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($rows)) {
+        echo $urlcurso . 'checkout.php?error=curso_no_encontrado';
+        exit;
+    }
+
+    $precioBase = $rows[0]['PRECIO_UNITARIO'];
+    $pagoTotal  = $precioBase;
+
+    // --- Clave Stripe ---
+    // Si la clave viene en formato JSON por dominio (igual que MP), la decodificamos
+    $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'];
+    $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+
+    if (strpos($stripeSecretRaw, '{') === false) {
+        $stripeSecret = $stripeSecretRaw;
+    } else {
+        $stripeSecret = get_object_vars(json_decode($stripeSecretRaw))[$__url];
+    }
+
+    \Stripe\Stripe::setApiKey($stripeSecret);
+
+    // --- Descuentos ---
+    $stmt2 = $cnx->prepare("SELECT DESCRIPCION, PORCENTAJE FROM descuentos WHERE CURSO=? AND CODIGO_DESCUENTO=? AND ESTADO_ACTIVO=TRUE AND FECHA_HASTA>=DATE(NOW())");
+    $stmt2->bindValue(1, $curso, PDO::PARAM_STR);
+    $stmt2->bindValue(2, $descuento, PDO::PARAM_STR);
+    $stmt2->execute();
+    $rows_descuento = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+    $discounts = [];
+    if (count($rows_descuento) > 0) {
+        $porcentajeDesc = $rows_descuento[0]['PORCENTAJE'];
+        $montoDesc      = intval($precioBase * ($porcentajeDesc / 100));
+        $pagoTotal      = $precioBase - $montoDesc;
+
+        // Crear un coupon temporal en Stripe para reflejar el descuento
+        $coupon = \Stripe\Coupon::create([
+            'amount_off' => $montoDesc * 100, // en centavos
+            'currency'   => 'ars',
+            'duration'   => 'once',
+            'name'       => $rows_descuento[0]['DESCRIPCION'],
+        ]);
+        $discounts = [['coupon' => $coupon->id]];
+    }
+
+    // --- Guardar venta en DB (estado pendiente) ---
+    $stmt1 = $cnx->prepare("INSERT INTO ventas (CURSO, ID, NOMBRE, APELLIDO, PREFIJO_CEL, CELULAR, EMAIL, ESTADO_MP, PREFERENCIA_ID_MP, DOMINIO, ACCESS_TOKEN) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+    $stmt1->bindValue(1,  $curso,    PDO::PARAM_STR);
+    $stmt1->bindValue(2,  $id_venta, PDO::PARAM_STR);
+    $stmt1->bindValue(3,  $nombre,   PDO::PARAM_STR);
+    $stmt1->bindValue(4,  $apellido, PDO::PARAM_STR);
+    $stmt1->bindValue(5,  0,         PDO::PARAM_INT);
+    $stmt1->bindValue(6,  $celular,  PDO::PARAM_STR);
+    $stmt1->bindValue(7,  $email,    PDO::PARAM_STR);
+    $stmt1->bindValue(8,  'pending', PDO::PARAM_STR);
+    $stmt1->bindValue(9,  '',        PDO::PARAM_STR); // se actualiza en el webhook
+    $stmt1->bindValue(10, $__url,    PDO::PARAM_STR);
+    $stmt1->bindValue(11, '',        PDO::PARAM_STR);
+    $stmt1->execute();
+
+    // --- Crear Stripe Checkout Session ---
+    $lineItems = [
+        [
+            'price_data' => [
+                'currency'     => 'ars',
+                'unit_amount'  => $precioBase * 100, // centavos
+                'product_data' => [
+                    'name'        => $rows[0]['TITULO'],
+                    'description' => $rows[0]['DESCRIPCION'],
+                    'images'      => [$urlRoot . 'n-img/logo/android-chrome-512x512.png'],
+                ],
+            ],
+            'quantity' => 1,
+        ]
+    ];
+
+    $sessionParams = [
+        'payment_method_types' => ['card'],
+        'line_items'           => $lineItems,
+        'mode'                 => 'payment',
+        'customer_email'       => $email,
+        'client_reference_id'  => $curso . '-' . $id_venta,
+        'metadata'             => [
+            'curso'    => $curso,
+            'id_venta' => $id_venta,
+            'nombre'   => $nombre,
+            'apellido' => $apellido,
+            'celular'  => $celular,
+            'email'    => $email,
+            'dominio'  => $__url,
+        ],
+        'success_url' => $urlRoot . 'pago_exitoso.php?monto=' . $pagoTotal . '&idVenta=' . $id_venta,
+        'cancel_url'  => $urlcurso . 'checkout.php',
+    ];
+
+    if (!empty($discounts)) {
+        $sessionParams['discounts'] = $discounts;
+    }
+
+    $session = \Stripe\Checkout\Session::create($sessionParams);
+
+    // Guardar el Session ID de Stripe en PREFERENCIA_ID_MP para trazabilidad
+    $cnx->prepare("UPDATE ventas SET PREFERENCIA_ID_MP=? WHERE CURSO=? AND ID=?")
+        ->execute([$session->id, $curso, $id_venta]);
+
+    // Facebook Events
+    ApiFacebookEventsFunciones::initPaymentSendDataInitPaymentFacebook($email, $pagoTotal, 'ARS', $urlcurso);
+
+    // Devolver la URL de Stripe al JS (igual que antes devolvía $preference->init_point)
+    echo $session->url;
+
+} catch (PDOException $e) {
+    error_log('DB Error en realizarVenta: ' . $e->getMessage());
+    echo $urlcurso . 'checkout.php?error=db';
+} catch (\Stripe\Exception\ApiErrorException $e) {
+    error_log('Stripe Error en realizarVenta: ' . $e->getMessage());
+    echo $urlcurso . 'checkout.php?error=stripe';
+}
+?>

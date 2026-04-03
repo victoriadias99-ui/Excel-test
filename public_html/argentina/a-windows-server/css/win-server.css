@@ -1,0 +1,113 @@
+@font-face {
+    font-family: montserrat_black;
+    src: url(../../fonts/Montserrat-Black.ttf);
+}
+@font-face {
+    font-family: montserrat_bold;
+    src: url(../../fonts/Montserrat-Bold.ttf);
+}
+@font-face {
+    font-family: montserrat_medium;
+    src: url(../../fonts/Montserrat-Medium.ttf);
+}
+@font-face {
+    font-family: montserrat_regular;
+    src: url(../../fonts/Montserrat-Regular.ttf);
+}
+ 
+@font-face {
+    font-family: montserrat_light;
+    src: url(../../fonts/Montserrat-Light.ttf);
+}
+/* background de todo azul petroleo */
+
+.bg-success {
+    background-color: #44b8ff!important;
+
+}
+
+/* background de todo azul petroleo */
+.titulos {
+   
+    font-family: montserrat_bold;
+    font-size: 44px;
+ }
+ 
+ 
+ 
+ .sombras {
+    text-shadow: 2px 2px 5px #373737; 
+    line-height: 1.2
+ }
+
+ .sombras-inv {
+    text-shadow: 2px 2px 5px #373737; 
+    line-height: 1.2
+ }
+
+/* fondo cortina boton top */
+.hvr-sweep-to-right:before{
+    background-color:#f1c713;
+}
+
+
+/* color texto y borde boton del top */
+.cta-button a {
+   color: #f1c713;
+   border: 2px solid #b8980c;
+}
+
+/** color letra del boton top cuando el cursor esta arriba*/
+.cta-button a:hover {
+    color: #000;
+ }
+
+.text-success {
+   color:  #44b8ff!important;;
+}
+
+/** cortina desplazmiento hacia arriba de los botones" */
+.hvr-sweep-to-top:before {
+    background: #44b8ff;
+}
+
+
+/* color imverso del los botones y text */
+.call-button-inverso a {
+    background-color:#000;
+    color: #f1c713;
+    font-size: 16px;
+    font-family: montserrat_bold;
+    text-transform: uppercase;
+    padding: 15px 20px;
+    text-align: center;
+    display: block;
+    width: 100%;
+    border-radius: 5px;
+} 
+
+
+/* color del los botones y text */
+.call-button a {
+    background-color:#f1c713;
+    color:#000;
+    font-family: montserrat_bold;
+}
+
+a:hover.text-success {
+        color:#f1c713!important;
+}
+
+button.call-button {
+    /*  margin-left:10%;
+      margin-right:10%;   */
+      background-color: #f1c713;
+      color: fff;
+      font-size: 1.5em;
+      font-family: montserrat_bold;
+      text-shadow: 2px 2px 5px #373737; 
+  }
+
+.hvr-sweep-to-right button a:hover {
+   background-color: #f1c713!important;
+} 

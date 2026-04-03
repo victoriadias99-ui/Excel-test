@@ -1,0 +1,22 @@
+{
+    "curso": "Power BI Nivel avanzado",
+    "precio_full": 5599,
+    "precio_oferta": 2599,
+    "ahorro": 0,
+    "moneda": ["ARS", "pesos", "$", "Argentinos"],
+    "codigo": "pbi_avanzado",
+    "up_sell": {
+        "item1": {
+            "curso": "Power Bi Inicial",
+            "precio_full": 4999,
+            "precio_oferta": 1999,
+            "codigo": "upsell_pb2_pbi"
+        },
+        "item2": {
+            "curso": "Excel nivel avanzado",
+            "precio_full": 4299,
+            "precio_oferta": 599,
+            "codigo": "upsell_pb2_ex_avan"
+        }
+    }
+}

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Aprende Excel - Plan Empresas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <link rel="stylesheet" href="css/animate.css">
+ <link rel="stylesheet" href="css/style.css">
+ 
+</head>
+
+<body>
+         <!-- ID "GR": visible en desktop - ID "CH" visible en mobile -->
+
+   <!-- NAV MOBILE -->
+ <div id="ch">
+  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-white " id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" style="color:white;" > <img src="images/logo.png" alt="logo">  </a>
+    </div>
+  </nav>
+    </div>
+    
+    <!-- NAV DESKTOP -->
+    <div id="gr">
+     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-white " id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" style="color:black;" > <img src="images/logo.png" alt="logo"> </a>
+    </div>
+  </nav>
+ </div>
+ 
+        <!-- HEADER DESKTOP -->
+
+<div class="" id="gr"  style="background-image: url('images/fondo2.jpg'); ;background-repeat:no-repeat; background-size: 100%  ;">
+    <div class="container">
+      <div class="row">
+        <div class="p-5 col-md-6 d-flex flex-column justify-content-center" style="">
+ <div class="slider-text" id=" ">
+          <h1 class=" mb-3 font-weight-bold text-white" style="text-shadow: 2px 2px 2px black;">Llevá la productividad de tu empresa al próximo nivel </h1>
+         <p class=" mb-3 font-weight-bold text-dark text-center">Cursos de Excel para empresas</p>
+
+  </div>
+        </div>
+        <div class="p-5 col-md-6 form5">
+            <h3 class="text-white" >SOLICITÁ INFORMACIÓN</h3>
+            <p class="lead" style="color:white; ">
+              <span class="text-white font-weight-bold" style="color:white;">Completá el formulario y recibí un presupuesto a medida hoy mismo</span>
+            </p>
+            <p class="lead" style="color:white; "><b>RESPUESTA
+              <span style="color:#1ae759;"> INMEDIATA <i class="fas fa-tachometer-alt"></i></span> </b></p>
+              <p>*Formulario solo para empresas, no para planes individuales</p>
+          <form class="" name="formulario" method="post" action="enviar.php">
+            <input type="hidden" name="ip" value="">
+           <div class="form-group  mt-2">
+              <input type="text" class="form-control form-control-md" placeholder="Tu Nombre" name="nombre" required=""> </div>
+            <div class="form-group  mt-2">
+              <input type="text" class="form-control form-control-md" placeholder="Tu celular (+cód de área)" name="telefono" required=""> </div>
+               <div class="form-group  mt-2">
+              <input type="text" class="form-control form-control-md" placeholder="Empresa" name="empresa" required=""> </div>
+            <div class="form-group">
+                <textarea class="form-control" name="comentario" id="contacto" placeholder="Comentarios" maxlength="25" rows="3"  ></textarea>
+              </div>
+            <input type="hidden" name="origen" value="FB Lead">
+            <h4 id="formdsktp" class="text-left lead mt-4 font-weight-bold" style="color:white;"></h4>
+            <button type="submit" class="btn btn-block py-3 px-5 mb-4 heartbeat" style="font-size:30px; background-color:#24a547; color:white; border-radius: 0;">ENVIAR</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> 
+   
+    
+    <!-- HEADER MOBILE -->
+  <div class="section" id="ch"  >
+       <div class="container py-5" id=" ">
+           <h3 class=" mb-3 font-weight-bold text-dark text-center"  >Llevá la productividad de tu empresa al próximo nivel 🚀</h3>
+         <p class=" mb-3 font-weight-bold text-dark text-center">Cursos de Excel <u>para empresas</u></p>
+  </div>   
+   </div>
+   
+          <!-- INTRODUCCIÓN -->
+  <div class="section  bg-success py-5 ">
+         <div class="container px-3 text-white">
+            <h2 class=" font-weight-bold" style=" "><span style="color:white ;"><u>¿Tus empleados pasan demasiado tiempo</u> para hacer un reporte, un balance o trabajo administrativo?</span> </h2> 
+     
+      <p class="mt-3" style="  font-size: 19px;"> 
+             El 85% de las empresas que usan Excel jamás entrenaron a su personal sobre este software, aún cuando <b> se trata de una herramienta clave</b> para la realización de tareas.
+            <br>
+          <br>
+            Capacitar a tu personal con Excel permitirá que realicen trabajos de manera fluida, <b><u>generando un gran impacto en su productividad.</u></b>
+            </p> 
+ </div>
+       </div>
+        
+          <!-- FORMULARIO MOBILE -->
+       <div class="container text-dark" id="ch">
+         <a id="formumobile"></a>
+          <div class="mx-auto text-center py-5 px-3  text-dark">
+            <h3 class="text-dark font-weight-bold" >SOLICITÁ PRESUPUESTO</h3>
+            <p class="lead" style="color:black; "><b>RESPUESTA
+              <span style="color:#1ae759;"> INMEDIATA <i class="fas fa-tachometer-alt"></i></span> </b></p>
+              <p>*Formulario solo para empresas, no para planes individuales</p>
+
+          <form class="" name="formulario" method="post" action="enviar.php">
+            <input type="hidden" name="ip" value="">
+           <div class="form-group  mt-2 shadow">
+              <input type="text" class="form-control form-control-md" placeholder="Tu Nombre" name="nombre" required=""> </div>
+            <div class="form-group  mt-2 shadow">
+              <input type="text" class="form-control form-control-md" placeholder="Tu celular (+cód de área)" name="telefono" required=""> </div>
+               <div class="form-group  mt-2 shadow">
+              <input type="text" class="form-control form-control-md" placeholder="Empresa" name="empresa" required=""> </div>
+            <div class="form-group shadow">
+                <textarea class="form-control " name="comentario" id="contacto" placeholder="Comentarios" maxlength="25" rows="3"  ></textarea>
+              </div>
+            <input type="hidden" name="origen" value="FB Lead">
+            <h4 id="formdsktp" class="text-left lead mt-4 font-weight-bold" style="color:white;"></h4>
+            <button type="submit" class="btn btn-block py-3 px-5 mb-4 heartbeat shadow" style="font-size:30px; background-color:#24a547; color:white; border-radius: 0;">ENVIAR</button>
+          </form>
+        </div>
+     </div>
+     
+     <!-- FEATURES -->
+      <div class="container">
+      <div class="row justify-content-center pt-5 pb-5"><hr>
+        <div class="col-lg-4 col-md-6 p-4">
+          <div class="row">
+            <div class="col-3 p-0 d-flex align-items-center"> <img class="img-fluid d-block" src="images/infinito.jpg"> </div>
+            <div class="col-9">
+              <p class="lead mb-1 font-weight-bold"> <b>ACCESO ILIMITADO</b> </p>
+              <p class="mb-0">Cada usuario obtendrá acceso para siempre al curso.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 p-4">
+          <div class="row">
+            <div class="col-3 p-0 d-flex align-items-center"> <img class="img-fluid d-block" src="images/videos.jpg"> </div>
+            <div class="col-9">
+              <p class="lead mb-1 font-weight-bold"> <b>VIDEOS PRE-GRABADOS</b> </p>
+              <p class="mb-0">Para ver sin horarios. ¡No hay necesidad de frenar la empresa para realizar una capacitación!</p>          </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 p-4">
+          <div class="row">
+            <div class="col-3 p-0 d-flex align-items-center"> <img class="img-fluid d-block" src="images/soporte.jpg"> </div>
+            <div class="col-9">
+              <p class="lead mb-1 font-weight-bold"> <b>SOPORTE</b> </p>
+              <p class="mb-0">Resolveremos todas las dudas que surjan respecto al curso</p>
+            </div>
+          </div>
+        </div>  
+      </div>
+  </div>    
+ 
+ 
+ <!-- PRODUCTOS -->
+<div class="py-5 align-items-center text-center bg-light container "  >
+<h1 class=" pt-4 pb-3   slider-text font-weight-bold" style="color:#323232;"><span style="color:#13a740;">Nuestros </span>cursos</h1>     <div class=" container">
+      <div class="row textoautos">
+        <div class="col-md-3 col-6 p-1">
+          <a href="#modal1"  data-toggle="modal" data-target="#modal1"   >
+           <img class="  d-block img-fluid img-thumbnail " src="images/excel1.jpg">
+             <p class=" h5 font-weight-bold">Excel Inicial: $1073+IVA p/persona</p> 
+            <p style="font-size:16px;color:black;">31 videos - 3hs de duración</p>
+          </a>
+        </div>
+        <div class="col-md-3 col-6 p-1">
+          <a href="#modal1"  data-toggle="modal" data-target="#modal1"   >
+            <img class="d-block img-fluid img-thumbnail align-items-center text-center" src="images/excel2.jpg">
+            <p class="h5 font-weight-bold ">Excel Intermedio: $1237+IVA p/persona</p> 
+            <p style="font-size:16px;color:black;">20 videos - 3.5hs de duración</p>
+          </a>
+        </div>
+        <div class="col-md-3 col-6 p-1">
+          <a href="#modal1"  data-toggle="modal" data-target="#modal1"  >
+           <img class="d-block img-fluid img-thumbnail align-items-center text-center" src="images/excel3.jpg">
+            <p class="h5 font-weight-bold ">Excel Avanzado: $1652+IVA p/persona</p> 
+            <p style="font-size:16px;color:black;">24 videos - 4hs de duración</p>
+          </a>
+        </div>
+        <div class="col-md-3 col-6 p-1">
+          <a href="#modal1"  data-toggle="modal" data-target="#modal1"  >
+           <img class="d-block img-fluid img-thumbnail align-items-center text-center" src="images/powerbi.jpg">
+            <p class="h5 font-weight-bold ">Power BI: $1652+IVA p/persona</p> 
+            <p style="font-size:16px;color:black;">16 videos - 3hs de duración </p>
+          </a>
+        </div>
+ </div>
+   </div>
+   </div>
+   
+  <div class="bg-success section">
+       <h1 class=" py-5 font-weight-bold text-white container text-center" style="color:#323232;"><i class="fas fa-tachometer-alt"></i>
+ EN SOLO UNAS HORAS VAS A AUMENTAR LA PRODUCTIVIDAD DE TU EMPRESA </h1>      
+  </div>
+  
+  <!-- CLIENTES -->
+  <div class="py-5 align-items-center text-center  container"  >
+<h3 class=" pt-4 pb-3   slider-text font-weight-bold" style="color:#323232;"> Más de 150 compañias capacitadas con éxito </h3>     
+     <div class=" container">
+      <div class="row textoautos">
+        <div class="col-md-3 col-6 p-1  ">
+            <img class="  d-block img-fluid   p-5" src="images/clientes/nosis.jpg">
+         </div>
+         <div class="col-md-3 col-6 p-1">
+            <img class="  d-block img-fluid   p-4" src="images/clientes/greenoil.jpg">
+         </div>
+           <div class="col-md-3 col-6 p-1">
+            <img class="  d-block img-fluid   p-5" src="images/clientes/fincaelpongo.jpg">
+         </div>
+          <div class="col-md-3 col-6 p-1">
+            <img class="  d-block img-fluid    p-5" src="images/clientes/santarita.jpg">
+         </div>
+         <div class="col-md-3 col-6 p-1">
+            <img class="  d-block img-fluid    p-5" src="images/clientes/cruzceleste.jpg">
+         </div>
+         <div class="col-md-3 col-6 p-1">
+            <img class="  d-block img-fluid    p-5" src="images/clientes/dggroup.jpg">
+         </div>
+         <div class="col-md-3 col-6 p-1">
+            <img class="  d-block img-fluid    p-5" src="images/clientes/simiente.jpg">
+         </div>
+         <div class="col-md-3 col-6 p-4">
+            <img class="  d-block img-fluid    p-3" src="images/clientes/sumed.jpg">
+         </div>
+ </div>
+ 
+  <!-- BOTÓN MOBILE -->
+<a href="#formumobile" id="ch" class="btn bg-success text-white font-weight-bold d-block px-3 py-3 mt-3 pulse">Recibir presupuesto HOY</a>
+  </div> 
+ </div>
+  
+
+     
+    <div class="container text-center"><hr>
+   <h3 class="my-5 py-5   slider-text font-weight-bold" style="color:#323232;">¿No sabes qué nivel tiene tu personal? <br><span style="color:#13a740;" class="h5 "><i class="fas fa-file-alt"></i>
+ Realizaremos un rápido test de nivelación gratuito antes de que nos contrates </span></h3>  
+  </div>
+ 
+ <!-- CONTADOR OCULTO QUE NO PUEDO BORRAR PORQUE SE DESCONFIGURA TODO -->
+ <div class="hidden-xs-up hidden-xl-down d-none">
+  <section class="ftco-section ftco-counter img" id="section-counter" style="background-image: url(images/bg_1.jpg); padding-top:20px; padding-bottom: 20px;" data-stellar-background-ratio="0.5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="col-md-3 d-flex justify-content-center counter-wrap ftco-animate">
+              <div class="block-18 text-center">
+                <div class="text">
+                  <span  class="">N° de empleados capacitados:</span>
+
+                  <strong class="number" data-number="2357">0</strong>
+                  <span><b>¿Qué estás esperando?</b></span>
+                    <a href="#formumobile" class="btn d-block px-3 py-3 mt-4" >Solicitar información</a>
+
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+    
+    
+    <!-- CONTADOR DESKTOP -->
+  <div id="gr"  >
+  <section class="ftco-counter" id="" style="background-color:#13a740; padding-top:20px; padding-bottom:  20px;" data-stellar-background-ratio="0.5">
+    <div class="container align-items-center">
+           <div class=" d-flex justify-content-center counter-wrap ftco-animate">
+              <div class="block-18 align-items-center text-center">
+                <div class="text text-white">
+                  <span class="text-white" style="font-size:120%">N° de empleados capacitados:</span>
+                  <strong class="number" data-number="2157">0</strong>
+                  <span class="text-white"><b>Recibí hoy un presupuesto a medida hoy mismo</b></span>
+                </div> 
+              </div>
+               
+            </div>
+  <div class="col-md-6 offset-md-3">
+                    <a href="#modal1" data-toggle="modal" data-target="#modal1" style="border-radius:5px;" class=" btn d-block px-3 py-3 mt-4 pulse bg-white text-dark font-weight-bold "> 
+
+ CONSULTAR AHORA</a>
+                  </div>
+    </div>
+  </section>
+      
+    </div>  
+    
+    
+    <!-- CONTADOR MOBILE -->
+    <div id="ch"  >
+  <section class="ftco-counter ftco-section " id="" style="background-color:#13a740; padding-top:20px; padding-bottom:  20px;" data-stellar-background-ratio="0.5">
+    <div class="container align-items-center">
+           <div class=" d-flex justify-content-center counter-wrap ftco-animate">
+              <div class="block-18 align-items-center text-center">
+                <div class="text">
+                  <span class="font-weight-bold" style=" color:white; font-size:115%;">N° de empleados capacitados:</span>
+                  <strong class="number" data-number="2157">0</strong>
+                 </div> 
+              </div>
+            </div>
+        <div class="col-md-6 offset-md-3">
+		            <a href="#formumobile" class="btn bg-white font-weight-bold d-block px-3 py-3 mb-4 pulse">Recibir presupuesto HOY</a>
+      </div>
+    </div>
+  </section>
+      
+    </div>  
+ 
+    
+
+   
+   <!-- MODAL FORM DESKTOP -->
+  <div class="modal fade" id="modal1">
+    <div class="modal-dialog">
+      <button type="button" data-dismiss="modal" aria-hidden="true" style="color:white;" class="close"> × </button>
+      <div class="modal-content  py-5 px-5 bg-light">
+          <h3 class="headerform" contenteditable="true" style="color:black;">SOLICITÁ INFORMACIÓN</h3>
+            <p class="lead" style="color:white; ">
+              <span style="color:black;">Completá el formulario y recibí un presupuesto a medida hoy mismo </span>
+            </p>
+          <p class="lead" style="color:white; ">
+              <span style="color:#1ae759;"><i class="fas fa-tachometer-alt"></i><b> RESPUESTA INMEDIATA</b> </span>
+            </p>              <p>*Formulario solo para empresas, no para planes individuales</p>
+
+             <form class="" name="formulario" method="post" action="enviar.php">
+            <input type="hidden" name="ip" value="">
+           <div class="form-group  mt-2">
+              <input type="text" class="form-control form-control-md" placeholder="Tu Nombre" name="nombre" required=""> </div>
+            <div class="form-group  mt-2">
+              <input type="text" class="form-control form-control-md" placeholder="Tu celular (+cód de área)" name="telefono" required=""> </div>
+               <div class="form-group  mt-2">
+              <input type="text" class="form-control form-control-md" placeholder="Empresa" name="empresa" required=""> </div>
+            <div class="form-group">
+                <textarea class="form-control" name="contacto" id="contacto" placeholder="Comentarios" maxlength="25" rows="3"  ></textarea>
+              </div>
+            <input type="hidden" name="origen" value="FB Lead">
+            <h4 id="formdsktp" class="text-left lead mt-4 font-weight-bold" style="color:white;"></h4>
+            <button type="submit" class="btn btn-block py-3 px-5 mb-4 heartbeat" style="font-size:30px; background-color:#24a547; color:white; border-radius: 0;">ENVIAR</button>
+          </form>
+         
+      </div>
+    </div>
+  </div>
+ 
+    
+   
+         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" crossorigin="anonymous">
+ <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-migrate-3.0.1.min.js"></script>
+   <script src="js/bootstrap.min.js"></script>
+   <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+   <script src="js/aos.js"></script>
+  <script src="js/jquery.animateNumber.min.js"></script>
+  <script src="js/bootstrap-datepicker.js"></script>
+  <script src="js/jquery.timepicker.min.js"></script>
+  <script src="js/scrollax.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/smooth-scroll.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-165632923-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-165632923-1');
+</script>
+
+
+    <!-- Facebook Pixel Code -->
+  <script>
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '177917573796998');
+        fbq('track', 'PageView');
+        fbq('track', 'ViewContent');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=177917573796998&ev=PageView&noscript=1"
+/></noscript>
+    <!-- End Facebook Pixel Code -->
+    
+    
+</body>
+
+</html>

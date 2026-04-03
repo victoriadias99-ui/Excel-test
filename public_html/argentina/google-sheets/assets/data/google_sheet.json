@@ -1,0 +1,14 @@
+{
+    "curso": "Google Sheets",
+    "precio_full": 3500,
+    "precio_oferta": 999,
+    "ahorro": 2401,
+    "moneda": ["ARS", "pesos", "$", "Argentinos"],
+    "codigo": "google_sheet",
+    "up_sell": {
+        "curso": "Power Bi",
+        "precio_full": 4999,
+        "precio_oferta": 1000,
+        "codigo": "upsell_pbi_sheet"
+    }
+}

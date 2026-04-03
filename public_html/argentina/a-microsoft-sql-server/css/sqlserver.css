@@ -1,0 +1,110 @@
+@font-face {
+    font-family: montserrat_black;
+    src: url(../../fonts/Montserrat-Black.ttf);
+}
+@font-face {
+    font-family: montserrat_bold;
+    src: url(../../fonts/Montserrat-Bold.ttf);
+}
+@font-face {
+    font-family: montserrat_medium;
+    src: url(../../fonts/Montserrat-Medium.ttf);
+}
+@font-face {
+    font-family: montserrat_regular;
+    src: url(../../fonts/Montserrat-Regular.ttf);
+}
+ 
+@font-face {
+    font-family: montserrat_light;
+    src: url(../../fonts/Montserrat-Light.ttf);
+}
+
+
+body {
+    font-family: montserrat_regular;
+}
+
+/* background de todo azul petroleo */
+.titulos {
+   
+   font-family: montserrat_bold;
+   font-size: 44px;
+}
+
+
+
+.sombras {
+   text-shadow: 2px 2px 5px #373737; 
+   line-height: 1.2
+}
+
+.bg-success {
+    background-color: #7c7b7b!important;
+}
+
+.hvr-sweep-to-right a{
+    background-color: #fff;
+    color: #ac534f;;
+}
+
+.hvr-sweep-to-left a{
+    background-color: #fff;
+}
+
+.hvr-sweep-to-right:before{
+    background-color: #eb2f24;
+}
+
+i.fa.fa-star {
+    color: #eb2f24!important;
+}
+
+.bg-precios {
+   background-color:  #eb2f24!important;
+}
+.cta-button a {
+   color:#eb2f24;;
+   border: 2px solid #851a14;
+   font-family: montserrat_bold;
+   text-shadow: 2px 2px 5px #373737; 
+}
+
+.text-success {
+   color:  #eb2f24!important;
+}
+
+.hvr-sweep-to-top:before {
+    background: #636161;
+}
+
+
+
+button.call-button {
+  /*  margin-left:10%;
+    margin-right:10%;   */
+    background-color: #eb2f24;;
+    color: white;
+    font-size: 1.5em;
+    font-family: montserrat_bold;
+    text-shadow: 2px 2px 5px #373737; 
+}
+
+.call-button a {
+    background-color: #eb2f24;
+    font-family: montserrat_bold;
+    text-shadow: 2px 2px 5px #373737; 
+}
+
+a:hover.text-success {
+        color:rgb(21, 127, 226)!important;
+}
+
+.hvr-sweep-to-right button a:hover {
+   background-color: rgb(80, 78, 78)!important;
+} 
+
+a.btn {
+    background-color: #eb2f24;
+    font-size: 1.5rem;
+}

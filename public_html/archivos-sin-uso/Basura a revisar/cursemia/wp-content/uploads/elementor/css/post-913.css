@@ -1,0 +1,24 @@
+.elementor-913 .elementor-element.elementor-element-2c2fd53d > .elementor-container{min-height:60vh;}.elementor-913 .elementor-element.elementor-element-21aca5ab > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}/* Start custom CSS for section, class: .elementor-element-2c2fd53d */.elementor-913 .elementor-element.elementor-element-2c2fd53d .lp-profile-left {
+    display: none;
+}
+
+.elementor-913 .elementor-element.elementor-element-2c2fd53d .lp-profile-content-area {
+    min-height: 50px !important;
+    padding: 30px 0 12px 0 !important;
+}
+
+.elementor-913 .elementor-element.elementor-element-2c2fd53d #learn-press-profile {
+    background-color: #00000000;
+}
+
+.elementor-913 .elementor-element.elementor-element-2c2fd53d #profile-content-settings .learn-press-tabs {
+    display: none;
+}
+
+.elementor-913 .elementor-element.elementor-element-2c2fd53d li.orders, .elementor-913 .elementor-element.elementor-element-2c2fd53d .learn-press-profile-course__statistic {
+    display: none;
+}
+
+.elementor-913 .elementor-element.elementor-element-2c2fd53d .learn-press-profile-course__tab {
+    margin-top: -50px !important;
+}/* End custom CSS */

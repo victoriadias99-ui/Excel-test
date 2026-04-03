@@ -1,0 +1,171 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+header{
+    height: 700px;
+}
+
+header h1{
+    font-size: 2.5em;
+}
+
+nav{
+    background-image: url("../n-img/background-navbar-min.png"); /* The image used */
+    z-index: 1;
+    height: 80px;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-size: 0.8em;
+}
+
+nav .logo{
+    width: 100px;
+}
+
+#image-header-min{
+    position: absolute;
+    right:-100px;
+    top:0px;
+    height: 700px;
+}
+
+.card-with-shaw .icono-trofeo-min{
+    width: 10%;
+}
+
+.card-with-shaw .icono-flecha{
+    width: 5%;
+}
+
+.card-with-shaw .texto{
+    width: 85%;
+}
+
+.card-with-shaw {
+    border-radius: 10px;
+    box-shadow: rgb(205 205 205) 10px 10px 20px 14px;
+    background: rgb(255, 255, 255);
+}
+
+.icono-small{
+    width: 25px;
+    margin-right: 1em;
+}
+
+.icono-libro-min{
+    position: absolute;
+    right: 20%;
+    bottom: -40px;
+    z-index: 1000;
+}
+
+.background-verde-mujer-escuchando-min{
+    width: 100%;
+    height: -webkit-fill-available;
+}
+
+footer{
+    background-color: #E5F1F3;
+}
+
+.section-wa{
+    background-image: url("../n-img/footer-wa.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto;
+    border-radius: 10px;
+    color:#fff;
+    height: 150px;
+    margin-top: -75px !important;
+}
+
+.btn-blanco-verde{
+    background:#fff; 
+    color:#007A6A;
+}
+
+.btn-blanco-verde:hover{
+    background:#007A6A; 
+    color:#fff;
+}
+
+.btn-verde-blanco{
+    background:#007A6A; 
+    color:#fff;
+}
+
+.btn-verde-blanco:hover{
+    background:#fff; 
+    color:#007A6A;
+}
+
+.background-verde-min{
+    position: absolute;
+    right: 0px;
+}
+
+.seccion-5{
+    height: 800px;
+}
+
+.seccion-5 .background-verde-mujer-escuchando-min{
+    position: absolute;
+    right: 0px;
+    height: 800px;
+}
+
+
+@media only screen and (max-width: 900px) {
+    #navbarSupportedContent{
+        background-color: white;
+        border-radius: 10px;
+        padding: 10px;
+        -webkit-box-shadow: 0 0.75rem 1.25rem 0.0625rem rgb(64 64 64 / 72%);
+        box-shadow: 0 .75rem 1.25rem .06;
+    }
+
+    #navbarSupportedContent ul li a{
+        color: black;
+    }
+    
+    #navbarSupportedContent ul li .dropdown-menu{
+        border: none;
+    }
+
+    .seccion-5{
+        height: auto;
+    }
+
+    .seccion-3{
+        background-image: url("../n-img/background-verde-min-movil.jpg");
+        background-size: cover;
+    }
+    
+    .card-with-shaw .icono-trofeo-min{
+        width: 5%;
+    }
+
+    .card-with-shaw .icono-flecha{
+        width: 5%;
+    }
+    .card-with-shaw .texto{
+        width: 80%;
+        font-size: 0.6em;
+    }
+
+    .section-background-verde-min{
+        background-color: #22995e;
+    }
+    
+    .background-verde-mujer-escuchando-min{
+        display: none;
+    }
+
+    .section-wa{
+        height: auto !important;
+        margin-top: 0px !important;
+    }
+}

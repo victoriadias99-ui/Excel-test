@@ -1,0 +1,28 @@
+.elementor-bc-flex-widget .elementor-842 .elementor-element.elementor-element-f7584e5.elementor-column .elementor-widget-wrap{align-items:center;}.elementor-842 .elementor-element.elementor-element-f7584e5.elementor-column.elementor-element[data-element_type="column"] > .elementor-widget-wrap.elementor-element-populated{align-content:center;align-items:center;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links{justify-content:center;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links__login .jet-auth-links__item{font-family:"GTWalsheim", Sans-serif;font-size:18px;font-weight:400;color:#FFFFFF;background-color:#02010100;border-style:solid;border-width:1px 1px 1px 1px;border-radius:5px 5px 5px 5px;padding:10px 20px 10px 20px;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links__login .jet-auth-links__item:hover{color:#000000;background-color:#FFFFFF;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links__logout .jet-auth-links__item{font-family:"GTWalsheim", Sans-serif;font-size:18px;font-weight:400;color:#3AACC4;background-color:#3AACC400;border-style:solid;border-width:0px 0px 0px 0px;border-color:#3AACC4;border-radius:5px 5px 5px 5px;margin:0px 0px 0px 20px;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links__logout .jet-auth-links__item:hover{color:#FFFFFF;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links__logout .jet-auth-links__prefix{color:#FFFFFF;font-family:"GTWalsheim", Sans-serif;font-size:18px;font-weight:400;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links__register .jet-auth-links__item{font-family:"GTWalsheim", Sans-serif;font-size:18px;font-weight:400;color:#FFFFFF;background-color:#3AACC4;border-style:solid;border-width:1px 1px 1px 1px;border-color:#3AACC4;border-radius:5px 5px 5px 5px;padding:10px 20px 10px 20px;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links__register .jet-auth-links__item:hover{color:#3AACC4;background-color:#000000;border-color:#3AACC4;}.elementor-842 .elementor-element.elementor-element-818ab9a > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}.elementor-842 .elementor-element.elementor-element-dcd2935 .elementor-button{font-family:"GTWalsheim", Sans-serif;font-size:18px;font-weight:400;fill:var( --e-global-color-primary );color:var( --e-global-color-primary );background-color:#6EC1E400;border-style:solid;border-width:0px 0px 0px 0px;padding:0px 0px 0px 0px;}.elementor-842 .elementor-element.elementor-element-dcd2935 > .elementor-widget-container{margin:0px 5px 0px 5px;}.elementor-842 .elementor-element.elementor-element-dcd2935 > .tippy-popper .tippy-tooltip .tippy-content{text-align:center;}.elementor-842 .elementor-element.elementor-element-dcd2935{width:auto;max-width:auto;}@media(max-width:767px){.elementor-842 .elementor-element.elementor-element-f7584e5.elementor-column > .elementor-widget-wrap{justify-content:flex-start;}.elementor-842 .elementor-element.elementor-element-818ab9a .jet-auth-links{justify-content:flex-start;}}/* Start Custom Fonts CSS */@font-face {
+	font-family: 'GTWalsheim';
+	font-style: normal;
+	font-weight: normal;
+	font-display: auto;
+	src: url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Regular.woff2') format('woff2'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Regular.woff') format('woff'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Regular.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'GTWalsheim';
+	font-style: normal;
+	font-weight: bold;
+	font-display: auto;
+	src: url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Bold.woff2') format('woff2'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Bold.woff') format('woff'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Bold.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'GTWalsheim';
+	font-style: normal;
+	font-weight: 800;
+	font-display: auto;
+	src: url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Black.woff2') format('woff2'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Black.woff') format('woff'),
+		url('https://ebanchio.com.ar/cursemia-new/wp-content/uploads/2021/06/GTWalsheimPro-Black.ttf') format('truetype');
+}
+/* End Custom Fonts CSS */

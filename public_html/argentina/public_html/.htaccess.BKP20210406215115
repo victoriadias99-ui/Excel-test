@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} ^(www\.)?aprende\-excel\.com
+RewriteRule (.*) https://aprende-excel.com/$1 [R=301,L,QSA]

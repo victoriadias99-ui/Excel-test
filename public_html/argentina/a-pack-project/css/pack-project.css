@@ -1,0 +1,163 @@
+@font-face {
+    font-family: montserrat_black;
+    src: url(/vendor/fonts/Montserrat-Black.ttf);
+}
+
+@font-face {
+    font-family: montserrat_bold;
+    src: url(/vendor/fonts/Montserrat-Bold.ttf);
+}
+
+@font-face {
+    font-family: montserrat_medium;
+    src: url(/vendor/fonts/Montserrat-Medium.ttf);
+}
+
+@font-face {
+    font-family: montserrat_regular;
+    src: url(/vendor/fonts/Montserrat-Regular.ttf);
+}
+
+@font-face {
+    font-family: montserrat_light;
+    src: url(/vendor/fonts/Montserrat-Light.ttf);
+}
+
+body {
+    font-family: montserrat_regular;
+}
+
+.bg-success {
+    background-color: #f3c203!important;
+}
+
+.titulos {
+    font-family: montserrat_bold;
+    font-size: 44px;
+}
+
+.titulos-1 {
+    font-family: montserrat_bold;
+    font-size: 22px;
+}
+
+.sombras {
+    text-shadow: 2px 2px 5px #373737;
+    line-height: 1.2
+}
+
+.hvr-sweep-to-right a {
+    background-color: #fff;
+    color: #f3c203;
+}
+
+.hvr-sweep-to-left a {
+    background-color: #fff;
+}
+
+.hvr-sweep-to-right:before {
+    background-color: #f3c203;
+}
+
+.cta-button a {
+    color: #f3c203;
+    border: 2px solid #f3c203;
+}
+
+.text-success {
+    color: #f3c203!important;
+}
+
+.hvr-sweep-to-top:before {
+    background: #b00bf1;
+}
+
+.call-button a {
+    background-color: #f3c203;
+    color: #000;
+}
+
+.cta-button a:hover {
+    color: #000;
+}
+
+a:hover.text-success {
+    color: #f3c203!important;
+}
+
+.hvr-sweep-to-right button a:hover {
+    background-color: #f3c203!important;
+}
+
+.cta-button a {
+    color: #f3c203;
+    border: 2px solid#a18619;
+    font-family: montserrat_bold;
+}
+
+.card-1 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    background-color: #f3c203;
+    font-size: 1.5rem;
+    margin-left: 0px;
+    width: 100%;
+}
+
+.card-1-e {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    color: #fff;
+    background-color: #f3c203;
+    font-size: 1.5rem;
+    width: 100%;
+}
+
+.foot-card-1 {
+    align-content: center;
+    background-color: #000;
+    width: 100%;
+    margin-left: 0px;
+    position: absolute;
+    bottom: 0;
+}
+
+.responsive {
+    max-height: 500px;
+    height: auto;
+}
+
+.lead {
+    font-size: 1.1rem;
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 5%;
+    color: #000;
+    text-align: center;
+    opacity: .5;
+    transition: opacity .15s ease;
+    transition-property: opacity;
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+}
+
+.btn.focus,
+.btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem #f7f7f7;
+}

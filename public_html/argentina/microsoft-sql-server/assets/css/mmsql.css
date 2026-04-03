@@ -1,0 +1,42 @@
+/* background de todo azul petroleo */
+
+.bg-success {
+    background-color: #084d6e!important;
+}
+
+.hvr-sweep-to-right a{
+    background-color: #fff;
+    color: #084d6e;
+}
+
+.hvr-sweep-to-left a{
+    background-color: #fff;
+}
+
+.hvr-sweep-to-right:before{
+    background-color: #084d6e
+}
+.cta-button a {
+   color: #084d6e;
+   border: 2px solid #022c3f;
+}
+
+.text-success {
+   color:  #084d6e!important;;
+}
+
+.hvr-sweep-to-top:before {
+    background: #013c57;
+}
+
+.call-button a {
+    background-color: #002fff;
+}
+
+a:hover.text-success {
+        color:rgb(21, 127, 226)!important;
+}
+
+.hvr-sweep-to-right button a:hover {
+   background-color: red!important;
+} 

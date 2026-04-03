@@ -1,2 +1,8 @@
 devtesting
 latam
+
+# Archivos grandes - excluidos de Git
+dinamico.zip
+n-site/v1.zip
+n-site/v2-mac.zip
+archivos-sin-uso/Basura a revisar/cursemia/u381416796_FgAc0.sql
