@@ -1,0 +1,126 @@
+# Translation of Plugins - Add to Cart Button Custom Text - Stable (latest release) in Spanish (Spain)
+# This file is distributed under the same license as the Plugins - Add to Cart Button Custom Text - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-10-20 18:17:51+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/3.0.0-alpha.2\n"
+"Language: es\n"
+"Project-Id-Version: Plugins - Add to Cart Button Custom Text - Stable (latest release)\n"
+
+#: class.php:40
+msgid "Buy product"
+msgstr "Comprar productos"
+
+#: add-to-cart-custom-text.php:118 add-to-cart-custom-text.php:140
+msgid "Settings"
+msgstr "Ajustes"
+
+#: add-to-cart-custom-text.php:117
+msgid "Thanks for using %s. Go to the settings page to configure the plugin."
+msgstr "Gracias por usar %s. Ve a la página de ajustes para configurar el plugin."
+
+#: add-to-cart-custom-text.php:100
+msgid "The plugin %s needs WooCommerce to be active in order to work. Please, activate WooCommerce first."
+msgstr "El plugin %s necesita WooCommerce activo para funcionar. Por favor, activa WooCommerce primero."
+
+#: add-to-cart-custom-text.php:77
+msgid "You cannot clone instances of %s."
+msgstr "No puedes clonar instancias de %s."
+
+#: options.php:114
+msgid "Custom text for the %s button in archive pages (shop, category, tags...) by product type"
+msgstr "Texto personalizado del botón %s en las páginas de archivo (tienda, categoría, etiquetas...) por tipo de producto"
+
+#: options.php:112
+msgid "Button text in archive pages"
+msgstr "Texto del botón en las páginas de archivo"
+
+#: options.php:101 options.php:151
+msgid "Bookable product"
+msgstr "Producto reservable"
+
+#: options.php:92 options.php:142
+msgid "Grouped product"
+msgstr "Producto agrupado"
+
+#: options.php:85 options.php:135
+msgid "Variable product"
+msgstr "Producto variable"
+
+#: options.php:78 options.php:127
+msgid "External/Affiliate product"
+msgstr "Producto externo/afiliado"
+
+#: options.php:71 options.php:120
+msgid "Simple product"
+msgstr "Producto simple"
+
+#: options.php:65
+msgid "Custom text for the %s button in single product pages by product type"
+msgstr "Texto personalizado del botón %s en la página individual de los productos por tipo de producto"
+
+#: options.php:63
+msgid "Button text in single product pages"
+msgstr "Texto del botón en la página individual de los productos"
+
+#: class.php:44 class.php:125 options.php:228
+msgid "Book now"
+msgstr "Reservar ahora"
+
+#: class.php:41 class.php:124 options.php:227
+msgid "View products"
+msgstr "Ver productos"
+
+#: class.php:43 class.php:123 options.php:226
+msgid "Select options"
+msgstr "Seleccionar opciones"
+
+#: class.php:122 options.php:225
+msgctxt "placeholder"
+msgid "Buy product"
+msgstr "Comprar productos"
+
+#: class.php:42 class.php:121 options.php:224
+msgid "Add to cart"
+msgstr "Añadir al carrito"
+
+#: options.php:49
+msgid "Add to Cart Custom Text options"
+msgstr "Opciones del texto personalizado de «Añadir al carrito»"
+
+#: options.php:41
+msgid "Sorry, you are not allowed to access this page."
+msgstr "Lo siento, no tienes permitido el acceso a esta página."
+
+#: options.php:31
+msgid "Add to Cart Button"
+msgstr "Botón de añadir al carrito"
+
+#: options.php:31
+msgid "Add to Cart Custom Text"
+msgstr "Texto personalizador de «Añadir al carrito»"
+
+#. Author URI of the plugin
+msgid "https://www.enriquejros.com/"
+msgstr "https://www.enriquejros.com/"
+
+#. Author of the plugin
+msgid "Enrique J. Ros"
+msgstr "Enrique J. Ros"
+
+#. Description of the plugin
+msgid "Allows to customize the \"Add to Cart\" button text in WooCommerce by product type in both archive and product pages"
+msgstr "Permite personalizar el texto del botón «Añadir al carrito» de WooCommerce por tipo de producto, tanto en las páginas de archivo como en las de productos"
+
+#. Plugin URI of the plugin
+msgid "https://www.enriquejros.com/plugins/"
+msgstr "https://www.enriquejros.com/plugins/"
+
+#. Plugin Name of the plugin
+#: add-to-cart-custom-text.php:55
+msgid "Add to Cart Button Custom Text"
+msgstr "Add to Cart Button Custom Text"
