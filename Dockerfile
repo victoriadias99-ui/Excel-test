@@ -19,6 +19,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN chmod +x entrypoint.sh
+
 EXPOSE ${PORT:-8080}
 
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public_html public_html/router.php"]
+CMD ["./entrypoint.sh"]
