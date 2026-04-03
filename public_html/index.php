@@ -7,10 +7,88 @@ if(isset($_GET['test'])){
     
 $dirpage = '../';
 
-include("n-includes/funcionsDB.php");
-include("n-includes/logicparametros.php");
+include("a-includes/funcionsDB.php");
+include("a-includes/logicparametros.php");
 
+$numberWhatsapp = getenv('WHATSAPP_NUMBER') ?: '';
 $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hola!%20Te%20escribo%20por%20el%20curso%20de%20Excel';
+
+// Helper: extrae precio, precio oficial y URL de checkout desde getCursoDetalleCheckout()
+function extraerDatosCurso($idCurso, $simbolo) {
+    $detalle = getCursoDetalleCheckout($idCurso);
+    $producto = isset($detalle['producto']) ? $detalle['producto'] : null;
+
+    if ($producto === null) {
+        return [
+            'precio'         => '',
+            'precioOficial'  => '',
+            'urlCheckout'    => '#',
+        ];
+    }
+
+    $precio        = isset($producto['PRECIO'])          ? $simbolo . ' ' . $producto['PRECIO']          : '';
+    $precioOficial = isset($producto['PRECIO_OFICIAL'])  ? $simbolo . ' ' . $producto['PRECIO_OFICIAL']  : '';
+    $urlCheckout   = isset($producto['URL_CHECKOUT'])    ? $producto['URL_CHECKOUT']                      : '#';
+
+    return [
+        'precio'        => $precio,
+        'precioOficial' => $precioOficial,
+        'urlCheckout'   => $urlCheckout,
+    ];
+}
+
+// Consultar detalles de cada curso desde la base de datos
+$datosCursoExcelPromo        = extraerDatosCurso('excel-promo',          $simbolo);
+$datosCursoExcelInicial      = extraerDatosCurso('excel-inicial',        $simbolo);
+$datosCursoExcelIntermedio   = extraerDatosCurso('excel-intermedio',     $simbolo);
+$datosCursoExcelAvanzado     = extraerDatosCurso('excel-avanzado',       $simbolo);
+$datosCursoSqlServer         = extraerDatosCurso('sql-server',           $simbolo);
+$datosCursoPackOffice        = extraerDatosCurso('pack-office',          $simbolo);
+$datosCursoPowerBi           = extraerDatosCurso('power-bi',             $simbolo);
+$datosCursoPowerBiAvanzado   = extraerDatosCurso('power-bi-avanzado',    $simbolo);
+$datosCursoExcelPromoPowerBI = extraerDatosCurso('excel-promo-power-bi', $simbolo);
+$datosCursoPlantillas        = extraerDatosCurso('plantillas',           $simbolo);
+
+// Variables de precio y URL para cada curso
+$precioCursoExcelPromo              = $datosCursoExcelPromo['precio'];
+$precioCursoOficialExcelPromo       = $datosCursoExcelPromo['precioOficial'];
+$urlCheckoutExcelPromo              = $datosCursoExcelPromo['urlCheckout'];
+
+$precioCursoExcelInicial            = $datosCursoExcelInicial['precio'];
+$precioCursoOficialExcelInicial     = $datosCursoExcelInicial['precioOficial'];
+$urlCheckoutExcelInicial            = $datosCursoExcelInicial['urlCheckout'];
+
+$precioCursoExcelIntermedio         = $datosCursoExcelIntermedio['precio'];
+$precioCursoOficialExcelIntermedio  = $datosCursoExcelIntermedio['precioOficial'];
+$urlCheckoutExcelIntermedio         = $datosCursoExcelIntermedio['urlCheckout'];
+
+$precioCursoExcelAvanzado           = $datosCursoExcelAvanzado['precio'];
+$precioCursoOficialExcelAvanzado    = $datosCursoExcelAvanzado['precioOficial'];
+$urlCheckoutExcelAvanzado           = $datosCursoExcelAvanzado['urlCheckout'];
+
+$precioCursoSqlServer               = $datosCursoSqlServer['precio'];
+$precioCursoOficialSqlServer        = $datosCursoSqlServer['precioOficial'];
+$urlCheckoutSqlServer               = $datosCursoSqlServer['urlCheckout'];
+
+$precioCursoPackOffice              = $datosCursoPackOffice['precio'];
+$precioCursoOficialPackOffice       = $datosCursoPackOffice['precioOficial'];
+$urlCheckoutPackOffice              = $datosCursoPackOffice['urlCheckout'];
+
+$precioCursoPowerBi                 = $datosCursoPowerBi['precio'];
+$precioCursoOficialPowerBi          = $datosCursoPowerBi['precioOficial'];
+$urlCheckoutPowerBi                 = $datosCursoPowerBi['urlCheckout'];
+
+$precioCursoPowerBiAvanzado         = $datosCursoPowerBiAvanzado['precio'];
+$precioCursoOficialPowerBiAvanzado  = $datosCursoPowerBiAvanzado['precioOficial'];
+$urlCheckoutPowerBiAvanzado         = $datosCursoPowerBiAvanzado['urlCheckout'];
+
+$precioCursoExcelPromoPowerBI       = $datosCursoExcelPromoPowerBI['precio'];
+$precioCursoOficialExcelPromoPowerBI = $datosCursoExcelPromoPowerBI['precioOficial'];
+$urlCheckoutExcelPromoPowerBI       = $datosCursoExcelPromoPowerBI['urlCheckout'];
+
+$precioCursoPlantillas              = $datosCursoPlantillas['precio'];
+$precioCursoOficialPlantillas       = $datosCursoPlantillas['precioOficial'];
+$urlCheckoutPlantillas              = $datosCursoPlantillas['urlCheckout'];
 ?>
 <!DOCTYPE html>
 <html lang="es">
