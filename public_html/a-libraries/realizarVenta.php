@@ -158,14 +158,14 @@ try {
         "excluded_payment_types" => array(array("id" => "ticket")));
 
     $preference->back_urls = array(
-        "success" => $urlRoot . "pago_exitoso.php?monto=" . $pagoTotal . '&idVenta=' . $id_venta,
-        "failure" => $urlcurso . "checkout.php",
-        "pending" => $urlRoot . "pago_en_proceso.php?monto=" . $pagoTotal);
+        "success" => $urlRoot . "?pago=exitoso&idVenta=" . $id_venta,
+        "failure" => $urlRoot . "?pago=cancelado&curso=" . urlencode($curso),
+        "pending" => $urlRoot . "?pago=pendiente&idVenta=" . $id_venta);
 
     if (isset($_GET['test'])) {
-        echo 'success = ' . $urlRoot . "pago_exitoso.php?monto=" . $pagoTotal . '&idVenta=' . $id_venta . '<br>';
-        echo 'failure = ' . $urlcurso . "checkout.php" . '<br>';
-        echo 'pending = ' . $urlRoot . "pago_en_proceso.php?monto=" . $pagoTotal . '<br>';
+        echo 'success = ' . $urlRoot . "?pago=exitoso&idVenta=" . $id_venta . '<br>';
+        echo 'failure = ' . $urlRoot . "?pago=cancelado&curso=" . urlencode($curso) . '<br>';
+        echo 'pending = ' . $urlRoot . "?pago=pendiente&idVenta=" . $id_venta . '<br>';
     }
 
 
