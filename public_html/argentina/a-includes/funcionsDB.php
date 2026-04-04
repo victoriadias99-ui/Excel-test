@@ -69,16 +69,26 @@ function getTimer($_ip, $idCurso, $timezone) {
 
 function updateIP($_ip, $idCurso, $count, $cache = null) {
     $cnx = OpenCon();
-    $consulta = "UPDATE `ip_visita` SET `visitas` = $count, `cache` = '" . ($cache == null ? '' : $cache) . "' WHERE `ip` = '$_ip' and `id_producto` ='" . $idCurso ."'";
+    $consulta = "UPDATE `ip_visita` SET `visitas` = ?, `cache` = ? WHERE `ip` = ? AND `id_producto` = ?";
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([
+        $count,
+        $cache == null ? '' : $cache,
+        $_ip,
+        $idCurso
+    ]);
 }
 
 function insertIP($_ip, $idCurso, $data = null, $cache = null) {
     $cnx = OpenCon();
-    $consulta = "INSERT INTO `ip_visita`(`ip`, `id_producto`, `data`, `cache`) VALUES ('$_ip', '$idCurso', '" . ($data == null ? '' : $data) . "', '" . ($cache == null ? '' : $cache) . "')";
+    $consulta = "INSERT INTO `ip_visita`(`ip`, `id_producto`, `data`, `cache`) VALUES (?, ?, ?, ?)";
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([
+        $_ip,
+        $idCurso,
+        $data == null ? '' : $data,
+        $cache == null ? '' : $cache
+    ]);
 }
 
 function getIP($_ip, $idCurso) {
