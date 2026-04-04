@@ -107,7 +107,23 @@ $urlCheckoutPlantillas              = $datosCursoPlantillas['urlCheckout'];
 
     <body style="font-family: 'Raleway Regular';">
         <?php include('n-pages/header-main.php') ?>
-        
+
+        <?php if (isset($_GET['pago'])): ?>
+            <?php if ($_GET['pago'] === 'exitoso'): ?>
+            <div style="background:#28a745;color:#fff;text-align:center;padding:16px 20px;font-size:1.1rem;font-weight:bold;">
+                ✅ ¡Tu pago fue procesado con éxito! En breve vas a recibir el acceso al curso por email.
+            </div>
+            <?php elseif ($_GET['pago'] === 'cancelado'): ?>
+            <div style="background:#ffc107;color:#333;text-align:center;padding:16px 20px;font-size:1.05rem;">
+                ⚠️ El pago fue cancelado. Podés volver a intentarlo cuando quieras.
+            </div>
+            <?php elseif ($_GET['pago'] === 'pendiente'): ?>
+            <div style="background:#17a2b8;color:#fff;text-align:center;padding:16px 20px;font-size:1.05rem;">
+                🕐 Tu pago está siendo procesado. Te avisamos por email cuando se confirme.
+            </div>
+            <?php endif; ?>
+        <?php endif; ?>
+
         <section class="d-none d-md-block">
             <div class="row">
                 <div class="col-md-6 m-auto text-center">
