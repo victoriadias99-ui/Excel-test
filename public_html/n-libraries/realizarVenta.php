@@ -57,8 +57,8 @@ try {
     $auto_num = new auto_num($cnx, $curso);
     $id_venta = $auto_num->get_id();
 
-    // Traer datos del curso (ahora usa STRIPE_SECRET_KEY en vez de ACCESS_TOKEN_MP)
-    $stmt = $cnx->prepare("SELECT TITULO, DESCRIPCION, PRECIO_UNITARIO, STRIPE_SECRET_KEY FROM cursos_detalle WHERE CURSO = ?");
+    // Traer datos del curso (SELECT * para compatibilidad con cualquier esquema de BD)
+    $stmt = $cnx->prepare("SELECT * FROM cursos_detalle WHERE CURSO = ?");
     $stmt->bindValue(1, $curso, PDO::PARAM_STR);
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -73,8 +73,17 @@ try {
 
     // --- Clave Stripe ---
     // Si la clave viene en formato JSON por dominio (igual que MP), la decodificamos
-    $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'];
+    $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';
     $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+
+    if (empty($stripeSecretRaw)) {
+        if (isset($_GET['test'])) {
+            echo 'Error: STRIPE_SECRET_KEY vacio o columna inexistente en cursos_detalle<br>';
+        }
+        error_log('realizarVenta: STRIPE_SECRET_KEY vacio para curso ' . $curso);
+        echo 'error:stripe_key_missing';
+        exit;
+    }
 
     if (strpos($stripeSecretRaw, '{') === false) {
         $stripeSecret = $stripeSecretRaw;
@@ -175,12 +184,24 @@ try {
 
 } catch (PDOException $e) {
     error_log('DB Error en realizarVenta: ' . $e->getMessage());
-    echo 'error:db';
+    if (isset($_GET['test'])) {
+        echo 'DB Error: ' . $e->getMessage();
+    } else {
+        echo 'error:db';
+    }
 } catch (\Stripe\Exception\ApiErrorException $e) {
     error_log('Stripe Error en realizarVenta: ' . $e->getMessage());
-    echo 'error:stripe_' . $e->getStripeCode();
+    if (isset($_GET['test'])) {
+        echo 'Stripe Error: ' . $e->getMessage();
+    } else {
+        echo 'error:stripe_' . $e->getStripeCode();
+    }
 } catch (\Exception $e) {
     error_log('Error general en realizarVenta: ' . $e->getMessage());
-    echo 'error:general';
+    if (isset($_GET['test'])) {
+        echo 'Error general: ' . $e->getMessage();
+    } else {
+        echo 'error:general';
+    }
 }
 ?>
