@@ -110,7 +110,7 @@ $(document).ready(function () {
             str = '';
             $.ajax(
                     {
-                        url: "../libraries1/realizarVenta.php",
+                        url: "../realizarVenta.php",
                         type: "get",
                         data: {
                             nombre: $('#nombre').val(),
@@ -118,7 +118,7 @@ $(document).ready(function () {
                             celular: $('#celular').val(),
                             email: $('#email').val(),
                             curso: $('#curso').val(),
-                            pack: $('#pack').val(),
+                            dir: $('#dir').val(),
                             descuento: $('#codigo').val()
                         },
                         success: function (response) {
