@@ -131,12 +131,18 @@ $(document).ready(function () {
                             descuento: $('#descuento').val()
                         },
                         success: function (response) {
+                            if (response.indexOf('error:') === 0) {
+                                $('#spinnerloading').hide();
+                                $('#proceder_pago').show();
+                                alert('Hubo un problema al procesar tu solicitud. Por favor intentá de nuevo o contactanos por WhatsApp.');
+                                return;
+                            }
                             window.location.href = response;
                         },
                         error: function (xhr) {
-                            alert(xhr);
                             $('#spinnerloading').hide();
                             $('#proceder_pago').show();
+                            alert('Error de conexión. Por favor intentá de nuevo.');
                         }
                     });
         }
