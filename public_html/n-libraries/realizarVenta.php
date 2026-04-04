@@ -64,7 +64,7 @@ try {
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($rows)) {
-        echo $urlcurso . 'checkout.php?error=curso_no_encontrado';
+        echo 'error:curso_no_encontrado';
         exit;
     }
 
@@ -153,7 +153,7 @@ try {
             'email'    => $email,
             'dominio'  => $__url,
         ],
-        'success_url' => $urlRoot . 'pago_exitoso.php?monto=' . $pagoTotal . '&idVenta=' . $id_venta,
+        'success_url' => $urlRoot . '?pago=exitoso&idVenta=' . $id_venta,
         'cancel_url'  => $urlcurso . 'checkout.php',
     ];
 
@@ -175,9 +175,12 @@ try {
 
 } catch (PDOException $e) {
     error_log('DB Error en realizarVenta: ' . $e->getMessage());
-    echo $urlcurso . 'checkout.php?error=db';
+    echo 'error:db';
 } catch (\Stripe\Exception\ApiErrorException $e) {
     error_log('Stripe Error en realizarVenta: ' . $e->getMessage());
-    echo $urlcurso . 'checkout.php?error=stripe';
+    echo 'error:stripe_' . $e->getStripeCode();
+} catch (\Exception $e) {
+    error_log('Error general en realizarVenta: ' . $e->getMessage());
+    echo 'error:general';
 }
 ?>
