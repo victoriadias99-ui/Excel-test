@@ -1,4 +1,7 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
+
 if (isset($_GET['test'])) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -72,7 +75,6 @@ try {
     $pagoTotal  = $precioBase;
 
     // --- Clave Stripe ---
-    // Si la clave viene en formato JSON por dominio (igual que MP), la decodificamos
     $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';
     $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 
@@ -106,9 +108,8 @@ try {
         $montoDesc      = intval($precioBase * ($porcentajeDesc / 100));
         $pagoTotal      = $precioBase - $montoDesc;
 
-        // Crear un coupon temporal en Stripe para reflejar el descuento
         $coupon = \Stripe\Coupon::create([
-            'amount_off' => $montoDesc * 100, // en centavos
+            'amount_off' => $montoDesc * 100,
             'currency'   => 'ars',
             'duration'   => 'once',
             'name'       => $rows_descuento[0]['DESCRIPCION'],
@@ -126,7 +127,7 @@ try {
     $stmt1->bindValue(6,  $celular,  PDO::PARAM_STR);
     $stmt1->bindValue(7,  $email,    PDO::PARAM_STR);
     $stmt1->bindValue(8,  'pending', PDO::PARAM_STR);
-    $stmt1->bindValue(9,  '',        PDO::PARAM_STR); // se actualiza en el webhook
+    $stmt1->bindValue(9,  '',        PDO::PARAM_STR);
     $stmt1->bindValue(10, $__url,    PDO::PARAM_STR);
     $stmt1->bindValue(11, '',        PDO::PARAM_STR);
     $stmt1->execute();
@@ -136,7 +137,7 @@ try {
         [
             'price_data' => [
                 'currency'     => 'ars',
-                'unit_amount'  => $precioBase * 100, // centavos
+                'unit_amount'  => $precioBase * 100,
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
                     'description' => $rows[0]['DESCRIPCION'],
@@ -172,14 +173,11 @@ try {
 
     $session = \Stripe\Checkout\Session::create($sessionParams);
 
-    // Guardar el Session ID de Stripe en PREFERENCIA_ID_MP para trazabilidad
     $cnx->prepare("UPDATE ventas SET PREFERENCIA_ID_MP=? WHERE CURSO=? AND ID=?")
         ->execute([$session->id, $curso, $id_venta]);
 
-    // Facebook Events
     ApiFacebookEventsFunciones::initPaymentSendDataInitPaymentFacebook($email, $pagoTotal, 'ARS', $urlcurso);
 
-    // Devolver la URL de Stripe al JS (igual que antes devolvía $preference->init_point)
     echo $session->url;
 
 } catch (PDOException $e) {
