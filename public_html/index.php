@@ -9,12 +9,14 @@ $dirpage = '../';
 
 include("a-includes/funcionsDB.php");
 include("a-includes/logicparametros.php");
+include("a-includes/logicprecios.php");
 
 $numberWhatsapp = getenv('WHATSAPP_NUMBER') ?: '';
 $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hola!%20Te%20escribo%20por%20el%20curso%20de%20Excel';
 
 // Helper: extrae precio, precio oficial y URL de checkout desde getCursoDetalleCheckout()
-function extraerDatosCurso($idCurso, $simbolo) {
+// $moneda: código ISO de la moneda del visitante (ej: 'COP', 'MXN', 'ARS')
+function extraerDatosCurso($idCurso, $simbolo, $moneda) {
     $detalle = getCursoDetalleCheckout($idCurso);
     $producto = isset($detalle['producto']) ? $detalle['producto'] : null;
 
@@ -26,9 +28,12 @@ function extraerDatosCurso($idCurso, $simbolo) {
         ];
     }
 
-    $precio        = isset($producto['PRECIO'])          ? $simbolo . ' ' . $producto['PRECIO']          : '';
-    $precioOficial = isset($producto['PRECIO_OFICIAL'])  ? $simbolo . ' ' . $producto['PRECIO_OFICIAL']  : '';
-    $urlCheckout   = isset($producto['URL_CHECKOUT'])    ? $producto['URL_CHECKOUT']                      : '#';
+    $precioRaw        = isset($producto['PRECIO'])         ? $producto['PRECIO']         : '';
+    $precioOficialRaw = isset($producto['PRECIO_OFICIAL']) ? $producto['PRECIO_OFICIAL'] : '';
+    $urlCheckout      = isset($producto['URL_CHECKOUT'])   ? $producto['URL_CHECKOUT']   : '#';
+
+    $precio        = $precioRaw        !== '' ? $simbolo . ' ' . convertirPrecio($precioRaw,        $moneda) : '';
+    $precioOficial = $precioOficialRaw !== '' ? $simbolo . ' ' . convertirPrecio($precioOficialRaw, $moneda) : '';
 
     return [
         'precio'        => $precio,
@@ -38,16 +43,16 @@ function extraerDatosCurso($idCurso, $simbolo) {
 }
 
 // Consultar detalles de cada curso desde la base de datos
-$datosCursoExcelPromo        = extraerDatosCurso('excel-promo',          $simbolo);
-$datosCursoExcelInicial      = extraerDatosCurso('excel-inicial',        $simbolo);
-$datosCursoExcelIntermedio   = extraerDatosCurso('excel-intermedio',     $simbolo);
-$datosCursoExcelAvanzado     = extraerDatosCurso('excel-avanzado',       $simbolo);
-$datosCursoSqlServer         = extraerDatosCurso('sql-server',           $simbolo);
-$datosCursoPackOffice        = extraerDatosCurso('pack-office',          $simbolo);
-$datosCursoPowerBi           = extraerDatosCurso('power-bi',             $simbolo);
-$datosCursoPowerBiAvanzado   = extraerDatosCurso('power-bi-avanzado',    $simbolo);
-$datosCursoExcelPromoPowerBI = extraerDatosCurso('excel-promo-power-bi', $simbolo);
-$datosCursoPlantillas        = extraerDatosCurso('plantillas',           $simbolo);
+$datosCursoExcelPromo        = extraerDatosCurso('excel-promo',          $simbolo, $moneda);
+$datosCursoExcelInicial      = extraerDatosCurso('excel-inicial',        $simbolo, $moneda);
+$datosCursoExcelIntermedio   = extraerDatosCurso('excel-intermedio',     $simbolo, $moneda);
+$datosCursoExcelAvanzado     = extraerDatosCurso('excel-avanzado',       $simbolo, $moneda);
+$datosCursoSqlServer         = extraerDatosCurso('sql-server',           $simbolo, $moneda);
+$datosCursoPackOffice        = extraerDatosCurso('pack-office',          $simbolo, $moneda);
+$datosCursoPowerBi           = extraerDatosCurso('power-bi',             $simbolo, $moneda);
+$datosCursoPowerBiAvanzado   = extraerDatosCurso('power-bi-avanzado',    $simbolo, $moneda);
+$datosCursoExcelPromoPowerBI = extraerDatosCurso('excel-promo-power-bi', $simbolo, $moneda);
+$datosCursoPlantillas        = extraerDatosCurso('plantillas',           $simbolo, $moneda);
 
 // Variables de precio y URL para cada curso
 $precioCursoExcelPromo              = $datosCursoExcelPromo['precio'];
