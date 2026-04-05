@@ -99,7 +99,7 @@ $urlCheckoutPlantillas = 'plantillas/finanzas/';
                     <a class="nav-link" href="/plan-empresa/">Plan Empresa</a>
                 </li>
 				 <li class="nav-item">
-                  <b><a class="nav-link" href="https://academia.aprende-excel.com/">Iniciar sesión</a></b>
+                  <b><a class="nav-link" href="https://academia-wine.vercel.app/">Iniciar sesión</a></b>
                 </li>
             </ul>
         </div>
