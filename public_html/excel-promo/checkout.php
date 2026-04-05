@@ -1,4 +1,5 @@
 <?php
+include('../n-includes/checkout-headers.php');
 $dirpage = '../';
 
 $idcurso = 'excel_promo';
