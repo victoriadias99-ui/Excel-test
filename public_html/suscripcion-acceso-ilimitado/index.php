@@ -19,16 +19,22 @@ $alumnosMes       = '527';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planes — Aprende Excel</title>
-    <!-- Bootstrap 4 + estilos del sitio (igual que el resto de páginas) -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <link rel="stylesheet" href="../n-assets/css/Raleway.css">
-    <link rel="stylesheet" href="../n-assets/css/Raleway Bold.css">
-    <link rel="stylesheet" href="../n-assets/css/Raleway Black.css">
-    <link rel="stylesheet" href="../n-assets/css/Raleway SemiBold.css">
+    <!-- Bootstrap 4.6 via jsDelivr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <!-- Montserrat Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400,800,900&display=swap" rel="stylesheet">
+    <!-- FIX FOUT: preload fuentes críticas -->
+    <link rel="preload" href="/n-assets/fonts/Raleway-Black.woff" as="font" type="font/woff" crossorigin="anonymous">
+    <link rel="preload" href="/n-assets/fonts/Raleway-SemiBold.woff" as="font" type="font/woff" crossorigin="anonymous">
+    <link rel="preload" href="/n-assets/fonts/Raleway-Bold.woff" as="font" type="font/woff" crossorigin="anonymous">
+    <link rel="preload" href="/n-assets/fonts/Raleway-Regular.woff" as="font" type="font/woff" crossorigin="anonymous">
+    <!-- Raleway consolidado -->
+    <link rel="stylesheet" href="../n-assets/css/raleway-all.css">
     <link rel="stylesheet" href="../n-assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="../n-assets/css/style.css">
     <link rel="stylesheet" href="../n-css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
             --green:       #007A6A;
