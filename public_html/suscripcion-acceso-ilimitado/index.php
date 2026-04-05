@@ -47,22 +47,16 @@ $alumnosMes       = '527';
 
         body {
             font-family: 'Raleway', sans-serif;
-            /* Gradiente horizontal = mismo que el navbar, extendido a toda la página */
-            background: linear-gradient(to right,
-                #007A6A 0%,
-                #10a08a 20%,
-                #2db5c0 45%,
-                #6dcfe0 70%,
-                #b8eaf3 88%,
-                #e0f7fb 100%
-            );
-            background-attachment: fixed;
-            /* Puntos blancos sutiles como textura */
+            /* Gradiente horizontal = mismo que el navbar (claro izquierda → verde derecha) */
             background-image:
                 radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px),
                 linear-gradient(to right,
-                    #007A6A 0%, #10a08a 20%, #2db5c0 45%,
-                    #6dcfe0 70%, #b8eaf3 88%, #e0f7fb 100%
+                    #e0f7fb  0%,
+                    #b8eaf3 12%,
+                    #6dcfe0 30%,
+                    #2db5c0 55%,
+                    #10a08a 78%,
+                    #007A6A 100%
                 );
             background-size: 26px 26px, 100% 100%;
             background-attachment: fixed, fixed;
