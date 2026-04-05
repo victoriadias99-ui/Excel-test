@@ -19,7 +19,15 @@ $alumnosMes       = '527';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planes — Aprende Excel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap 4 + estilos del sitio (igual que el resto de páginas) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="../n-assets/css/Raleway.css">
+    <link rel="stylesheet" href="../n-assets/css/Raleway Bold.css">
+    <link rel="stylesheet" href="../n-assets/css/Raleway Black.css">
+    <link rel="stylesheet" href="../n-assets/css/Raleway SemiBold.css">
+    <link rel="stylesheet" href="../n-assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../n-assets/css/style.css">
+    <link rel="stylesheet" href="../n-css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
@@ -50,14 +58,10 @@ $alumnosMes       = '527';
             min-height: 100vh;
         }
 
-        /* ── HEADER ── */
-        .page-top {
-            background: var(--green);
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-        }
-        .page-top img { height: 48px; }
+        /* ── HEADER — override height del n-css/style.css para que no ocupe 700px ── */
+        header { height: auto !important; }
+        #image-header-min { display: none !important; }
+        header .row { display: none !important; } /* oculta el hero de la home */
 
         /* ── GARANTÍA ── */
         .garantia-wrap {
@@ -372,13 +376,54 @@ $alumnosMes       = '527';
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="page-top">
-    <a href="../">
-        <img src="../n-assets/img/logo-excel.png" alt="Aprende Excel"
-             onerror="this.src='../a-img/logowhite.png'; this.onerror=null;">
-    </a>
-</div>
+<!-- NAVBAR — idéntico al del sitio principal -->
+<header class="position-relative">
+    <nav class="navbar px-md-5 px-3 navbar-expand-lg navbar-dark bg-light">
+        <a class="navbar-brand" href="../">
+            <img src="../n-assets/img/logo-excel.png" alt="Aprende Excel" class="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSubs" aria-controls="navbarSubs" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSubs">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="ddExcel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Excel</a>
+                    <div class="dropdown-menu" aria-labelledby="ddExcel">
+                        <a class="dropdown-item" href="../excel-inicial/">Excel Nivel Inicial</a>
+                        <a class="dropdown-item" href="../excel-intermedio/">Excel Nivel Intermedio</a>
+                        <a class="dropdown-item" href="../excel-avanzado/">Excel Nivel Avanzado</a>
+                        <a class="dropdown-item" href="../excel-promo/">Excel promo 3 en 1</a>
+                        <a class="dropdown-item" href="../power-bi-y-excel/">Excel promo 3 y Power BI</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../pack-office/">Pack Office</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="ddPBI" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Power BI</a>
+                    <div class="dropdown-menu" aria-labelledby="ddPBI">
+                        <a class="dropdown-item" href="../power-bi/">Power BI Inicial</a>
+                        <a class="dropdown-item" href="../power-bi-y-excel/">Power BI y Excel promo 3</a>
+                        <a class="dropdown-item" href="../power-bi-avanzado/">Power BI Avanzado</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../microsoft-sql-server/">Sql Server</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./" style="font-weight:700;">Suscripciones</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../plan-empresa/">Plan Empresa</a>
+                </li>
+                <li class="nav-item">
+                    <b><a class="nav-link" href="https://academia.aprende-excel.com/">Iniciar sesión</a></b>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
 
 <!-- GARANTÍA -->
 <div class="garantia-wrap">
@@ -518,6 +563,11 @@ $alumnosMes       = '527';
     <span class="rb-name" id="rb-name">Alguien</span>
     <span class="rb-text">acaba de comprar el <strong style="color:var(--navy);">Plan Profesional</strong></span>
 </div>
+
+<!-- Bootstrap 4 JS — igual que el resto del sitio -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
 <script>
 (function(){
