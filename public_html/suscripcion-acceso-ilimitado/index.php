@@ -118,26 +118,46 @@ $alumnosMes       = '527';
 
         /* ── CARD ── */
         .card {
-            background: rgba(255,255,255,0.92);
-            border: 1.5px solid rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.88);
+            border: 2px solid rgba(255,255,255,0.55);
             border-radius: 20px;
             padding: 28px 24px 24px;
             width: 370px;
             max-width: 100%;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 8px 32px rgba(0,80,70,0.15);
+            box-shadow: 0 6px 24px rgba(0,80,70,0.12);
             backdrop-filter: blur(8px);
-            transition: box-shadow 0.25s, transform 0.25s;
+            cursor: pointer;
+            transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s, opacity 0.3s;
+            opacity: 0.82;
         }
-        .card:hover {
-            box-shadow: 0 12px 40px rgba(0,80,70,0.22);
-            transform: translateY(-3px);
+        /* Estado inactivo — levemente apagado */
+        .card:not(.selected) { transform: scale(0.97); }
+
+        /* Estado hover sobre card no seleccionada */
+        .card:not(.selected):hover {
+            opacity: 0.95;
+            transform: scale(0.985);
         }
-        .card.pro {
+
+        /* ── ESTADO SELECCIONADO ── */
+        .card.selected {
+            opacity: 1;
+            transform: scale(1.03);
+            box-shadow: 0 16px 48px rgba(0,80,70,0.28);
+        }
+        .card.selected.pro {
             border-color: var(--green);
-            box-shadow: 0 8px 36px rgba(0,122,106,0.28);
+            box-shadow: 0 16px 52px rgba(0,122,106,0.35);
         }
+        .card.selected.ini {
+            border-color: var(--gold);
+            box-shadow: 0 16px 52px rgba(247,172,59,0.3);
+        }
+
+        /* Card pro en reposo (sin selected) */
+        .card.pro { border-color: rgba(0,122,106,0.4); }
 
         /* ── BADGES ── */
         .badges {
@@ -421,8 +441,8 @@ $alumnosMes       = '527';
 <!-- PLANES -->
 <div class="plans-wrap">
 
-    <!-- PLAN PROFESIONAL -->
-    <div class="card pro">
+    <!-- PLAN PROFESIONAL — seleccionado por defecto -->
+    <div class="card pro selected" id="card-pro" data-plan="pro">
         <div class="badges">
             <span class="badge-off">20% OFF</span>
             <span class="badge-top">⚡ MÁS ELEGIDO</span>
@@ -470,7 +490,7 @@ $alumnosMes       = '527';
     </div>
 
     <!-- PLAN INICIAL -->
-    <div class="card ini">
+    <div class="card ini" id="card-ini" data-plan="ini">
         <div class="badges"></div>
 
         <div class="plan-title ini">Plan Inicial</div>
@@ -553,6 +573,22 @@ $alumnosMes       = '527';
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+<script>
+// ── SELECCIÓN DE PLAN ──
+(function () {
+    var cards = document.querySelectorAll('.card[data-plan]');
+
+    cards.forEach(function (card) {
+        card.addEventListener('click', function () {
+            // Quitar selected de todas
+            cards.forEach(function (c) { c.classList.remove('selected'); });
+            // Activar la clickeada
+            card.classList.add('selected');
+        });
+    });
+})();
+</script>
 
 <script>
 (function(){
