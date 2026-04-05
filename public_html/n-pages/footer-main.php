@@ -58,7 +58,7 @@
             </div>
         </div>
     </div>
-    <?php if($haveWhatsapp) { ?>
+    <?php if($haveWhatsapp ?? false) { ?>
     <div class="row">
         <div class="section-wa col-md-6 offset-md-3 mt-3 mt-md-0 p-3 p-md-3 text-center m-auto" >
             <span>Envianos un mensaje<br>(Lunes a viernes 09:00am a 06:00pm)</span>
@@ -73,7 +73,7 @@
         <div class="col d-xl-flex justify-content-xl-center align-items-xl-center p-5"></div>
     </div>
     <div class="row px-5 py-3" style="border-top-width: 2px;border-top-color: #008b69;">
-        <div class="col" style="text-align: left;"><span>2021 Todos los derechos reservados</span></div>
+        <div class="col" style="text-align: left;"><span><?php echo date('Y'); ?> Todos los derechos reservados</span></div>
         <div class="col text-right"><span><a href="javascript:void(0)" data-toggle="modal" data-target="#terms">Términos y Condiciones</a></span></div>
     </div>
 </footer>
