@@ -33,28 +33,40 @@ $alumnosMes       = '527';
         :root {
             --green:       #007A6A;
             --green-dark:  #005c50;
-            --green-light: #e6f4f2;
-            --green-glow:  rgba(0,122,106,0.18);
+            --green-glow:  rgba(0,122,106,0.25);
             --navy:        #00173B;
             --gold:        #F7AC3B;
-            --gold-bg:     #fff8ec;
-            --bg:          #f0f4f8;
-            --card:        #ffffff;
-            --border:      #dde4ed;
-            --border-pro:  #007A6A;
             --text:        #00173B;
-            --muted:       #6c7a8d;
-            --dot:         rgba(0,122,106,0.08);
+            --muted:       #3d6e68;
+            --card:        rgba(255,255,255,0.92);
+            --border-pro:  #007A6A;
+            --border:      rgba(255,255,255,0.6);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Raleway', sans-serif;
-            background-color: var(--bg);
-            background-image: radial-gradient(circle, var(--dot) 1.2px, transparent 1.2px);
-            background-size: 26px 26px;
-            color: var(--text);
+            /* Gradiente horizontal = mismo que el navbar, extendido a toda la página */
+            background: linear-gradient(to right,
+                #007A6A 0%,
+                #10a08a 20%,
+                #2db5c0 45%,
+                #6dcfe0 70%,
+                #b8eaf3 88%,
+                #e0f7fb 100%
+            );
+            background-attachment: fixed;
+            /* Puntos blancos sutiles como textura */
+            background-image:
+                radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px),
+                linear-gradient(to right,
+                    #007A6A 0%, #10a08a 20%, #2db5c0 45%,
+                    #6dcfe0 70%, #b8eaf3 88%, #e0f7fb 100%
+                );
+            background-size: 26px 26px, 100% 100%;
+            background-attachment: fixed, fixed;
+            color: var(--navy);
             min-height: 100vh;
         }
 
@@ -77,16 +89,17 @@ $alumnosMes       = '527';
             justify-content: center;
         }
         .garantia {
-            background: #fff;
-            border: 1.5px solid var(--green);
+            background: rgba(255,255,255,0.85);
+            border: 1.5px solid rgba(255,255,255,0.9);
             border-radius: 12px;
             padding: 14px 24px;
             text-align: center;
             font-size: 0.9rem;
             color: var(--navy);
             max-width: 500px;
-            box-shadow: 0 2px 12px var(--green-glow);
+            box-shadow: 0 4px 20px rgba(0,80,70,0.15);
             line-height: 1.55;
+            backdrop-filter: blur(6px);
         }
         .garantia strong { color: var(--green); }
 
@@ -104,24 +117,25 @@ $alumnosMes       = '527';
 
         /* ── CARD ── */
         .card {
-            background: var(--card);
-            border: 2px solid var(--border);
+            background: rgba(255,255,255,0.92);
+            border: 1.5px solid rgba(255,255,255,0.7);
             border-radius: 20px;
             padding: 28px 24px 24px;
             width: 370px;
             max-width: 100%;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 16px rgba(0,23,59,0.06);
+            box-shadow: 0 8px 32px rgba(0,80,70,0.15);
+            backdrop-filter: blur(8px);
             transition: box-shadow 0.25s, transform 0.25s;
         }
         .card:hover {
-            box-shadow: 0 8px 32px rgba(0,23,59,0.12);
+            box-shadow: 0 12px 40px rgba(0,80,70,0.22);
             transform: translateY(-3px);
         }
         .card.pro {
-            border-color: var(--border-pro);
-            box-shadow: 0 4px 28px var(--green-glow);
+            border-color: var(--green);
+            box-shadow: 0 8px 36px rgba(0,122,106,0.28);
         }
 
         /* ── BADGES ── */
@@ -293,21 +307,22 @@ $alumnosMes       = '527';
 
         /* ── TESTIMONIOS ── */
         .testimonials {
-            background: #fff;
+            background: rgba(255,255,255,0.15);
             padding: 60px 16px;
             text-align: center;
         }
         .testimonials h2 {
             font-weight: 900;
             font-size: 1.5rem;
-            color: var(--navy);
+            color: #fff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 6px;
+            text-shadow: 0 1px 4px rgba(0,60,50,0.3);
         }
         .testimonials .sub {
             font-size: 0.88rem;
-            color: var(--muted);
+            color: rgba(255,255,255,0.8);
             margin-bottom: 36px;
         }
         .t-grid {
@@ -319,8 +334,9 @@ $alumnosMes       = '527';
             margin: 0 auto;
         }
         .t-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.88);
+            border: 1px solid rgba(255,255,255,0.6);
+            backdrop-filter: blur(6px);
             border-radius: 16px;
             padding: 22px;
             width: 260px;
@@ -356,13 +372,14 @@ $alumnosMes       = '527';
 
         /* ── FOOTER ── */
         .page-footer {
-            background: var(--navy);
-            color: rgba(255,255,255,0.4);
+            background: rgba(0,23,59,0.75);
+            backdrop-filter: blur(6px);
+            color: rgba(255,255,255,0.5);
             text-align: center;
             padding: 26px 16px;
             font-size: 0.74rem;
         }
-        .page-footer a { color: rgba(255,255,255,0.4); text-decoration: underline; }
+        .page-footer a { color: rgba(255,255,255,0.5); text-decoration: underline; }
 
         /* ── ANIMACIONES ── */
         @keyframes blink {
