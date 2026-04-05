@@ -6,6 +6,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400,800,900&display=swap" rel="stylesheet">
 
+<!-- FIX FOUT: preload de las fuentes críticas above-the-fold.
+     El browser las descarga en paralelo con el CSS, así están listas
+     antes del primer render y no hay flash de fuente incorrecta. -->
+<link rel="preload" href="/n-assets/fonts/Raleway-Black.woff" as="font" type="font/woff" crossorigin="anonymous">
+<link rel="preload" href="/n-assets/fonts/Raleway-SemiBold.woff" as="font" type="font/woff" crossorigin="anonymous">
+<link rel="preload" href="/n-assets/fonts/Raleway-Bold.woff" as="font" type="font/woff" crossorigin="anonymous">
+<link rel="preload" href="/n-assets/fonts/Raleway-Regular.woff" as="font" type="font/woff" crossorigin="anonymous">
+
 <!-- FIX BUG-03: 19 archivos CSS de Raleway consolidados en 1 solo archivo local.
      Mantiene los nombres de fuente originales ('Raleway Black', 'Raleway Bold', etc.)
      que usa el CSS del sitio. Reduce de 19 requests HTTP a 1. -->
