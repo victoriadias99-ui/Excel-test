@@ -1,496 +1,701 @@
 <?php
+/**
+ * Página de Suscripción - Aprende Excel
+ * Rediseño con dark theme — Pagos via Stripe
+ */
+
 $dirpage = '../';
-$titulo = 'Acceso ilimitado';
-/*
-  $idcurso = 'excel';
-  include($dirpage . "n-includes/funcionsDB.php");
-  include($dirpage . "n-includes/logicparametros.php");
-  $curso = getCursoDetalle($idcurso);
 
-  $value = $curso['PRECIO_UNITARIO'];
-  $porcentaje = $curso['PORCENTAJE_DES'];
-  $precioCursoOficial = '$' . ($value + intval(($value / $porcentaje) * 100));
-  $precioCurso = '$' . $value;
-  $urlCheckout = './checkout.php';
- * */
+// ===== PRECIOS Y URLs DE PAGO (Stripe Payment Links) =====
+// ⚠️  Reemplazá las URLs con tus Payment Links de Stripe:
+//     Dashboard Stripe → Products → Payment Links → Copy Link
 
-$precioSub1Mes = "$1999 ARS";
-$precioSub3Mes = "$3999 ARS";
-$precioSub6Mes = "$6999 ARS";
+// Plan Profesional (Anual) — el más elegido
+$precioProAnual    = 'USD $2.90';
+$precioProAnualRef = 'USD $3.90'; // precio tachado (referencia sin descuento)
+$descuentoPro      = '20% OFF';
+$urlCheckoutPro    = 'https://buy.stripe.com/REEMPLAZAR_CON_TU_LINK_ANUAL';
 
-$urlCheckout1Mes = 'https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c9380848383e02f0184113c9ed35abe';
-$urlCheckout3Mes = 'https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084840f27fb01841144fb3e01c2';
-$urlCheckout6Mes = 'https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=2c938084840f27fb01841146374d01c4';
+// Plan Inicial (Mensual)
+$precioInicialMes   = 'USD $3.90';
+$urlCheckoutInicial = 'https://buy.stripe.com/REEMPLAZAR_CON_TU_LINK_MENSUAL';
+
+// Estadísticas sociales
+$alumnosMes = '527';
 ?>
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <?php include('../n-pages/head.php') ?>
-        <link rel="stylesheet" href="assets/css/styles.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Acceso ilimitado a todos los cursos de Aprende Excel. Elige tu plan y empieza hoy.">
+    <title>Planes y Precios — Aprende Excel</title>
 
-    <body style="font-family: 'Raleway Regular';">
-        <?php
-        $headerImagen = "assets/img/imagen-header.png";
-        include('../n-pages/header.php')
-        ?>
-        <section>
-            <div class="row">
-                <div class="col-md-7 px-5 ">
-                    <img class="d-block d-md-none img-fluid mb-4" src="img/imagen-subs-3.jpg" width="100%">
-                    <h5 class="texto-header">4.9/5&nbsp;<i class="fa fa-star" style="color: #F7AC3B;"></i>&nbsp;Basado en 25.000 estudiantes</h5>
-                    <h1 style="font-family: 'Raleway Black'; color:#00173B;">Obtén acceso ilimitado a todos los cursos de Aprende Excel</h1>
-                    <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">Transfórmate en un profesional del siglo 21</h5>
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;900&display=swap" rel="stylesheet">
 
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+        :root {
+            --bg-dark:       #07091A;
+            --bg-card:       #0D1230;
+            --bg-card-hover: #121840;
+            --border-pro:    #00C8FF;
+            --border-ini:    #1A2050;
+            --text-pro:      #00C8FF;
+            --text-ini:      #C084FC;
+            --green-cta:     #00D26A;
+            --green-dark:    #00A855;
+            --pink-cta:      #E040FB;
+            --pink-dark:     #B300D6;
+            --gold:          #FFD700;
+            --white:         #FFFFFF;
+            --gray:          #9AA3BF;
+            --dot-color:     rgba(0,200,255,0.07);
+        }
 
-                    <img class="d-none d-md-block img-fluid mt-2" src="img/imagen-subs-3.jpg" width="100%">
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Raleway', sans-serif;
+            color: var(--white);
+            min-height: 100vh;
+            /* fondo de puntos */
+            background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
 
-                    <p class="d-none d-md-block mt-4" style="color: rgb(85,85,85);font-family: 'Raleway Regular';">Somos la plataforma de aprendizaje y desarrollo de talento que te ayudará a sumar valor a tu currículum y escalar en tu carrera laboral, con las certificaciones más requeridas por las empresas de hoy.</p>
+        /* ===== GARANTÍA BANNER ===== */
+        .garantia-banner {
+            background: linear-gradient(90deg, #0A1540 0%, #101C55 100%);
+            border: 1px solid rgba(0,200,255,0.25);
+            border-radius: 12px;
+            padding: 14px 24px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #CBD5F5;
+            max-width: 520px;
+            margin: 0 auto 40px;
+        }
+        .garantia-banner strong { color: var(--white); }
 
+        /* ===== SECCIÓN HERO ===== */
+        .hero-section {
+            padding: 60px 16px 16px;
+            text-align: center;
+        }
+        .hero-logo {
+            height: 60px;
+            margin-bottom: 32px;
+        }
 
-                    <div class="row mt-3 mb-3">
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">1 Mes</h5>
-                                <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub1Mes ?></h3>
-                                <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                <a onclick="return false" href="<?= $urlCheckout1Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme T</a>
-                            </div>
-                        </div>
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 4px solid red;border-bottom-style: solid;border-radius: 10px;">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';font-family: 'Raleway Bold';
-                                    color: white;
-                                    background: red;
-                                    width: fit-content;
-                                    margin: auto;
-                                    padding: 10px;
-                                    border-radius: 5px;">Popular</h5>
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">3 Meses</h5>
-                                <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub3Mes ?></h3>
-                                <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                <p class="mt-0" style="font-size: 0.7em;">Certificación Internacional</p>
-                                <a href="<?= $urlCheckout3Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                            </div>
-                        </div>
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">6 Meses</h5>
-                                <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub6Mes ?></h3>
-                                <p class="mt-0" style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                <p class="mt-0"  style="font-size: 0.7em;">Doble Certificación Internacional</p>
-                                <a href="<?= $urlCheckout6Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                            </div>
-                        </div>
-                    </div>
+        /* ===== GRID DE CARDS ===== */
+        .plans-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 0 16px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
+        /* ===== CARD BASE ===== */
+        .plan-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1.5px solid var(--border-ini);
+            padding: 32px 28px 28px;
+            width: 380px;
+            max-width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .plan-card:hover {
+            transform: translateY(-4px);
+        }
 
-                    <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><b>Alcanza un nuevo nivel en Aprende Excel. Evoluciona a tu versión 2.0 🚀</b>
-                    </h5>
+        /* ===== CARD PROFESIONAL (destacada) ===== */
+        .plan-card.pro {
+            border-color: var(--border-pro);
+            box-shadow: 0 0 40px rgba(0,200,255,0.18), inset 0 0 30px rgba(0,200,255,0.04);
+        }
 
-                    <img class="img-fluid" src="img/imagen-subs-2.jpg" width="100%">
-                    <p class="mt-4 mb-5" style="color: rgb(85,85,85);font-family: 'Raleway Regular';">
-                        10 cursos a tu disposición exclusivamente seleccionados. Las habilidades que aprenderás <b>son las más valoradas por las empresas del Silgo XXI</b>, e incluso son aptas para trabajo remoto. Inlcuye <b>Certificación Internacional</b> emitida por la reconocida institución <b>EDUCAR</b>,  con avales de <b>IRAM</b> y la <b>Cámara Internacional de Comercio (ICC)</b>
-                    </p>
-                    <img class="img-fluid" src="img/imagen-subs-1.jpg" width="100%">
-                    <p class="mt-4 mb-5" style="color: rgb(85,85,85);font-family: 'Raleway Regular';">
-                        Adquirir los cursos por separado costaría más de $170 dólares, pero <b>puedes hacer una suscripción y ahorrar mucho dinero</b>.
-                    </p>
-                    <div class="row mt-3 mb-3">
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">1 Mes</h5>
-                                <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub1Mes ?></h3>
-                                <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                <a href="<?= $urlCheckout1Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                            </div>
-                        </div>
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 4px solid red;border-bottom-style: solid;border-radius: 10px;">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';font-family: 'Raleway Bold';
-                                    color: white;
-                                    background: red;
-                                    width: fit-content;
-                                    margin: auto;
-                                    padding: 10px;
-                                    border-radius: 5px;">Popular</h5>
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">3 Meses</h5>
-                                <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub3Mes ?></h3>
-                                <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                <p class="mt-0" style="font-size: 0.7em;">Certificación Internacional</p>
-                                <a href="<?= $urlCheckout3Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                            </div>
-                        </div>
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">6 Meses</h5>
-                                <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub6Mes ?></h3>
-                                <p class="mt-0" style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                <p class="mt-0"  style="font-size: 0.7em;">Doble Certificación Internacional</p>
-                                <a href="<?= $urlCheckout6Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-xl-flex align-items-xl-center p-3" style="border-bottom-style: solid;border-bottom-color: rgb(225,225,225);">
-                        <img src="assets/img/logo-amarillo-calidad.png" style="width: 50px;">
-                        <p class="ml-3" style="font-size: 0.7em;">Estamos tan seguros de que te encantará, que te ofrecemos 7 días para ver el contenido. Si no te gusta te devolvemos el 100% de tu dinero.</p>
-                    </div>
-                    <div class="d-xl-flex align-items-xl-center p-3"><img class="img-fluid" src="assets/img/icono-libro-compu.png" style="width: 50px;">
-                        <h3 class="ml-3" style="font-family: 'Raleway SemiBold';color: #00173B;">Aprenderás</h3>
-                    </div>
-                    <ul class="lista-header pl-3 mt-2" style="list-style-type: none;">
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Excel nivel Inicial.<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Excel nivel Intermedio<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Excel nivel Avanzado (Certificación Internacional)<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;SQL Server - Bases de datos (Certificación Internacional)<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Microsoft Power BI nivel Inicial<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Microsoft Power BI nivel Avanzado (Certificación Internacional)<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Power Point de cero a avanzado<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Word de cero a avanzado<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Programación en C#<br></li>
-                        <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Introducción al Petróleo y Gas<br></li>
-                        <li>• Ejercicios para todos los cursos</li>
-                    </ul>
-                    <div class="p-4 mt-5" style="background: url(&quot;assets/img/banner2.png&quot;) no-repeat;background-size: cover;font-size: 0.8em;border-radius: 10px;">
-                        <p style="color: rgb(255,255,255);font-family: 'Raleway Bold';font-size: 1.2em;">Serás el especialista que las empresas están buscando</p>
-                        <p style="color: rgb(255,255,255);">Abre tus puertas a nuevas oportunidades. Domina Excel por completo en solo 12 horas y con soporte 24/7&nbsp;</p>
-                        <p style="color: rgb(255,255,255);">Más de 25.000 estudiantes recomiendan nuestra academia</p>
-                        <p style="font-size: 1.4em;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
-                    </div>
-                    <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">Aprender excel desde casa nunca ha sido tan simple</h5>
-                    <div class="row mt-3">
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;"><img class="icono-csa" src="assets/img/icon-certificado.png">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">Certificado</h5>
-                                <p class="ml-3" style="font-size: 0.7em;">Podrás solicitar un certificado emitido por <b>Educar</b>. Avalados por <b>IRAM</b> y la <b>Cámara de Comercio Internacional</b></p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;"><img class="icono-csa" src="assets/img/icon-soporte.png">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">Profesores en línea</h5>
-                                <p class="ml-3" style="font-size: 0.7em;">Ayuda con tus dudas 24/7 y ejercicios prácticos para todos los cursos</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 p-1">
-                            <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;"><img class="icono-csa" src="assets/img/icon-por-vide.png">
-                                <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">Sin horarios fijos</h5>
-                                <p class="ml-3" style="font-size: 0.7em;">Aprende a tu ritmo y cuando quieras</p>
-                            </div>
-                        </div>
-                    </div>
+        /* Badges arriba de la card */
+        .card-top-badges {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .badge-off {
+            background: var(--green-cta);
+            color: #000;
+            font-weight: 900;
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        .badge-elegido {
+            background: linear-gradient(90deg, #00C8FF, #0078FF);
+            color: #000;
+            font-weight: 800;
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-                    <img class="stop-card-madre img-fluid mt-3" src="img/certificado.webp" width="100%">
+        /* Nombre del plan */
+        .plan-name {
+            font-size: 1.45rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+        }
+        .plan-name.pro { color: var(--text-pro); }
+        .plan-name.ini { color: var(--text-ini); }
 
-                </div>
-                <div class="d-none d-md-block col-md-5 position-relative">
-                    <div class="card-madre px-3 py-4 mr-5" style="position: fixed; border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                        <div class="col">
-                            <h5 style="color: #00173B;font-family: 'Raleway SemiBold';"><img src="assets/img/imagen-porcentaje.png" style="width: 50px;">&nbsp;Oferta limitada</h5>
+        .plan-subtitle {
+            font-size: 0.82rem;
+            color: var(--gray);
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
 
+        /* Precio */
+        .plan-price-block { margin-bottom: 22px; }
+        .plan-price-old {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-decoration: line-through;
+            margin-bottom: 2px;
+        }
+        .plan-price-main {
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .plan-price-main.pro { color: var(--white); }
+        .plan-price-main.ini { color: var(--white); }
+        .plan-price-period {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
 
+        /* Separador */
+        .plan-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            margin: 18px 0;
+        }
 
+        /* Features list */
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 24px;
+            flex: 1;
+        }
+        .features-list li {
+            font-size: 0.88rem;
+            color: #CBD5F5;
+            padding: 6px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            line-height: 1.4;
+        }
+        .features-list li .icon-check {
+            color: var(--green-cta);
+            font-size: 0.85rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .features-list li .icon-lock {
+            color: #4A5075;
+            font-size: 0.85rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .features-list li.locked { color: #4A5075; }
 
+        /* Botones CTA */
+        .btn-cta {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1rem;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.15s ease;
+            margin-bottom: 10px;
+        }
+        .btn-cta:hover { opacity: 0.88; transform: scale(0.99); }
 
-                            <div class="row mt-3 mb-3">
-                                <div class="col-md-12 p-1">
-                                    <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;">
-                                        <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">1 Mes</h5>
-                                        <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub1Mes ?></h3>
-                                        <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                        <a href="<?= $urlCheckout1Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 p-1">
-                                    <div class="p-3 text-center" style="border: 4px solid red;border-bottom-style: solid;border-radius: 10px;">
-                                        <h5 class="mt-4" style="font-family: 'Raleway Bold';font-family: 'Raleway Bold';
-                                            color: white;
-                                            background: red;
-                                            width: fit-content;
-                                            margin: auto;
-                                            padding: 10px;
-                                            border-radius: 5px;">Popular</h5>
-                                        <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">3 Meses</h5>
-                                        <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub3Mes ?></h3>
-                                        <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                        <p class="mt-0" style="font-size: 0.7em;">Certificación Internacional</p>
-                                        <a href="<?= $urlCheckout3Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 p-1">
-                                    <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;">
-                                        <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">6 Meses</h5>
-                                        <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub6Mes ?></h3>
-                                        <p class="mt-0" style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                        <p class="mt-0"  style="font-size: 0.7em;">Doble Certificación Internacional</p>
-                                        <a href="<?= $urlCheckout6Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                                    </div>
-                                </div>
-                            </div>
+        .btn-cta.pro {
+            background: linear-gradient(135deg, var(--green-cta), var(--green-dark));
+            color: #000;
+            box-shadow: 0 4px 18px rgba(0,210,106,0.35);
+        }
+        .btn-cta.ini {
+            background: linear-gradient(135deg, var(--pink-cta), var(--pink-dark));
+            color: #fff;
+            box-shadow: 0 4px 18px rgba(176,0,210,0.35);
+        }
 
-                            <ul class="lista-header pl-3" style="list-style-type: none;">
-                                <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;10 cursos de alta calidad con acceso ilimitado<br></li>
-                                <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;25 horas de video bajo demanda<br></li>
-                                <li><i class="fa fa-check" style="color: #008B69;"></i>&nbsp;Profesores en línea 24/7<br></li>
-                            </ul>
-                            <div class="d-xl-flex align-items-xl-start p-3" style="border-radius: 10px;background: #EDF3F4;">
-                                <img src="assets/img/logo-verde-calidad.png" style="width: 50px;">
-                                <p class="ml-2" style="font-size: 0.7em;">Estamos tan seguros de que te encantará, que te ofrecemos 7 días para ver el contenido. Si no te gusta te <b>devolvemos el 100% de tu dinero</b>.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <image class="objeto-flotante-1" src="assets/img/objeto-flotante-1.png">
-                    <image class="objeto-flotante-2" src="assets/img/objeto-flotante-2.png">
-                    <image class="objeto-flotante-3" src="assets/img/objeto-flotante-3.png">
-                </div>
+        /* Countdown timer */
+        .countdown-wrap {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 12px;
+        }
+        .countdown-timer {
+            font-weight: 700;
+            color: var(--white);
+            font-size: 0.92rem;
+            letter-spacing: 1px;
+        }
+
+        /* Social proof dentro de card */
+        .card-social-proof {
+            text-align: center;
+            font-size: 0.76rem;
+            color: var(--gray);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .card-social-proof .dot-green {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background: var(--green-cta);
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+        }
+
+        /* Texto "cancelar cuando quieras" */
+        .cancel-text {
+            text-align: center;
+            font-size: 0.72rem;
+            color: #4A5075;
+            margin-top: 4px;
+            text-decoration: underline;
+            cursor: default;
+        }
+
+        /* ===== POPUP COMPRA RECIENTE ===== */
+        .recent-purchase {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #141A40;
+            border: 1px solid rgba(0,200,255,0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.78rem;
+            max-width: 240px;
+            z-index: 999;
+            animation: slideIn 0.5s ease forwards;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .recent-purchase .rp-label {
+            font-size: 0.65rem;
+            color: var(--green-cta);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .recent-purchase .rp-close {
+            position: absolute;
+            top: 8px; right: 10px;
+            background: none; border: none;
+            color: var(--gray); cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* ===== SECCIÓN TESTIMONIOS ===== */
+        .testimonials-section {
+            padding: 60px 16px;
+            text-align: center;
+        }
+        .testimonials-section h2 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        .testimonials-section .sub {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+        }
+        .testimonials-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 24px;
+            width: 270px;
+            max-width: 100%;
+            text-align: left;
+        }
+        .testimonial-card .stars {
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .testimonial-card p {
+            font-size: 0.85rem;
+            color: #CBD5F5;
+            line-height: 1.55;
+            margin-bottom: 14px;
+        }
+        .testimonial-card .author {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .testimonial-card .role {
+            font-size: 0.72rem;
+            color: var(--gray);
+        }
+
+        /* ===== FOOTER MINIMALISTA ===== */
+        .page-footer {
+            text-align: center;
+            padding: 30px 16px 40px;
+            font-size: 0.75rem;
+            color: #3A4060;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .page-footer a { color: #3A4060; text-decoration: underline; }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.5; transform: scale(1.3); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .plans-grid { gap: 16px; }
+            .plan-card  { width: 100%; padding: 24px 18px; }
+            .plan-price-main { font-size: 2rem; }
+            .recent-purchase { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero-section">
+    <!-- Logo del proyecto -->
+    <img
+        src="../a-img/logo.png"
+        alt="Aprende Excel"
+        class="hero-logo"
+        onerror="this.style.display='none'"
+    >
+
+    <!-- Garantía -->
+    <div class="garantia-banner">
+        🛡️ <strong>Suscríbete sin riesgos:</strong>
+        Te devolvemos tu pago al 100% si no estás conforme con tu compra en los primeros 7 días.
+    </div>
+</section>
+
+<!-- ===== CARDS DE PLANES ===== -->
+<div class="plans-grid">
+
+    <!-- ======================== PLAN PROFESIONAL ======================== -->
+    <div class="plan-card pro">
+
+        <!-- Badges -->
+        <div class="card-top-badges">
+            <span class="badge-off"><?= $descuentoPro ?></span>
+            <span class="badge-elegido">⚡ MÁS ELEGIDO</span>
+        </div>
+
+        <!-- Nombre -->
+        <div class="plan-name pro">PLAN PROFESIONAL 🚀</div>
+
+        <!-- Subtítulo -->
+        <p class="plan-subtitle">
+            Obtén 20% DE AHORRO + Conviértete en Profesional Certificado.<br>
+            <strong style="color:var(--green-cta);">2 MESES GRATIS ⚡</strong>
+        </p>
+
+        <!-- Precio -->
+        <div class="plan-price-block">
+            <div class="plan-price-old"><?= $precioProAnualRef ?></div>
+            <div class="plan-price-main pro">
+                <?= $precioProAnual ?>
+                <span style="font-size:0.9rem;font-weight:600;color:var(--gray);"> x/mes</span>
             </div>
+            <div class="plan-price-period">(Cobrado anualmente)</div>
+        </div>
 
-            <div class="row mt-5 py-5" style="background: url(&quot;assets/img/seccion-verde.jpg&quot;);background-size: cover;">
-                <div class="d-xl-flex align-items-xl-center col-md-3 pt-5 p-md-5">
-                    <h3 class="ml-3 text-center text-md-left" style="font-family: 'Raleway Black';color: #ffffff;font-size: 1.5em;">Lo que opinan nuestros estudiantes</h3>
-                </div>
+        <hr class="plan-divider">
 
+        <!-- Features -->
+        <ul class="features-list">
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                Acceso ilimitado a todos los cursos y actualizaciones
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                100% online a tu ritmo
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                Comunidad de alumnos
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                🏆 Certificado Oficial para validar tus conocimientos
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                👨‍🏫 Acceso a profesores expertos y soporte prioritario
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                🔥 Prioridad en Nuevos Lanzamientos
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                🤖 Asistente IA 24/7 para resolver tus dudas
+            </li>
+        </ul>
 
-                <div class="col-md-9">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="row">
-                                    <div class="col-md-4 pb-5 px-5 p-md-5">
-                                        <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                                            <div class="col" style="text-align: center;">
-                                                <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
-                                                <p style="font-size: 0.7em;text-align: left;">"Es muy bueno, me ayudo para ampliar mis conocimientos. El profesor transmite transmite muy bien."</p>
-                                                <h5 style="font-family: 'Raleway Bold';color: #00173B;">Adrián Daich</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 p-5">
-                                        <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                                            <div class="col" style="text-align: center;">
-                                                <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
-                                                <p style="font-size: 0.7em;text-align: left;">"Explica muy bien y con ejemplos sencillos."  </p>
-                                                <h5 style="font-family: 'Raleway Bold';color: #00173B;">Ernesto Ageitos</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 p-5">
-                                        <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                                            <div class="col" style="text-align: center;">
-                                                <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
-                                                <p style="font-size: 0.7em;text-align: left;">"Buen curso para alguien como yo que comienza de cero, les agradezco mucho"</p>
-                                                <h5 style="font-family: 'Raleway Bold';color: #00173B;">Candela Ortiz</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="row">
-                                    <div class="col-md-4 pb-5 px-5 p-md-5">
-                                        <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                                            <div class="col" style="text-align: center;">
-                                                <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
-                                                <p style="font-size: 0.7em;text-align: left;">"La información es clara y precisa, el profe es muy bueno para explicar cada una de las funciones."</p>
-                                                <h5 style="font-family: 'Raleway Bold';color: #00173B;">Alan Macedo</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 p-5">
-                                        <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                                            <div class="col" style="text-align: center;">
-                                                <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
-                                                <p style="font-size: 0.7em;text-align: left;">"Soy una persona grande y no sabia nada de excel, no tengo buen manejo de pc. Aun así el curso valió la pena, aprendi bastante y esta bien explicado."</p>
-                                                <h5 style="font-family: 'Raleway Bold';color: #00173B;">Mariano Pintos</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 p-5">
-                                        <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                                            <div class="col" style="text-align: center;">
-                                                <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
-                                                <p style="font-size: 0.7em;text-align: left;">"Sin dudas lo recomiendo"</p>
-                                                <h5 style="font-family: 'Raleway Bold';color: #00173B;">Julia Vieytes</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div>
+        <!-- Countdown -->
+        <div class="countdown-wrap">
+            Oferta termina en: <span class="countdown-timer" id="countdown">0h 0m 0s</span>
+        </div>
 
-            </div>
+        <!-- CTA -->
+        <a href="<?= $urlCheckoutPro ?>" class="btn-cta pro">
+            🔥 Aprovechar Oferta
+        </a>
 
-            <div class="row  mt-3 p-5 px-md-5">
-                <div class="col-md-6">
-                    <h1 style="font-family: 'Raleway Black';">¿Tienes dudas? Tenemos respuestas</h1>
-                    <div class="accordion mt-4" id="accordionExample">
-                        <div class="card">
-                            <div class="card-header" id="headingOne">
-                                <h5 class="mb-0"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        #1 ¿Por cuánto tiempo lo tengo?</button></h5>
-                            </div>
-                            <div id="collapseOne" class="collapse p-2" aria-labelledby="headingOne" data-parent="#accordionExample" style="">
-                                Depende del plan al que te suscribas. Puedes elegir 1 mes, 3 meses o 6 meses.
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingTwo">
-                                <h5 class="mb-0" style=""><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                        #2 ¿Cuánto tiempo tardo en terminarlo?</button></h5>
-                            </div>
-                            <div id="collapseTwo" class="collapse p-2" aria-labelledby="headingThree" data-parent="#accordionExample" style="">
-                                Tienes el tiempo que desees para terminarlo. No tiene horarios fijos asi que podrás elegir tus ratos libres para hacer el curso en el aula virtual.
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header text-center text-md-left" id="headingThree" style="">
-                                <h5 class="mb-0 text-center text-md-left" style=""><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                                        #3 ¿Dan soporte?</button></h5>
-                            </div>
-                            <div id="collapseThree" class="collapse p-2" aria-labelledby="headingThree" data-parent="#accordionExample" style="">
-                                Sí, damos soporte 24/7 con profesores online
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingFour">
-                                <h5 class="mb-0" style="">
-                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                                        #4 ¿Incluye Certificación o Diploma?</button></h5>
-                            </div>
-                            <div id="collapseFour" class="collapse p-2" aria-labelledby="headingFour" data-parent="#accordionExample" style="">
-                                Sí. Incluye un diploma con nuestro aval por cada uno de los cursos que realices. El plan Trimestral incluye un Certificado Internacional (con avales de IRAM y la Cámara Internacional de Comercio), y el plan Semestral incluye 2 certificados internacionales.
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingFive">
-                                <h5 class="mb-0" style="">
-                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-                                        #5 ¿Qué requisitos tiene?</button></h5>
-                            </div>
-                            <div id="collapseFive" class="collapse p-2" aria-labelledby="headingFive" data-parent="#accordionExample" style="">
-                                No requiere conocimientos previos. Los cursos van desde cero y paso a paso para que aprendas de forma dinámica y fácil.
-                            </div>
-                        </div>
-                    </div>
+        <!-- Social proof -->
+        <div class="card-social-proof">
+            <span class="dot-green"></span>
+            +<?= $alumnosMes ?> alumnos certificados este mes
+        </div>
+    </div>
 
-                </div>
-            </div>
+    <!-- ======================== PLAN INICIAL ======================== -->
+    <div class="plan-card ini">
 
-            <div class="row mt-0 mt-md-5 px-3">
-                <div class="col-md-2 offset-md-1 mb-2 mb-md-0">
-                    <div class="px-2 py-4" style="border-radius: 10px;box-shadow: 10px 10px 20px 3px rgb(205,205,205);background: #ffffff;">
-                        <div class="col" style="text-align: center;"><img class="img-fluid card-imagen-section-2" src="assets/img/icon-5-1.png">
-                            <h5 class="mt-3" style="font-family: 'Raleway Bold';color: #00173B;">+25hs de contenido</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 mb-2 mb-md-0">
-                    <div class="px-2 py-4" style="border-radius: 10px;box-shadow: 10px 10px 20px 3px rgb(205,205,205);background: #ffffff;">
-                        <div class="col" style="text-align: center;"><img class="img-fluid card-imagen-section-2" src="assets/img/icon-5-2.png">
-                            <h5 class="mt-3" style="font-family: 'Raleway Bold';color: #00173B;">Soporte 24/7</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 mb-2 mb-md-0">
-                    <div class="px-2 py-4" style="border-radius: 10px;box-shadow: 10px 10px 20px 3px rgb(205,205,205);background: #ffffff;">
-                        <div class="col" style="text-align: center;"><img class="img-fluid card-imagen-section-2" src="assets/img/icon-5-3.png">
-                            <h5 class="mt-3" style="font-family: 'Raleway Bold';color: #00173B;">Certificado</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 mb-2 mb-md-0">
-                    <div class="px-2 py-4" style="border-radius: 10px;box-shadow: 10px 10px 20px 3px rgb(205,205,205);background: #ffffff;">
-                        <div class="col" style="text-align: center;"><img class="img-fluid card-imagen-section-2" src="assets/img/icon-5-4.png">
-                            <h5 class="mt-3" style="font-family: 'Raleway Bold';color: #00173B;">Online</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 mb-2 mb-md-0">
-                    <div class="px-2 py-4" style="border-radius: 10px;box-shadow: 10px 10px 20px 3px rgb(205,205,205);background: #ffffff;">
-                        <div class="col" style="text-align: center;"><img class="img-fluid card-imagen-section-2" src="assets/img/icon-5-5.png">
-                            <h5 class="mt-3" style="font-family: 'Raleway Bold';color: #00173B;">Garantía de&nbsp;100% satisfacción</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row px-3 px-md-5" style="background: linear-gradient(90deg, #007a6a, #008c69 71%, #5e892b 100%);">
-                <div class="d-xl-flex align-items-xl-center col-md-6 p-5">
-                    <div>
-                        <p style="color: rgb(255,255,255);">Conviértete en un profesional del Siglo XXI<br></p>
-                        <h1 style="font-family: 'Raleway Black';color: rgb(255,255,255);">Únete a la experiencia Aprende Excel y da un salto intelectual y profesional</h1>
-                        <div class="row mt-3 mb-3" >
-                            <div class="col-md-4 p-1">
-                                <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;background: white;
-                                     border-radius: 5px;">
-                                    <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">1 Mes</h5>
-                                    <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub1Mes ?></h3>
-                                    <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                    <a href="<?= $urlCheckout1Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                                </div>
-                            </div>
-                            <div class="col-md-4 p-1">
-                                <div class="p-3 text-center" style="border: 2px solid red;border-bottom-style: solid;border-radius: 10px;background: white;
-                                     border-radius: 5px;">
-                                    <h5 class="mt-4" style="font-family: 'Raleway Bold';font-family: 'Raleway Bold';
-                                        color: white;
-                                        background: red;
-                                        width: fit-content;
-                                        margin: auto;
-                                        padding: 10px;
-                                        border-radius: 5px;">Popular</h5>
-                                    <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">3 Meses</h5>
-                                    <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub3Mes ?></h3>
-                                    <p class="mt-0"  style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                    <p class="mt-0" style="font-size: 0.7em;">Certificación Internacional</p>
-                                    <a href="<?= $urlCheckout3Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                                </div>
-                            </div>
-                            <div class="col-md-4 p-1">
-                                <div class="p-3 text-center" style="border: 2px solid #bcbcbc;border-bottom-style: solid;border-radius: 10px;background: white;
-                                     border-radius: 5px;">
-                                    <h5 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;">6 Meses</h5>
-                                    <h3 class="mt-4" style="font-family: 'Raleway Bold';color: #00173B;"><?= $precioSub6Mes ?></h3>
-                                    <p class="mt-0" style="font-size: 0.7em;">Acceso a todos los cursos</p>
-                                    <p class="mt-0"  style="font-size: 0.7em;">Doble Certificación Internacional</p>
-                                    <a href="<?= $urlCheckout6Mes ?>" class="btn btn-primary btn-subs px-5" style="background: #007A6A;width: 80%;">Inscribirme</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col d-xl-flex justify-content-xl-center align-items-xl-center p-5">
-                    <img class="img-fluid" src="img/imagen-subs-3.jpg">
-                </div>
-            </div>
-        </section>
-        <?php include('../n-pages/footer-cursos.php') ?>
-        <script>
-            $(document).ready(function () {
-                $(".btn").click(function () {
-                    return false;
-                });
-                $(".btn-subs").click(function () {
-                    fbq('track', 'AddToCart');
-                    setTimeout(function () {
-                        window.location.href = $('.btn-subs').attr('href');
-                    }, 500);
+        <!-- Espacio alineado con los badges del plan pro -->
+        <div style="height:28px; margin-bottom:18px;"></div>
 
-                });
-            });
-        </script>
-    </body>
+        <!-- Nombre -->
+        <div class="plan-name ini">Plan Inicial</div>
+
+        <!-- Subtítulo -->
+        <p class="plan-subtitle">Acceso ilimitado a todos los cursos</p>
+
+        <!-- Precio -->
+        <div class="plan-price-block">
+            <div class="plan-price-main ini"><?= $precioInicialMes ?></div>
+            <div class="plan-price-period">Mensual</div>
+        </div>
+
+        <hr class="plan-divider">
+
+        <!-- Features -->
+        <ul class="features-list">
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                Acceso ilimitado a todos los cursos mensualmente
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                100% online a tu ritmo
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                Soporte 24/7
+            </li>
+            <li>
+                <i class="fas fa-check icon-check"></i>
+                Comunidad de alumnos
+            </li>
+            <li class="locked">
+                <i class="fas fa-lock icon-lock"></i>
+                Certificado Oficial para validar tus conocimientos
+            </li>
+            <li class="locked">
+                <i class="fas fa-lock icon-lock"></i>
+                Acceso a profesores expertos y soporte prioritario
+            </li>
+            <li class="locked">
+                <i class="fas fa-lock icon-lock"></i>
+                Prioridad en Nuevos Lanzamientos
+            </li>
+        </ul>
+
+        <!-- Spacer para alinear CTA con la card pro -->
+        <div style="height:40px;"></div>
+
+        <!-- CTA -->
+        <a href="<?= $urlCheckoutInicial ?>" class="btn-cta ini">
+            🚀 Suscribirme ahora
+        </a>
+
+        <div class="cancel-text">Cancela cuando quieras</div>
+    </div>
+
+</div>
+
+<!-- ===== TESTIMONIOS ===== -->
+<section class="testimonials-section">
+    <h2>LO QUE DICEN NUESTROS CLIENTES</h2>
+    <p class="sub">Más de 25.000 alumnos ya transformaron su carrera</p>
+
+    <div class="testimonials-grid">
+
+        <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <p>"Gracias a Aprende Excel conseguí un ascenso en mi empresa. El contenido es increíble y los profesores responden al instante."</p>
+            <div class="author">María G.</div>
+            <div class="role">Analista Financiera · Buenos Aires</div>
+        </div>
+
+        <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <p>"En 3 meses aprendí más que en 2 años de universidad. El certificado me abrió puertas que nunca imaginé."</p>
+            <div class="author">Carlos R.</div>
+            <div class="role">Contador · Córdoba</div>
+        </div>
+
+        <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <p>"La plataforma es intuitiva, los cursos están muy bien estructurados y el soporte 24/7 es real. Recomendado 100%."</p>
+            <div class="author">Lucía M.</div>
+            <div class="role">Administradora · Rosario</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="page-footer">
+    <p>
+        © <?= date('Y') ?> Aprende Excel ·
+        <a href="#">Términos y condiciones</a> ·
+        <a href="#">Política de privacidad</a>
+    </p>
+    <p style="margin-top:6px;">Pagos procesados de forma segura.</p>
+</footer>
+
+<!-- ===== POPUP COMPRA RECIENTE ===== -->
+<div class="recent-purchase" id="recentPurchase">
+    <button class="rp-close" onclick="document.getElementById('recentPurchase').style.display='none'">✕</button>
+    <span class="rp-label">🟢 Compra Reciente</span>
+    <span id="rp-name" style="color:var(--white);font-weight:600;font-size:0.82rem;">Alguien</span>
+    <span style="color:var(--gray);">acaba de comprar el <strong style="color:var(--white);">Plan Profesional</strong></span>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ──── COUNTDOWN TIMER ────
+(function() {
+    // Duración de la oferta: 24 horas desde que carga la página
+    var end = new Date().getTime() + (24 * 60 * 60 * 1000);
+
+    function updateCountdown() {
+        var now  = new Date().getTime();
+        var diff = end - now;
+        if (diff <= 0) {
+            document.getElementById('countdown').textContent = '¡Oferta expirada!';
+            return;
+        }
+        var h = Math.floor(diff / (1000 * 60 * 60));
+        var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        var s = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('countdown').textContent =
+            (h < 10 ? '0' : '') + h + 'h ' +
+            (m < 10 ? '0' : '') + m + 'm ' +
+            (s < 10 ? '0' : '') + s + 's';
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+})();
+
+// ──── POPUP COMPRA RECIENTE ────
+(function() {
+    var names = [
+        'Miguel R.', 'Sofía L.', 'Andrés P.', 'Valentina C.',
+        'Juan M.', 'Carolina B.', 'Diego F.', 'Paula S.',
+        'Tomás G.', 'Laura V.'
+    ];
+
+    function showPopup() {
+        var name = names[Math.floor(Math.random() * names.length)];
+        document.getElementById('rp-name').textContent = name;
+        var el = document.getElementById('recentPurchase');
+        el.style.display = 'flex';
+        el.style.animation = 'none';
+        void el.offsetWidth;
+        el.style.animation = 'slideIn 0.5s ease forwards';
+
+        // Ocultar después de 5 s
+        setTimeout(function() {
+            el.style.opacity = '0';
+            el.style.transition = 'opacity 0.4s';
+            setTimeout(function() {
+                el.style.display = 'none';
+                el.style.opacity = '1';
+                el.style.transition = '';
+            }, 400);
+        }, 5000);
+    }
+
+    // Mostrar la primera vez a los 3 s, luego cada 25 s
+    setTimeout(function() {
+        showPopup();
+        setInterval(showPopup, 25000);
+    }, 3000);
+})();
+</script>
+
+</body>
 </html>
