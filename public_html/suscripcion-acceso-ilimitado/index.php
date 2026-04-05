@@ -47,9 +47,14 @@ $alumnosMes       = '527';
 
         body {
             font-family: 'Raleway', sans-serif;
-            /* Gradiente horizontal = mismo que el navbar (claro izquierda → verde derecha) */
+            /*
+             * UN solo fondo fijo para toda la página.
+             * background-attachment: fixed = el fondo no scrollea,
+             * todas las secciones "ven" el mismo fondo continuo.
+             * Gradiente idéntico al navbar: claro (izquierda) → verde (derecha).
+             */
             background-image:
-                radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,255,255,0.14) 1px, transparent 1px),
                 linear-gradient(to right,
                     #e0f7fb  0%,
                     #b8eaf3 12%,
@@ -58,22 +63,20 @@ $alumnosMes       = '527';
                     #10a08a 78%,
                     #007A6A 100%
                 );
-            background-size: 26px 26px, 100% 100%;
+            background-size: 26px 26px, cover;
             background-attachment: fixed, fixed;
             color: var(--navy);
             min-height: 100vh;
         }
 
-        /* ── HEADER ── */
-        header { height: auto !important; }
+        /* ── HEADER: transparente para heredar el fondo del body ── */
+        header        { height: auto !important; background: transparent !important; }
         #image-header-min { display: none !important; }
-        header .row { display: none !important; }
-        /* Fondo del nav que cubra todo el ancho */
+        header .row   { display: none !important; }
+        /* El nav usa el mismo fondo del body — sin imagen propia */
         nav.navbar {
-            background-image: url("../n-img/background-navbar-min.png") !important;
-            background-size: cover !important;
-            background-position: center right !important;
-            width: 100% !important;
+            background: transparent !important;
+            background-image: none !important;
         }
 
         /* ── GARANTÍA ── */
@@ -294,14 +297,14 @@ $alumnosMes       = '527';
         .cancel-note {
             text-align: center;
             font-size: 0.7rem;
-            color: #c8d0da;
+            color: var(--muted);
             margin-top: 6px;
             text-decoration: underline;
         }
 
         /* ── TESTIMONIOS ── */
         .testimonials {
-            background: rgba(255,255,255,0.15);
+            background: transparent;
             padding: 60px 16px;
             text-align: center;
         }
@@ -366,14 +369,14 @@ $alumnosMes       = '527';
 
         /* ── FOOTER ── */
         .page-footer {
-            background: rgba(0,23,59,0.75);
-            backdrop-filter: blur(6px);
-            color: rgba(255,255,255,0.5);
+            background: transparent;
+            color: rgba(255,255,255,0.7);
             text-align: center;
-            padding: 26px 16px;
+            padding: 26px 16px 40px;
             font-size: 0.74rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
         }
-        .page-footer a { color: rgba(255,255,255,0.5); text-decoration: underline; }
+        .page-footer a { color: rgba(255,255,255,0.7); text-decoration: underline; }
 
         /* ── ANIMACIONES ── */
         @keyframes blink {
