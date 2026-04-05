@@ -30,41 +30,58 @@ $ip = explode(',', str_replace(' ', '', $ip))[0];
  * La consulta de los datos geograficos se hace por medio de una api https://ipdata.co/
  * donde se tendra que registrar y obtener tu nueva key y cambiarla en $keyApi
 *  */
-$keyApi = '670ffe7a0bd967e949ee51ff856a24a4812fe48f9efe99140e1ce4fd';
-if(isset($productoIP) && $productoIP != null){
-    $dataIP = getIP($ip, $productoIP);
-    if ($dataIP == null) {
-        $httpClient = new Psr18Client();
-        $psr17Factory = new Psr17Factory();
-        $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
-        $data = $ipdata->lookup($ip);
+// FIX BUG-07: API key movida a variable de entorno.
+// Agregar en Railway Dashboard → Variables → IPDATA_API_KEY = tu_key_de_ipdata.co
+$keyApi = getenv('IPDATA_API_KEY') ?: '';
 
-        insertIP($ip, $productoIP, json_encode($data), json_encode($_COOKIE));
-    } else {
-        $data = json_decode($dataIP['data'], true);
-        updateIP($ip, $productoIP, $dataIP['visitas'] + 1, json_encode($_COOKIE));
-    }
-} else {
-    $dataC =  isset($idcurso) ? $idcurso : (isset($_GET['curso']) ? $_GET['curso'] : null);
-    if($dataC == null){
-        $httpClient = new Psr18Client();
-        $psr17Factory = new Psr17Factory();
-        $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
-        $data = $ipdata->lookup($ip);
-    } else {
-        $dataIP = getIP($ip, $dataC) ;
-        if ($dataIP == null) {
-            $httpClient = new Psr18Client();
-            $psr17Factory = new Psr17Factory();
-            $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
-            $data = $ipdata->lookup($ip);
+// FIX BUG-02: helper para crear la instancia de Ipdata una sola vez y no repetir el bloque
+function crearClienteIpdata($keyApi) {
+    $httpClient = new Psr18Client();
+    $psr17Factory = new Psr17Factory();
+    return new Ipdata($keyApi, $httpClient, $psr17Factory);
+}
 
-            insertIP($ip, $dataC, json_encode($data), json_encode($_COOKIE));
-        } else {
-            $data = json_decode($dataIP['data'], true);
-            updateIP($ip, $dataC, $dataIP['visitas'] + 1, json_encode($_COOKIE));
+// FIX BUG-02: caché de geolocalización en sesión de PHP.
+// La primera visita llama a ipdata.co (puede tardar ~1s).
+// Las visitas siguientes del mismo navegador usan el dato en sesión (0ms).
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$idProductoActual = isset($productoIP) && $productoIP != null
+    ? $productoIP
+    : (isset($idcurso) ? $idcurso : (isset($_GET['curso']) ? $_GET['curso'] : null));
+
+// Primero intentar caché de sesión (más rápido que la BD)
+if (isset($_SESSION['geo_data']) && isset($_SESSION['geo_ip']) && $_SESSION['geo_ip'] === $ip) {
+    $data = $_SESSION['geo_data'];
+    // Igual actualizar contador de visitas en BD si hay producto
+    if ($idProductoActual != null) {
+        $dataIP = getIP($ip, $idProductoActual);
+        if ($dataIP != null) {
+            updateIP($ip, $idProductoActual, $dataIP['visitas'] + 1, json_encode($_COOKIE));
         }
     }
+} elseif ($idProductoActual != null) {
+    // Intentar desde caché de BD por IP+producto
+    $dataIP = getIP($ip, $idProductoActual);
+    if ($dataIP == null) {
+        $ipdata = crearClienteIpdata($keyApi);
+        $data = $ipdata->lookup($ip);
+        insertIP($ip, $idProductoActual, json_encode($data), json_encode($_COOKIE));
+    } else {
+        $data = json_decode($dataIP['data'], true);
+        updateIP($ip, $idProductoActual, $dataIP['visitas'] + 1, json_encode($_COOKIE));
+    }
+    // Guardar en sesión para próximos requests
+    $_SESSION['geo_data'] = $data;
+    $_SESSION['geo_ip']   = $ip;
+} else {
+    // Sin producto: llamar a ipdata directo (sin caché BD)
+    $ipdata = crearClienteIpdata($keyApi);
+    $data = $ipdata->lookup($ip);
+    $_SESSION['geo_data'] = $data;
+    $_SESSION['geo_ip']   = $ip;
 }
 /** Fin Explicación 2 **/
 

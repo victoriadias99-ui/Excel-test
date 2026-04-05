@@ -1,24 +1,11 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,800,900">
-<link rel="stylesheet" href="n-assets/css/Raleway.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Black.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Black Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Bold.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Bold Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway ExtraBold.css">
-<link rel="stylesheet" href="n-assets/css/Raleway ExtraBold Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway ExtraLight.css">
-<link rel="stylesheet" href="n-assets/css/Raleway ExtraLight Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Light.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Light Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Medium.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Medium Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Regular.css">
-<link rel="stylesheet" href="n-assets/css/Raleway SemiBold.css">
-<link rel="stylesheet" href="n-assets/css/Raleway SemiBold Italic.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Thin.css">
-<link rel="stylesheet" href="n-assets/css/Raleway Thin Italic.css">
+<!-- Bootstrap 4.6 (actualizado desde 4.0.0-beta) via jsDelivr CDN estable -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+<!-- FIX BUG-03: reemplaza 19 archivos CSS locales de Raleway + 1 Google Fonts de Montserrat
+     por 2 requests únicas. Reduce de 21 requests HTTP a 2. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400,800,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="n-assets/fonts/font-awesome.min.css">
 <link rel="stylesheet" href="n-assets/css/style.css">
 <link rel="stylesheet" href="n-assets/css/styles.css">
