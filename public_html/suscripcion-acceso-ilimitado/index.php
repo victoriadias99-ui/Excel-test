@@ -73,10 +73,14 @@ $alumnosMes       = '527';
         header        { height: auto !important; background: transparent !important; }
         #image-header-min { display: none !important; }
         header .row   { display: none !important; }
-        /* El nav usa el mismo fondo del body — sin imagen propia */
+        /* El nav usa el mismo fondo del body — sin imagen propia, logo centrado */
         nav.navbar {
             background: transparent !important;
             background-image: none !important;
+            justify-content: center !important;
+        }
+        nav.navbar .navbar-brand {
+            margin: 0 auto !important;
         }
 
         /* ── GARANTÍA ── */
