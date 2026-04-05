@@ -7,18 +7,16 @@
 $dirpage = '../';
 
 // ===== PRECIOS Y URLs DE PAGO (Stripe Payment Links) =====
-// ⚠️  Reemplazá las URLs con tus Payment Links de Stripe:
-//     Dashboard Stripe → Products → Payment Links → Copy Link
 
 // Plan Profesional (Anual) — el más elegido
 $precioProAnual    = 'USD $2.90';
 $precioProAnualRef = 'USD $3.90'; // precio tachado (referencia sin descuento)
 $descuentoPro      = '20% OFF';
-$urlCheckoutPro    = 'https://buy.stripe.com/REEMPLAZAR_CON_TU_LINK_ANUAL';
+$urlCheckoutPro    = 'https://buy.stripe.com/14k5nib7pdEL1zyfYY'; // Stripe: Anual
 
 // Plan Inicial (Mensual)
 $precioInicialMes   = 'USD $3.90';
-$urlCheckoutInicial = 'https://buy.stripe.com/REEMPLAZAR_CON_TU_LINK_MENSUAL';
+$urlCheckoutInicial = 'https://buy.stripe.com/5kAg1W8ZhbwDgus145'; // Stripe: Mensual
 
 // Estadísticas sociales
 $alumnosMes = '527';
