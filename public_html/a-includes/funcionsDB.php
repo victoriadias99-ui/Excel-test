@@ -130,17 +130,16 @@ function getCursoDetalle($idCurso){
 }
 
 function getCursoDetalleCheckout($idCurso){
-    // FIX BUG-09: SELECT específico en lugar de SELECT * para reducir payload de BD→PHP
     $cnx = OpenCon();
 
-    $consulta = "SELECT CURSO, PRECIO, PRECIO_OFICIAL, URL_CHECKOUT, NOMBRE FROM cursos_detalle WHERE CURSO = ?";
+    $consulta = "SELECT * FROM cursos_detalle WHERE CURSO = ?";
     $stmt = $cnx->prepare($consulta);
     $stmt->bindValue(1, $idCurso, PDO::PARAM_STR);
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $data = count($rows) == 0 ? null : $rows[0];
 
-    $consulta = "SELECT ID_ABRE, ID_PACK, PRECIO, URL_CHECKOUT FROM cursos_pack WHERE ID_ABRE = ?";
+    $consulta = "SELECT * FROM cursos_pack WHERE ID_ABRE = ?";
     $stmt = $cnx->prepare($consulta);
     $stmt->bindValue(1, $idCurso, PDO::PARAM_STR);
     $stmt->execute();
