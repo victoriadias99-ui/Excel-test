@@ -58,10 +58,17 @@ $alumnosMes       = '527';
             min-height: 100vh;
         }
 
-        /* ── HEADER — override height del n-css/style.css para que no ocupe 700px ── */
+        /* ── HEADER ── */
         header { height: auto !important; }
         #image-header-min { display: none !important; }
-        header .row { display: none !important; } /* oculta el hero de la home */
+        header .row { display: none !important; }
+        /* Fondo del nav que cubra todo el ancho */
+        nav.navbar {
+            background-image: url("../n-img/background-navbar-min.png") !important;
+            background-size: cover !important;
+            background-position: center right !important;
+            width: 100% !important;
+        }
 
         /* ── GARANTÍA ── */
         .garantia-wrap {
@@ -376,52 +383,12 @@ $alumnosMes       = '527';
 </head>
 <body>
 
-<!-- NAVBAR — idéntico al del sitio principal -->
+<!-- NAVBAR — solo logo, fondo completo igual al sitio -->
 <header class="position-relative">
-    <nav class="navbar px-md-5 px-3 navbar-expand-lg navbar-dark bg-light">
+    <nav class="navbar px-md-5 px-3 navbar-dark bg-light" style="background-size: cover !important; background-position: center !important; width: 100%;">
         <a class="navbar-brand" href="../">
             <img src="../n-assets/img/logo-excel.png" alt="Aprende Excel" class="logo">
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSubs" aria-controls="navbarSubs" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSubs">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="ddExcel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Excel</a>
-                    <div class="dropdown-menu" aria-labelledby="ddExcel">
-                        <a class="dropdown-item" href="../excel-inicial/">Excel Nivel Inicial</a>
-                        <a class="dropdown-item" href="../excel-intermedio/">Excel Nivel Intermedio</a>
-                        <a class="dropdown-item" href="../excel-avanzado/">Excel Nivel Avanzado</a>
-                        <a class="dropdown-item" href="../excel-promo/">Excel promo 3 en 1</a>
-                        <a class="dropdown-item" href="../power-bi-y-excel/">Excel promo 3 y Power BI</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../pack-office/">Pack Office</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="ddPBI" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Power BI</a>
-                    <div class="dropdown-menu" aria-labelledby="ddPBI">
-                        <a class="dropdown-item" href="../power-bi/">Power BI Inicial</a>
-                        <a class="dropdown-item" href="../power-bi-y-excel/">Power BI y Excel promo 3</a>
-                        <a class="dropdown-item" href="../power-bi-avanzado/">Power BI Avanzado</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../microsoft-sql-server/">Sql Server</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="./" style="font-weight:700;">Suscripciones</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../plan-empresa/">Plan Empresa</a>
-                </li>
-                <li class="nav-item">
-                    <b><a class="nav-link" href="https://academia.aprende-excel.com/">Iniciar sesión</a></b>
-                </li>
-            </ul>
-        </div>
     </nav>
 </header>
 
