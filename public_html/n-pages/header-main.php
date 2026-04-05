@@ -92,14 +92,8 @@ $urlCheckoutPlantillas = 'plantillas/finanzas/';
 				<!--<li class="nav-item">
                     <a class="nav-link" href="https://aprende-excel.com/clases-en-vivo/">Clases en vivo</a>
                 </li>-->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="suscripciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Suscripciones
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="suscripciones">
-                        <a class="dropdown-item" href="suscripcion-acceso-ilimitado/">Suscripciones Mensual</a>
-                        <a class="dropdown-item" href="suscripcion-acceso-ilimitado/">Suscripciones Anual</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="suscripcion-acceso-ilimitado/">Suscripciones</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/plan-empresa/">Plan Empresa</a>
