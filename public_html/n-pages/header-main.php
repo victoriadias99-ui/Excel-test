@@ -97,8 +97,8 @@ $urlCheckoutPlantillas = 'plantillas/finanzas/';
                         Suscripciones
                     </a>
                     <div class="dropdown-menu" aria-labelledby="suscripciones">
-                        <a class="dropdown-item" href="https://buy.stripe.com/5kAg1W8ZhbwDgus145">Suscripciones Mensual</a>
-                        <a class="dropdown-item" href="https://buy.stripe.com/14k5nib7pdEL1zyfYY">Suscripciones Anual</a>
+                        <a class="dropdown-item" href="suscripcion-acceso-ilimitado/">Suscripciones Mensual</a>
+                        <a class="dropdown-item" href="suscripcion-acceso-ilimitado/">Suscripciones Anual</a>
                     </div>
                 </li>
                 <li class="nav-item">
