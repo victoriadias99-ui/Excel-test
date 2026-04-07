@@ -1,9 +1,7 @@
 <?php
 /**
  * realizarVentaStripe.php (argentina)
- * ─────────────────────────────────────
- * Versión para el subdirectorio /argentina/.
- * Misma lógica que /a-libraries/realizarVentaStripe.php.
+ * Misma lógica que /a-libraries/realizarVentaStripe.php
  */
 
 if (isset($_GET['test'])) {
@@ -14,7 +12,6 @@ if (isset($_GET['test'])) {
 
 header('Content-Type: text/plain; charset=utf-8');
 
-// SDK de Stripe
 require_once dirname(__DIR__) . '/a-libraries/vendor/autoload.php';
 
 include("../a-includes/conexion.php");
@@ -22,15 +19,14 @@ include("../a-includes/class.autonum.php");
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
-// ── Parámetros del formulario ───────────────────────────────
-$curso    = isset($_GET['curso'])    ? trim($_GET['curso'])    : '';
-$pack     = isset($_GET['pack'])     ? trim($_GET['pack'])     : $curso;
-$nombre   = isset($_GET['nombre'])   ? trim($_GET['nombre'])   : '';
-$apellido = isset($_GET['apellido']) ? trim($_GET['apellido']) : '';
-$celular  = isset($_GET['celular'])  ? trim($_GET['celular'])  : '';
-$email    = isset($_GET['email'])    ? trim($_GET['email'])    : '';
+$curso     = isset($_GET['curso'])     ? trim($_GET['curso'])     : '';
+$pack      = isset($_GET['pack'])      ? trim($_GET['pack'])      : $curso;
+$nombre    = isset($_GET['nombre'])    ? trim($_GET['nombre'])    : '';
+$apellido  = isset($_GET['apellido'])  ? trim($_GET['apellido'])  : '';
+$celular   = isset($_GET['celular'])   ? trim($_GET['celular'])   : '';
+$email     = isset($_GET['email'])     ? trim($_GET['email'])     : '';
 $descuento = isset($_GET['descuento']) ? trim($_GET['descuento']) : '';
-$dir      = isset($_GET['dir'])      ? trim($_GET['dir'])      : '';
+$dir       = isset($_GET['dir'])       ? trim($_GET['dir'])       : '';
 
 if ($pack !== $curso) {
     $curso = $pack;
@@ -44,7 +40,7 @@ if (empty($curso) || empty($email)) {
 
 $urlRoot  = 'https://' . $_SERVER['HTTP_HOST'] . '/';
 $urlcurso = !empty($dir) ? $urlRoot . 'argentina/' . $dir . '/' : $urlRoot;
-$__url    = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+$dominio  = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 
 try {
     $cnx = OpenCon();
@@ -64,7 +60,7 @@ try {
 
     $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';
     if (empty($stripeSecretRaw)) {
-        error_log('realizarVentaStripe (argentina): STRIPE_SECRET_KEY vacio para curso ' . $curso);
+        error_log('realizarVentaStripe (argentina): STRIPE_SECRET_KEY vacio para ' . $curso);
         echo 'error:stripe_key_missing';
         exit;
     }
@@ -72,12 +68,12 @@ try {
     if (strpos($stripeSecretRaw, '{') === false) {
         $stripeSecret = $stripeSecretRaw;
     } else {
-        $stripeSecret = get_object_vars(json_decode($stripeSecretRaw))[$__url] ?? '';
+        $decoded = json_decode($stripeSecretRaw, true);
+        $stripeSecret = $decoded[$dominio] ?? reset($decoded);
     }
 
     \Stripe\Stripe::setApiKey($stripeSecret);
 
-    // Descuentos
     $discounts = [];
     if (!empty($descuento)) {
         $stmt2 = $cnx->prepare(
@@ -85,44 +81,53 @@ try {
              WHERE CURSO=? AND CODIGO_DESCUENTO=? AND ESTADO_ACTIVO=TRUE AND FECHA_HASTA>=DATE(NOW())"
         );
         $stmt2->execute([$curso, $descuento]);
-        $rows_descuento = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-
-        if (count($rows_descuento) > 0) {
-            $montoDesc = intval($precioBase * ($rows_descuento[0]['PORCENTAJE'] / 100));
+        $rows_desc = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($rows_desc)) {
+            $montoDesc = intval($precioBase * ($rows_desc[0]['PORCENTAJE'] / 100));
             $coupon = \Stripe\Coupon::create([
                 'amount_off' => $montoDesc * 100,
                 'currency'   => 'ars',
                 'duration'   => 'once',
-                'name'       => $rows_descuento[0]['DESCRIPCION'],
+                'name'       => $rows_desc[0]['DESCRIPCION'],
             ]);
             $discounts = [['coupon' => $coupon->id]];
         }
     }
 
-    // Guardar lead (no bloquea)
-    $auto_num = new auto_num($cnx, $curso);
-    $id_venta = $auto_num->get_id();
-
+    $id_venta = uniqid($curso . '_');
     try {
+        $auto_num = new auto_num($cnx, $curso);
+        $id_venta = $auto_num->get_id();
+
         $stmt1 = $cnx->prepare(
-            "INSERT INTO ventas (CURSO, ID, NOMBRE, APELLIDO, CELULAR, EMAIL, ESTADO_MP)
-             VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO ventas
+                (CURSO, ID, NOMBRE, APELLIDO, PREFIJO_CEL, CELULAR, EMAIL,
+                 DOMINIO, ACCESS_TOKEN, PAGO_ID_MP, ESTADO_MP, ESTADO_DETALLE_MP,
+                 PREFERENCIA_ID_MP, FEE_MP, IMP_RECIBIDO_NETO_MP, PAGO_TIPO_MP,
+                 PAGO_DESCR_MP, PAGADOR_EMAIL_MP, PAGADOR_NOMBRE_MP,
+                 PAGADOR_APELLIDO_MP, PAGADOR_TIPO_MP, PAGADOR_ID_MP, METODO_PAGO_MP)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
         );
-        $stmt1->execute([$curso, $id_venta, $nombre, $apellido, $celular, $email, 'pending']);
-    } catch (PDOException $eInsert) {
-        error_log('realizarVentaStripe (argentina): INSERT falló - ' . $eInsert->getMessage());
+        $stmt1->execute([
+            $curso, $id_venta, $nombre, $apellido, 0, $celular, $email,
+            $dominio, '', '', 'STRIPE_PENDING', '',
+            '', 0, 0, '',
+            '', '', '',
+            '', '', '', ''
+        ]);
+    } catch (Exception $eLead) {
+        error_log('realizarVentaStripe (argentina): INSERT falló - ' . $eLead->getMessage());
     }
 
-    // Crear Stripe Checkout Session
     $sessionParams = [
         'payment_method_types' => ['card'],
         'line_items' => [[
             'price_data' => [
                 'currency'     => 'ars',
-                'unit_amount'  => $precioBase * 100,
+                'unit_amount'  => intval($precioBase * 100),
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
-                    'description' => $rows[0]['DESCRIPCION'] ?? '',
+                    'description' => $rows[0]['DESCRIPCION'],
                 ],
             ],
             'quantity' => 1,
@@ -137,7 +142,7 @@ try {
             'apellido' => $apellido,
             'celular'  => $celular,
             'email'    => $email,
-            'dominio'  => $__url,
+            'dominio'  => $dominio,
         ],
         'success_url' => $urlRoot . '?pago=exitoso&idVenta=' . $id_venta,
         'cancel_url'  => $urlcurso . 'checkout2.html',
@@ -150,25 +155,24 @@ try {
     $session = \Stripe\Checkout\Session::create($sessionParams);
 
     if (isset($_GET['test'])) {
-        echo "Session: " . $session->id . "\nURL: " . $session->url;
+        echo "OK\nSession: " . $session->id . "\nURL: " . $session->url;
         exit;
     }
 
     echo $session->url;
 
 } catch (PDOException $e) {
-    error_log('DB Error en realizarVentaStripe (argentina): ' . $e->getMessage());
+    error_log('DB Error realizarVentaStripe (argentina): ' . $e->getMessage());
     http_response_code(500);
-    echo 'error:db_' . $e->getCode();
+    if (isset($_GET['test'])) echo 'DB Error: ' . $e->getMessage();
+    else echo 'error:db_' . $e->getCode();
 } catch (\Stripe\Exception\ApiErrorException $e) {
-    error_log('Stripe Error en realizarVentaStripe (argentina): ' . $e->getMessage());
-    if (isset($_GET['test'])) {
-        echo 'Stripe Error: ' . $e->getMessage();
-    } else {
-        echo 'error:stripe_' . $e->getStripeCode();
-    }
+    error_log('Stripe Error realizarVentaStripe (argentina): ' . $e->getMessage());
+    if (isset($_GET['test'])) echo 'Stripe Error: ' . $e->getMessage();
+    else echo 'error:stripe_' . $e->getStripeCode();
 } catch (\Exception $e) {
-    error_log('Error en realizarVentaStripe (argentina): ' . $e->getMessage());
-    echo 'error:general';
+    error_log('Error realizarVentaStripe (argentina): ' . $e->getMessage());
+    if (isset($_GET['test'])) echo 'Error: ' . $e->getMessage();
+    else echo 'error:general';
 }
 ?>

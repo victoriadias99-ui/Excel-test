@@ -2,13 +2,7 @@
 /**
  * realizarVentaStripe.php
  * ───────────────────────
- * Reemplaza realizarVenta.php (MercadoPago).
- *
- * Flujo:
- *  1. Recibe los datos del formulario de pago (nombre, email, etc.)
- *  2. Guarda el lead en la tabla `ventas`
- *  3. Devuelve el Stripe Payment Link (URL_CHECKOUT de la BD)
- *     con el email pre-cargado y una referencia única.
+ * Crea una Stripe Checkout Session usando STRIPE_SECRET_KEY de cursos_detalle.
  */
 
 if (isset($_GET['test'])) {
@@ -19,54 +13,93 @@ if (isset($_GET['test'])) {
 
 header('Content-Type: text/plain; charset=utf-8');
 
+require_once dirname(__DIR__) . '/a-libraries/vendor/autoload.php';
+
 include("../a-includes/conexion.php");
 include("../a-includes/class.autonum.php");
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
-// ── Parámetros del formulario ───────────────────────────────
-$curso    = isset($_GET['curso'])    ? trim($_GET['curso'])    : '';
-$pack     = isset($_GET['pack'])     ? trim($_GET['pack'])     : $curso;
-$nombre   = isset($_GET['nombre'])   ? trim($_GET['nombre'])   : '';
-$apellido = isset($_GET['apellido']) ? trim($_GET['apellido']) : '';
-$celular  = isset($_GET['celular'])  ? trim($_GET['celular'])  : '';
-$email    = isset($_GET['email'])    ? trim($_GET['email'])    : '';
+$curso     = isset($_GET['curso'])     ? trim($_GET['curso'])     : '';
+$pack      = isset($_GET['pack'])      ? trim($_GET['pack'])      : $curso;
+$nombre    = isset($_GET['nombre'])    ? trim($_GET['nombre'])    : '';
+$apellido  = isset($_GET['apellido'])  ? trim($_GET['apellido'])  : '';
+$celular   = isset($_GET['celular'])   ? trim($_GET['celular'])   : '';
+$email     = isset($_GET['email'])     ? trim($_GET['email'])     : '';
+$descuento = isset($_GET['descuento']) ? trim($_GET['descuento']) : '';
+$dir       = isset($_GET['dir'])       ? trim($_GET['dir'])       : '';
 
-// Si vienen varios cursos en pack, usar el pack como identificador
 if ($pack !== $curso) {
     $curso = $pack;
 }
 
-// Validación básica
 if (empty($curso) || empty($email)) {
     http_response_code(400);
     echo 'error:datos_incompletos';
     exit;
 }
 
-$urlRoot = 'https://' . $_SERVER['HTTP_HOST'] . '/';
-$dominio = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+$urlRoot  = 'https://' . $_SERVER['HTTP_HOST'] . '/';
+$urlcurso = !empty($dir) ? $urlRoot . $dir . '/' : $urlRoot;
+$dominio  = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 
 try {
     $cnx = OpenCon();
 
-    // ── 1. Obtener el Stripe Payment Link del curso ─────────
-    $stmt = $cnx->prepare(
-        "SELECT * FROM cursos_detalle WHERE CURSO = ?"
-    );
+    // 1. Datos del curso
+    $stmt = $cnx->prepare("SELECT * FROM cursos_detalle WHERE CURSO = ?");
     $stmt->bindValue(1, $curso, PDO::PARAM_STR);
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($rows) || empty($rows[0]['URL_CHECKOUT'])) {
+    if (empty($rows)) {
         http_response_code(404);
         echo 'error:curso_no_encontrado';
         exit;
     }
 
-    $stripePaymentLink = $rows[0]['URL_CHECKOUT'];
+    $precioBase = $rows[0]['PRECIO_UNITARIO'];
 
-    // ── 2. Guardar lead en la tabla ventas (no bloquea el pago si falla) ──
+    // 2. Clave Stripe
+    $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';
+    if (empty($stripeSecretRaw)) {
+        error_log('realizarVentaStripe: STRIPE_SECRET_KEY vacio para curso ' . $curso);
+        echo 'error:stripe_key_missing';
+        exit;
+    }
+
+    // Soporta clave como JSON por dominio: {"aprende-excel.com":"sk_live_..."}
+    if (strpos($stripeSecretRaw, '{') === false) {
+        $stripeSecret = $stripeSecretRaw;
+    } else {
+        $decoded = json_decode($stripeSecretRaw, true);
+        $stripeSecret = $decoded[$dominio] ?? reset($decoded);
+    }
+
+    \Stripe\Stripe::setApiKey($stripeSecret);
+
+    // 3. Descuentos
+    $discounts = [];
+    if (!empty($descuento)) {
+        $stmt2 = $cnx->prepare(
+            "SELECT DESCRIPCION, PORCENTAJE FROM descuentos
+             WHERE CURSO=? AND CODIGO_DESCUENTO=? AND ESTADO_ACTIVO=TRUE AND FECHA_HASTA>=DATE(NOW())"
+        );
+        $stmt2->execute([$curso, $descuento]);
+        $rows_desc = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($rows_desc)) {
+            $montoDesc = intval($precioBase * ($rows_desc[0]['PORCENTAJE'] / 100));
+            $coupon = \Stripe\Coupon::create([
+                'amount_off' => $montoDesc * 100,
+                'currency'   => 'ars',
+                'duration'   => 'once',
+                'name'       => $rows_desc[0]['DESCRIPCION'],
+            ]);
+            $discounts = [['coupon' => $coupon->id]];
+        }
+    }
+
+    // 4. Guardar lead en ventas (falla silenciosamente si hay error)
     $id_venta = uniqid($curso . '_');
     try {
         $auto_num = new auto_num($cnx, $curso);
@@ -74,50 +107,79 @@ try {
 
         $stmt1 = $cnx->prepare(
             "INSERT INTO ventas
-                (CURSO, ID, NOMBRE, APELLIDO, CELULAR, EMAIL, ESTADO_MP)
-             VALUES (?, ?, ?, ?, ?, ?, ?)"
+                (CURSO, ID, NOMBRE, APELLIDO, PREFIJO_CEL, CELULAR, EMAIL,
+                 DOMINIO, ACCESS_TOKEN, PAGO_ID_MP, ESTADO_MP, ESTADO_DETALLE_MP,
+                 PREFERENCIA_ID_MP, FEE_MP, IMP_RECIBIDO_NETO_MP, PAGO_TIPO_MP,
+                 PAGO_DESCR_MP, PAGADOR_EMAIL_MP, PAGADOR_NOMBRE_MP,
+                 PAGADOR_APELLIDO_MP, PAGADOR_TIPO_MP, PAGADOR_ID_MP, METODO_PAGO_MP)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
         );
         $stmt1->execute([
-            $curso,
-            $id_venta,
-            $nombre,
-            $apellido,
-            $celular,
-            $email,
-            'STRIPE_PENDING',
+            $curso, $id_venta, $nombre, $apellido, 0, $celular, $email,
+            $dominio, '', '', 'STRIPE_PENDING', '',
+            '', 0, 0, '',
+            '', '', '',
+            '', '', '', ''
         ]);
-
-        if (isset($_GET['test'])) {
-            echo "Lead guardado: $id_venta\n";
-        }
     } catch (Exception $eLead) {
-        // El lead no se pudo guardar, pero no bloqueamos el pago
-        if (isset($_GET['test'])) {
-            echo "Advertencia lead: " . $eLead->getMessage() . "\n";
-        }
+        error_log('realizarVentaStripe: INSERT ventas falló - ' . $eLead->getMessage());
     }
 
-    if (isset($_GET['test'])) {
-        echo "Stripe URL base: $stripePaymentLink\n";
+    // 5. Crear Stripe Checkout Session
+    $sessionParams = [
+        'payment_method_types' => ['card'],
+        'line_items' => [[
+            'price_data' => [
+                'currency'     => 'ars',
+                'unit_amount'  => intval($precioBase * 100),
+                'product_data' => [
+                    'name'        => $rows[0]['TITULO'],
+                    'description' => $rows[0]['DESCRIPCION'],
+                ],
+            ],
+            'quantity' => 1,
+        ]],
+        'mode'                => 'payment',
+        'customer_email'      => $email,
+        'client_reference_id' => $curso . '-' . $id_venta,
+        'metadata'            => [
+            'curso'    => $curso,
+            'id_venta' => $id_venta,
+            'nombre'   => $nombre,
+            'apellido' => $apellido,
+            'celular'  => $celular,
+            'email'    => $email,
+            'dominio'  => $dominio,
+        ],
+        'success_url' => $urlRoot . '?pago=exitoso&idVenta=' . $id_venta,
+        'cancel_url'  => $urlcurso . 'checkout.php',
+    ];
+
+    if (!empty($discounts)) {
+        $sessionParams['discounts'] = $discounts;
     }
 
-    // ── 3. Armar URL de Stripe con datos pre-cargados ───────
-    $separator = (strpos($stripePaymentLink, '?') !== false) ? '&' : '?';
-
-    $redirectUrl = $stripePaymentLink
-        . $separator . 'prefilled_email='     . urlencode($email)
-        . '&client_reference_id='             . urlencode($curso . '-' . $id_venta);
+    $session = \Stripe\Checkout\Session::create($sessionParams);
 
     if (isset($_GET['test'])) {
-        echo "Redirect URL: $redirectUrl\n";
+        echo "OK\nSession: " . $session->id . "\nURL: " . $session->url;
         exit;
     }
 
-    // ── 4. Devolver la URL al JS ────────────────────────────
-    echo $redirectUrl;
+    echo $session->url;
 
 } catch (PDOException $e) {
+    error_log('DB Error en realizarVentaStripe: ' . $e->getMessage());
     http_response_code(500);
-    echo 'error:db_' . $e->getCode() . '_' . str_replace(' ', '_', $e->getMessage());
+    if (isset($_GET['test'])) echo 'DB Error: ' . $e->getMessage();
+    else echo 'error:db_' . $e->getCode();
+} catch (\Stripe\Exception\ApiErrorException $e) {
+    error_log('Stripe Error en realizarVentaStripe: ' . $e->getMessage());
+    if (isset($_GET['test'])) echo 'Stripe Error: ' . $e->getMessage();
+    else echo 'error:stripe_' . $e->getStripeCode();
+} catch (\Exception $e) {
+    error_log('Error en realizarVentaStripe: ' . $e->getMessage());
+    if (isset($_GET['test'])) echo 'Error: ' . $e->getMessage();
+    else echo 'error:general';
 }
 ?>
