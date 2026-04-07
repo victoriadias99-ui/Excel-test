@@ -174,7 +174,72 @@ try {
         curl_close($ch);
     }
 
-    // 4. Facebook Events (igual que en IPN_mp.php)
+    // 4. Crear/actualizar usuario en la Academia y asignar curso
+    $academiaUrl    = 'https://academia-production-c4cc.up.railway.app/api/webhook/purchase';
+    $academiaSecret = 'wh_landing_academia_2026';
+
+    // Mapeo de curso en ventas → slug en la academia.
+    // Si el curso no está en el mapa, se envía el valor original.
+    $cursoSlugMap = [
+        'excel'              => 'excel',
+        'excel_intermedio'   => 'excel_intermedio',
+        'excel_avanzado'     => 'excel_avanzado',
+        'excel_promo'        => 'excel_promo',
+        'excel_en_vivo'      => 'excel_en_vivo',
+        'powerbi'            => 'powerbi',
+        'pbi_avanzado'       => 'pbi_avanzado',
+        'prom_pbi_excel'     => 'prom_pbi_excel',
+        'sql'                => 'sql',
+        'office'             => 'office',
+        'word'               => 'word',
+        'powerpoint'         => 'powerpoint',
+        'google_sheet'       => 'google_sheet',
+        'visualstudio'       => 'visualstudio',
+        'windows_server'     => 'windows_server',
+        'project_inicial'    => 'project_inicial',
+        'project_intermedio' => 'project_intermedio',
+        'project_avanzado'   => 'project_avanzado',
+        'prom_project_pack'  => 'prom_project_pack',
+        'petroleo'           => 'petroleo',
+        'Petróleo'           => 'petroleo',
+        'metodologia_agil'   => 'metodologia_agil',
+        'pantilla_finanzas'  => 'pantilla_finanzas',
+    ];
+
+    $academiaSlug = $cursoSlugMap[$curso] ?? $curso;
+
+    $academiaBody = json_encode([
+        'email'    => $mail,
+        'nombre'   => $nombre,
+        'apellido' => $apellido,
+        'cursos'   => [$academiaSlug],
+    ]);
+
+    $chAcademia = curl_init($academiaUrl);
+    curl_setopt_array($chAcademia, [
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $academiaBody,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 15,
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($academiaBody),
+            'x-webhook-secret: ' . $academiaSecret,
+        ],
+    ]);
+
+    $academiaResponse = curl_exec($chAcademia);
+    $academiaHttpCode = curl_getinfo($chAcademia, CURLINFO_HTTP_CODE);
+    $academiaCurlErr  = curl_error($chAcademia);
+    curl_close($chAcademia);
+
+    if ($academiaCurlErr) {
+        error_log('IPN_stripe academia error: ' . $academiaCurlErr);
+    } elseif ($academiaHttpCode >= 400) {
+        error_log('IPN_stripe academia HTTP ' . $academiaHttpCode . ': ' . $academiaResponse);
+    }
+
+    // 5. Facebook Events (igual que en IPN_mp.php)
     $consultaIP = "SELECT * FROM `ip_visita` WHERE `correo` = ?";
     $stmtIP = $cnx->prepare($consultaIP);
     $stmtIP->execute([$mail]);

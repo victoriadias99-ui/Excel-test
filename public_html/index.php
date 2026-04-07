@@ -101,7 +101,7 @@ $urlCheckoutExcelPromoPowerBI       = $datosCursoExcelPromoPowerBI['urlCheckout'
 $precioCursoPlantillas              = $datosCursoPlantillas['precio'];
 $precioCursoOficialPlantillas       = $datosCursoPlantillas['precioOficial'];
 $urlCheckoutPlantillas              = $datosCursoPlantillas['urlCheckout'];
-<?php
+
 // SEO Variables para head-main.php
 $seo_description = 'Aprende Excel, Power BI, Inteligencia Artificial y más con cursos online con certificado oficial. Líderes en educación online y capacitaciones laborales. +15.000 estudiantes. Acceso de por vida, videos paso a paso y garantía de 7 días.';
 $seo_keywords = 'cursos de excel online, curso excel con certificado, aprender excel desde cero, curso power bi, cursos de inteligencia artificial, capacitaciones laborales online, educación online, cursos online con certificado, excel para empresas, líderes en cursos online, formación profesional, curso excel avanzado, curso excel intermedio, curso excel inicial, microsoft office online, sql server curso, power bi avanzado, cursos IA, herramientas de productividad, excel para el trabajo';

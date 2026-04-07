@@ -121,6 +121,78 @@ if ($topic == 'payment') {
     $stmt1->bindValue(19, $extenal_reference, PDO::PARAM_STR);
     $stmt1->execute();
 
+    // Crear/actualizar usuario en la Academia si el pago fue aprobado
+    if ($payment->status === 'approved') {
+        $academiaUrl    = 'https://academia-production-c4cc.up.railway.app/api/webhook/purchase';
+        $academiaSecret = 'wh_landing_academia_2026';
+
+        $cursoSlugMap = [
+            'excel'              => 'excel',
+            'excel_intermedio'   => 'excel_intermedio',
+            'excel_avanzado'     => 'excel_avanzado',
+            'excel_promo'        => 'excel_promo',
+            'excel_en_vivo'      => 'excel_en_vivo',
+            'powerbi'            => 'powerbi',
+            'pbi_avanzado'       => 'pbi_avanzado',
+            'prom_pbi_excel'     => 'prom_pbi_excel',
+            'sql'                => 'sql',
+            'office'             => 'office',
+            'word'               => 'word',
+            'powerpoint'         => 'powerpoint',
+            'google_sheet'       => 'google_sheet',
+            'visualstudio'       => 'visualstudio',
+            'windows_server'     => 'windows_server',
+            'project_inicial'    => 'project_inicial',
+            'project_intermedio' => 'project_intermedio',
+            'project_avanzado'   => 'project_avanzado',
+            'prom_project_pack'  => 'prom_project_pack',
+            'petroleo'           => 'petroleo',
+            'Petróleo'           => 'petroleo',
+            'metodologia_agil'   => 'metodologia_agil',
+            'pantilla_finanzas'  => 'pantilla_finanzas',
+        ];
+
+        $stmtBuyer = $cnx->prepare("SELECT NOMBRE, APELLIDO, EMAIL FROM ventas WHERE CURSO=? AND ID=? LIMIT 1");
+        $stmtBuyer->execute([$curso, $extenal_reference]);
+        $buyerRow = $stmtBuyer->fetch(PDO::FETCH_ASSOC);
+
+        $academiaEmail    = $buyerRow['EMAIL']    ?? $pagador_email;
+        $academiaNombre   = $buyerRow['NOMBRE']   ?? $pagador_nombre;
+        $academiaApellido = $buyerRow['APELLIDO'] ?? $pagador_apellido;
+        $academiaSlug     = $cursoSlugMap[$curso] ?? $curso;
+
+        $academiaBody = json_encode([
+            'email'    => $academiaEmail,
+            'nombre'   => $academiaNombre,
+            'apellido' => $academiaApellido,
+            'cursos'   => [$academiaSlug],
+        ]);
+
+        $chAcademia = curl_init($academiaUrl);
+        curl_setopt_array($chAcademia, [
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $academiaBody,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 15,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($academiaBody),
+                'x-webhook-secret: ' . $academiaSecret,
+            ],
+        ]);
+
+        $academiaResponse = curl_exec($chAcademia);
+        $academiaHttpCode = curl_getinfo($chAcademia, CURLINFO_HTTP_CODE);
+        $academiaCurlErr  = curl_error($chAcademia);
+        curl_close($chAcademia);
+
+        if ($academiaCurlErr) {
+            error_log('IPN_mp academia error: ' . $academiaCurlErr);
+        } elseif ($academiaHttpCode >= 400) {
+            error_log('IPN_mp academia HTTP ' . $academiaHttpCode . ': ' . $academiaResponse);
+        }
+    }
+
     $consulta = "SELECT WEBHOOK_URL FROM webhooks_config WHERE CURSO=? AND ESTADO_MP=?";
     $stmt = $cnx->prepare($consulta);
     $stmt->bindValue(1, $curso, PDO::PARAM_STR);

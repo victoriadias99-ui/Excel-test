@@ -23,12 +23,30 @@
 // ── Mapeo de curso slug → cursos en la academia ─────────────────────────────
 // Ajustar si el CURSO en `ventas` difiere del slug usado en la Academia.
 const CURSO_SLUG_MAP = [
-    'excel_inicial'     => 'excel',
-    'excel_intermedio'  => 'excel_intermedio',
-    'excel_avanzado'    => 'excel_avanzado',
-    'excel_promo'       => 'excel_promo',
-    // Agrega más mappings si los identificadores de curso en la landing
-    // son distintos a los slugs de la academia.
+    'excel'              => 'excel',
+    'excel_inicial'      => 'excel',
+    'excel_intermedio'   => 'excel_intermedio',
+    'excel_avanzado'     => 'excel_avanzado',
+    'excel_promo'        => 'excel_promo',
+    'excel_en_vivo'      => 'excel_en_vivo',
+    'powerbi'            => 'powerbi',
+    'pbi_avanzado'       => 'pbi_avanzado',
+    'prom_pbi_excel'     => 'prom_pbi_excel',
+    'sql'                => 'sql',
+    'office'             => 'office',
+    'word'               => 'word',
+    'powerpoint'         => 'powerpoint',
+    'google_sheet'       => 'google_sheet',
+    'visualstudio'       => 'visualstudio',
+    'windows_server'     => 'windows_server',
+    'project_inicial'    => 'project_inicial',
+    'project_intermedio' => 'project_intermedio',
+    'project_avanzado'   => 'project_avanzado',
+    'prom_project_pack'  => 'prom_project_pack',
+    'petroleo'           => 'petroleo',
+    'Petróleo'           => 'petroleo',
+    'metodologia_agil'   => 'metodologia_agil',
+    'pantilla_finanzas'  => 'pantilla_finanzas',
 ];
 
 header('Content-Type: application/json');
