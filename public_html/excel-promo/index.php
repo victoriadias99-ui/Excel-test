@@ -21,6 +21,26 @@ $precioCursoOficial = 'ddd';
 $precioCurso = 'ddd';
 $urlCheckout = 'ddd';
 */
+
+// SEO
+$seo_title = 'Curso Excel Completo 3 en 1: Inicial + Intermedio + Avanzado | Aprende Excel';
+$seo_description = 'Curso completo de Excel 3 en 1: Inicial, Intermedio y Avanzado. Aprende desde cero hasta experto con certificado oficial. La mejor oferta en cursos de Excel online. Líderes en educación online.';
+$seo_keywords = 'curso excel completo, excel 3 en 1, curso excel desde cero hasta avanzado, aprender excel completo, curso excel online, mejor curso de excel, excel con certificado, pack excel, capacitaciones laborales';
+$seo_slug = 'excel-promo';
+$seo_og_title = 'Curso Excel Completo 3 en 1 con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/excelpromo4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Excel Promo 3 en 1 (Inicial + Intermedio + Avanzado)",
+    "description" => "Curso completo de Excel desde cero hasta avanzado. 3 niveles en 1 con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/excel-promo/",
+    "educationalLevel" => "Beginner to Advanced",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

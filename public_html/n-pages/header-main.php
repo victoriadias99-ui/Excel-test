@@ -53,7 +53,7 @@ $urlCheckoutPlantillas = 'plantillas/finanzas/';
 <header class="position-relative">
     <nav class="navbar px-md-5 px-3 navbar-expand-lg navbar-dark bg-light">
         <a class="navbar-brand" href="">
-            <img src="n-assets/img/logo-excel.png" alt="logo" class="logo">
+            <img src="n-assets/img/logo-excel.png" alt="Aprende Excel - Cursos Online de Excel, Power BI e Inteligencia Artificial" class="logo">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -104,17 +104,17 @@ $urlCheckoutPlantillas = 'plantillas/finanzas/';
             </ul>
         </div>
     </nav>
-    <img id="image-header-min" src="n-img/image-header-min.png" class="d-none d-md-block">
+    <img id="image-header-min" src="n-img/image-header-min.png" alt="Cursos online de Excel, Power BI e Inteligencia Artificial con certificado oficial" class="d-none d-md-block">
     <div class="row"  style="height: 100%;">
-        <div class="col-12 d-block d-md-none mb-5"> 
-            <img class="img-fluid" src="n-img/image-header-min.png" style="position: absolute; margin-right:-10px;">
+        <div class="col-12 d-block d-md-none mb-5">
+            <img class="img-fluid" src="n-img/image-header-min.png" alt="Academia Aprende Excel - Líderes en educación online y capacitaciones laborales" style="position: absolute; margin-right:-10px;">
         </div>
         <div class="col-md-5 p-md-5 m-md-5 d-flex align-items-center text-center text-md-left">
             <div class="container">
-                <h1 style="font-family: 'Raleway Black'; color:#00173B;">Academia aprende <span style="color: #008B69;">Excel</span></h1>
-                <p class="mt-0">Cursos a distancia</p>
+                <h1 style="font-family: 'Raleway Black'; color:#00173B;">Líderes en Cursos Online de <span style="color: #008B69;">Excel</span>, Power BI e IA</h1>
+                <p class="mt-0">Capacitaciones laborales online con certificado oficial | +15.000 estudiantes</p>
                 <p class="text-center text-md-left">
-                    <a href="#cursos" class="btn btn-primary px-5" style="background: #007A6A;">Ver más</a>
+                    <a href="#cursos" class="btn btn-primary px-5" style="background: #007A6A;" aria-label="Ver cursos online de Excel, Power BI e Inteligencia Artificial">Ver cursos</a>
                 </p>
             </div>
         </div>

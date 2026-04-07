@@ -19,6 +19,26 @@ $urlCheckout = './checkout.php';
   $precioCurso = 'ddd';
   $urlCheckout = 'ddd';
  */
+
+// SEO
+$seo_title = 'Curso de Power BI y Excel Online | El Combo Más Completo con Certificado';
+$seo_description = 'Combo Power BI + Excel 3 en 1 online. La formación más completa en análisis de datos. Certificado oficial, acceso de por vida. Líderes en capacitaciones laborales y educación online.';
+$seo_keywords = 'curso power bi y excel, combo excel power bi, análisis de datos curso, excel y power bi online, capacitaciones laborales, inteligencia artificial datos, certificado power bi excel';
+$seo_slug = 'power-bi-y-excel';
+$seo_og_title = 'Curso Power BI + Excel 3 en 1 Online | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/powerbiyexcel4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Power BI y Excel Promo 3 en 1",
+    "description" => "El combo más completo: Power BI + Excel Inicial, Intermedio y Avanzado. Certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/power-bi-y-excel/",
+    "educationalLevel" => "Beginner to Advanced",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

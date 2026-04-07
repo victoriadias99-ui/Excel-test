@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de Visual Studio Online con Certificado | Desarrollo de Software';
+$seo_description = 'Curso de Visual Studio online. Aprende desarrollo de software y programación con certificado oficial. Inteligencia artificial y tecnología. Líderes en educación online.';
+$seo_keywords = 'curso visual studio, visual studio online, desarrollo software, programación visual studio, certificado visual studio, capacitaciones laborales, inteligencia artificial';
+$seo_slug = 'visual-studio';
+$seo_og_title = 'Curso de Visual Studio Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/visualstudio4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Visual Studio",
+    "description" => "Aprende Visual Studio y desarrollo de software. Curso online con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/visual-studio/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

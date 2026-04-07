@@ -28,7 +28,27 @@ $urlCheckout = './checkout.php';
   $precioCursoOficial = 'ddd';
   $precioCurso = 'ddd';
   $urlCheckout = 'ddd';
- 
+
+// SEO
+$seo_title = 'Curso de Programación Online con Certificado | Aprende a Programar desde Cero';
+$seo_description = 'Curso de Programación online. Aprende a programar desde cero con certificado oficial. Inteligencia artificial, desarrollo y tecnología. Líderes en capacitaciones laborales.';
+$seo_keywords = 'curso programación, aprender a programar, programación online, curso programación certificado, inteligencia artificial, desarrollo software, capacitaciones laborales, tecnología';
+$seo_slug = 'programacion';
+$seo_og_title = 'Curso de Programación Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/programacion4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Programación",
+    "description" => "Aprende a programar desde cero. Curso online con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/programacion/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+
 ?>
 
 <!DOCTYPE html>

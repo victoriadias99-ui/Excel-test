@@ -1,3 +1,23 @@
+function logCheckoutError(tipo, detalle, datos) {
+    try {
+        $.ajax({
+            url: '/n-libraries/logCheckoutError.php',
+            type: 'POST',
+            data: JSON.stringify({
+                tipo: tipo,
+                detalle: detalle,
+                curso: datos && datos.curso ? datos.curso : '',
+                email: datos && datos.email ? datos.email : '',
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                timestamp: new Date().toISOString()
+            }),
+            contentType: 'application/json',
+            timeout: 3000
+        });
+    } catch (e) {}
+}
+
 var errorValidEmail = false;
 var email = jQuery('#email');
 var hint = jQuery("#hint");
@@ -116,24 +136,26 @@ $(document).ready(function () {
             $('#spinnerloading').show();
             $('#proceder_pago').hide();
             str = '';
+            var checkoutData = {
+                nombre: $('#nombre').val(),
+                apellido: $('#apellido').val(),
+                celular: $('#celular').val(),
+                email: $('#email').val(),
+                curso: $('#curso').val(),
+                dir: $('#dir').val(),
+                pack: $('#pack').val(),
+                descuento: $('#descuento').val()
+            };
             $.ajax(
                     {
-                        url: "/a-libraries/realizarVentaStripe.php",
+                        url: "/n-libraries/realizarVenta.php",
                         type: "get",
-                        data: {
-                            nombre: $('#nombre').val(),
-                            apellido: $('#apellido').val(),
-                            celular: $('#celular').val(),
-                            email: $('#email').val(),
-                            curso: $('#curso').val(),
-                            dir: $('#dir').val(),
-                            pack: $('#pack').val(),
-                            descuento: $('#descuento').val()
-                        },
+                        data: checkoutData,
                         success: function (response) {
                             if (response.indexOf('error:') === 0) {
                                 $('#spinnerloading').hide();
                                 $('#proceder_pago').show();
+                                logCheckoutError('realizarVenta_response', response, checkoutData);
                                 alert('Hubo un problema al procesar tu solicitud. Por favor intentá de nuevo o contactanos por WhatsApp.');
                                 return;
                             }
@@ -142,6 +164,7 @@ $(document).ready(function () {
                         error: function (xhr) {
                             $('#spinnerloading').hide();
                             $('#proceder_pago').show();
+                            logCheckoutError('realizarVenta_ajax', 'HTTP ' + xhr.status + ': ' + xhr.statusText, checkoutData);
                             alert('Error de conexión. Por favor intentá de nuevo.');
                         }
                     });

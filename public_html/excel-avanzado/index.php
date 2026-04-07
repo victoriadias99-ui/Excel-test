@@ -19,6 +19,26 @@ $precioCursoOficial = 'ddd';
 $precioCurso = 'ddd';
 $urlCheckout = 'ddd';
 */
+
+// SEO
+$seo_title = 'Curso de Excel Avanzado Online con Certificado | Macros, VBA y Automatización';
+$seo_description = 'Curso de Excel Avanzado online. Aprende macros, VBA, funciones avanzadas y automatización. Certificado oficial. Conviértete en experto Excel. Líderes en capacitaciones laborales.';
+$seo_keywords = 'curso excel avanzado, excel macros, excel VBA, curso excel online avanzado, excel automatización, funciones avanzadas excel, certificado excel avanzado, capacitaciones laborales';
+$seo_slug = 'excel-avanzado';
+$seo_og_title = 'Curso de Excel Avanzado Online | Macros y VBA | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/excelavanzado4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Excel Nivel Avanzado",
+    "description" => "Conviértete en experto en Excel. Macros, VBA, funciones avanzadas y automatización. Certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/excel-avanzado/",
+    "educationalLevel" => "Advanced",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

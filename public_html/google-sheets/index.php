@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de Google Sheets Online con Certificado | Hojas de Cálculo en la Nube';
+$seo_description = 'Curso de Google Sheets online. Aprende hojas de cálculo en la nube, fórmulas, automatización y colaboración. Certificado oficial. Líderes en educación online.';
+$seo_keywords = 'curso google sheets, google sheets online, hojas de cálculo nube, aprender google sheets, curso google sheets certificado, alternativa excel online, capacitaciones laborales';
+$seo_slug = 'google-sheets';
+$seo_og_title = 'Curso de Google Sheets Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/googlesheets4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Google Sheets",
+    "description" => "Aprende Google Sheets desde cero. Hojas de cálculo en la nube con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/google-sheets/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

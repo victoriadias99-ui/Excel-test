@@ -59,7 +59,7 @@
 </div>
             <div class="row">
                 <div class="col d-xl-flex align-items-xl-center col-md-6 p-5">
-                    <img src="<?= isset($dirpage) ? $dirpage : '' ?>n-assets/img/logo-excel.png"></div>
+                    <img src="<?= isset($dirpage) ? $dirpage : '' ?>n-assets/img/logo-excel.png" loading="lazy" alt="Logo Excel"></div>
                 <div class="col d-xl-flex justify-content-xl-center align-items-xl-center p-5"></div>
             </div>
             <div class="row px-5 py-3" style="border-top-width: 2px;border-top-color: #C6343D;">

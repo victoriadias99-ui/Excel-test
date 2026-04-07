@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de Microsoft Project Intermedio Online | Gestión Avanzada de Proyectos';
+$seo_description = 'Curso de Microsoft Project Intermedio online. Profundiza en gestión de proyectos, recursos y cronogramas. Certificado oficial.';
+$seo_keywords = 'curso microsoft project intermedio, gestión de proyectos avanzada, project management, microsoft project online, capacitaciones laborales';
+$seo_slug = 'microsoft-project-intermedio';
+$seo_og_title = 'Curso de Microsoft Project Intermedio Online | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/msproject4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Microsoft Project Intermedio",
+    "description" => "Gestión avanzada de proyectos con Microsoft Project. Nivel intermedio con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/microsoft-project-intermedio/",
+    "educationalLevel" => "Intermediate",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

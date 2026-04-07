@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de Word Online con Certificado | Documentos Profesionales';
+$seo_description = 'Curso de Microsoft Word online. Aprende a crear documentos profesionales, informes y más. Certificado oficial. Líderes en capacitaciones laborales y educación online.';
+$seo_keywords = 'curso word, microsoft word online, aprender word, curso word certificado, documentos profesionales, capacitaciones laborales, office word';
+$seo_slug = 'word';
+$seo_og_title = 'Curso de Word Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/word4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Microsoft Word",
+    "description" => "Aprende Word desde cero. Documentos profesionales con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/word/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

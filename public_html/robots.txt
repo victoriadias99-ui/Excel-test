@@ -1,0 +1,20 @@
+# robots.txt - aprende-excel.com
+User-agent: *
+Allow: /
+
+# Bloquear directorios internos
+Disallow: /a-includes/
+Disallow: /n-includes/
+Disallow: /n-libraries/
+Disallow: /a-libraries/
+Disallow: /n-pages/
+Disallow: /archivos-sin-uso/
+Disallow: /n-site/
+
+# Bloquear checkouts y paginas internas
+Disallow: /*checkout*
+Disallow: /pago_exitoso*
+Disallow: /router.php
+
+# Sitemap
+Sitemap: https://aprende-excel.com/sitemap.xml

@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de Microsoft Project Inicial Online con Certificado | Gestión de Proyectos';
+$seo_description = 'Curso de Microsoft Project Inicial online. Aprende gestión de proyectos desde cero con certificado oficial. Líderes en capacitaciones laborales y educación online.';
+$seo_keywords = 'curso microsoft project, project management online, gestión de proyectos, microsoft project certificado, project inicial, capacitaciones laborales';
+$seo_slug = 'microsoft-project-inicial';
+$seo_og_title = 'Curso de Microsoft Project Inicial Online | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/msproject4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Microsoft Project Inicial",
+    "description" => "Gestión de proyectos con Microsoft Project. Nivel inicial con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/microsoft-project-inicial/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

@@ -19,6 +19,26 @@ $urlCheckout = './checkout.php';
   $precioCurso = 'ddd';
   $urlCheckout = 'ddd';
  */
+
+// SEO
+$seo_title = 'Curso de Excel Inicial Online con Certificado | Aprende Excel desde Cero';
+$seo_description = 'Curso de Excel Inicial online. Aprende Excel desde cero con videos paso a paso, certificado oficial y acceso de por vida. Ideal para capacitaciones laborales. +15.000 estudiantes.';
+$seo_keywords = 'curso excel inicial, aprender excel desde cero, curso excel online, excel para principiantes, capacitaciones laborales excel, curso excel con certificado, excel básico online, formación excel, cursos online excel';
+$seo_slug = 'excel-inicial';
+$seo_og_title = 'Curso de Excel Inicial Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/excelinicial4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Excel Nivel Inicial",
+    "description" => "Aprende Excel desde cero con videos paso a paso. Curso online con certificado oficial, acceso de por vida y garantía de 7 días.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/excel-inicial/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

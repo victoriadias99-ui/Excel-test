@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de Windows Server Online con Certificado | Administración de Servidores';
+$seo_description = 'Curso de Windows Server online. Aprende administración de servidores, Active Directory y redes. Certificado oficial. Líderes en capacitaciones laborales IT.';
+$seo_keywords = 'curso windows server, administración servidores, windows server online, active directory, redes, capacitaciones laborales IT, certificado windows server';
+$seo_slug = 'windows-server';
+$seo_og_title = 'Curso de Windows Server Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/windowsserver4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Windows Server",
+    "description" => "Aprende administración de servidores Windows. Curso online con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/windows-server/",
+    "educationalLevel" => "Intermediate",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

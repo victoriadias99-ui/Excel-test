@@ -20,6 +20,26 @@ $precioCursoOficial = 'ddd';
 $precioCurso = 'ddd';
 $urlCheckout = 'ddd';
 */
+
+// SEO
+$seo_title = 'Curso Pack Office Completo Online | Word, Excel, PowerPoint con Certificado';
+$seo_description = 'Curso Pack Microsoft Office completo online: Word, Excel, PowerPoint y más. Certificado oficial, acceso de por vida. Líderes en capacitaciones laborales y educación online.';
+$seo_keywords = 'curso pack office, microsoft office online, curso word excel powerpoint, pack office con certificado, capacitaciones laborales, office completo online, formación office';
+$seo_slug = 'pack-office';
+$seo_og_title = 'Curso Pack Office Completo Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/packoffice4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Pack Office Completo",
+    "description" => "Domina Word, Excel, PowerPoint y más. Pack completo de Microsoft Office online con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/pack-office/",
+    "educationalLevel" => "Beginner to Intermediate",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

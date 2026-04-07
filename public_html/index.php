@@ -101,15 +101,160 @@ $urlCheckoutExcelPromoPowerBI       = $datosCursoExcelPromoPowerBI['urlCheckout'
 $precioCursoPlantillas              = $datosCursoPlantillas['precio'];
 $precioCursoOficialPlantillas       = $datosCursoPlantillas['precioOficial'];
 $urlCheckoutPlantillas              = $datosCursoPlantillas['urlCheckout'];
+<?php
+// SEO Variables para head-main.php
+$seo_description = 'Aprende Excel, Power BI, Inteligencia Artificial y más con cursos online con certificado oficial. Líderes en educación online y capacitaciones laborales. +15.000 estudiantes. Acceso de por vida, videos paso a paso y garantía de 7 días.';
+$seo_keywords = 'cursos de excel online, curso excel con certificado, aprender excel desde cero, curso power bi, cursos de inteligencia artificial, capacitaciones laborales online, educación online, cursos online con certificado, excel para empresas, líderes en cursos online, formación profesional, curso excel avanzado, curso excel intermedio, curso excel inicial, microsoft office online, sql server curso, power bi avanzado, cursos IA, herramientas de productividad, excel para el trabajo';
+$seo_canonical = 'https://aprende-excel.com/';
+$seo_og_title = 'Aprende Excel | Cursos Online de Excel, Power BI, IA y Capacitaciones Laborales';
+$seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
 ?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-        <title>Aprende Excel</title>
+        <title>Aprende Excel | Cursos Online de Excel, Power BI e Inteligencia Artificial con Certificado</title>
         <?php include('n-pages/head-main.php') ?>
         <meta name="facebook-domain-verification" content="o3o30mm5uo4a74505h53yhntshexbm" />
+
+        <!-- Structured Data: Organization -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            "name": "Aprende Excel",
+            "url": "https://aprende-excel.com",
+            "logo": "https://aprende-excel.com/n-assets/img/logo-excel.png",
+            "description": "Líderes en educación online. Cursos de Excel, Power BI, Inteligencia Artificial y capacitaciones laborales con certificado oficial.",
+            "sameAs": [],
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "availableLanguage": "Spanish"
+            },
+            "areaServed": {
+                "@type": "Place",
+                "name": "Latinoamérica"
+            }
+        }
+        </script>
+
+        <!-- Structured Data: Course List -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Cursos Online de Excel, Power BI e Inteligencia Artificial",
+            "description": "Catálogo de cursos online con certificado oficial. Líderes en capacitaciones laborales y educación online.",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Excel Promo 3 en 1 (Inicial + Intermedio + Avanzado)",
+                        "description": "Curso completo de Excel desde cero hasta nivel avanzado. Aprende funciones, tablas dinámicas, macros y más.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/excel-promo/"
+                    }
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Excel Nivel Inicial",
+                        "description": "Aprende Excel desde cero. Curso online con videos paso a paso y certificado oficial.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/excel-inicial/"
+                    }
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Excel Nivel Intermedio",
+                        "description": "Domina funciones intermedias de Excel: tablas dinámicas, gráficos avanzados y fórmulas complejas.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/excel-intermedio/"
+                    }
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 4,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Excel Nivel Avanzado",
+                        "description": "Conviértete en experto en Excel. Macros, VBA, funciones avanzadas y automatización.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/excel-avanzado/"
+                    }
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 5,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Power BI",
+                        "description": "Aprende Power BI desde cero. Visualización de datos, dashboards y business intelligence.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/power-bi/"
+                    }
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 6,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Power BI Avanzado",
+                        "description": "Nivel avanzado de Power BI. DAX, modelado de datos y reportes profesionales.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/power-bi-avanzado/"
+                    }
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 7,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Pack Office Completo",
+                        "description": "Domina Word, Excel, PowerPoint y más. El pack completo de Microsoft Office online.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/pack-office/"
+                    }
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 8,
+                    "item": {
+                        "@type": "Course",
+                        "name": "Microsoft SQL Server",
+                        "description": "Aprende SQL Server desde cero. Bases de datos, consultas SQL y administración.",
+                        "provider": {"@type": "Organization", "name": "Aprende Excel"},
+                        "url": "https://aprende-excel.com/microsoft-sql-server/"
+                    }
+                }
+            ]
+        }
+        </script>
+
+        <!-- Structured Data: WebSite (para Google Search Box) -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Aprende Excel",
+            "url": "https://aprende-excel.com",
+            "description": "Líderes en cursos online de Excel, Power BI, Inteligencia Artificial y capacitaciones laborales con certificado oficial.",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://aprende-excel.com/?s={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+        </script>
     </head>
 
     <body style="font-family: 'Raleway Regular';">

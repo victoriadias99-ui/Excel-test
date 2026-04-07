@@ -20,6 +20,26 @@ $precioCursoOficial = 'ddd';
 $precioCurso = 'ddd';
 $urlCheckout = 'ddd';
 */
+
+// SEO
+$seo_title = 'Curso de Power BI Avanzado Online | DAX y Modelado de Datos';
+$seo_description = 'Curso de Power BI Avanzado online. Domina DAX, modelado de datos y reportes profesionales. Certificado oficial. Ideal para analistas de datos e inteligencia artificial.';
+$seo_keywords = 'curso power bi avanzado, power bi DAX, modelado de datos, power bi profesional, business intelligence avanzado, analista de datos, inteligencia artificial, capacitaciones laborales';
+$seo_slug = 'power-bi-avanzado';
+$seo_og_title = 'Curso de Power BI Avanzado Online | DAX y Reportes | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/powerbiavanzado4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Power BI Avanzado",
+    "description" => "Domina DAX, modelado de datos y reportes profesionales en Power BI. Certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/power-bi-avanzado/",
+    "educationalLevel" => "Advanced",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

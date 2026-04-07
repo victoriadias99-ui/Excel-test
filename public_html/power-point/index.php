@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de PowerPoint Online con Certificado | Presentaciones Profesionales';
+$seo_description = 'Curso de PowerPoint online. Crea presentaciones profesionales e impactantes. Certificado oficial, acceso de por vida. Líderes en capacitaciones laborales.';
+$seo_keywords = 'curso powerpoint, powerpoint online, crear presentaciones, curso powerpoint certificado, presentaciones profesionales, capacitaciones laborales, microsoft powerpoint';
+$seo_slug = 'power-point';
+$seo_og_title = 'Curso de PowerPoint Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/powerpoint4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "PowerPoint",
+    "description" => "Crea presentaciones profesionales e impactantes. Curso online con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/power-point/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

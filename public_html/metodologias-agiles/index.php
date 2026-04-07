@@ -9,6 +9,26 @@ $curso = getCursoDetalle($idcurso);
 $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
+
+// SEO
+$seo_title = 'Curso de Metodologías Ágiles Online con Certificado | Scrum y Gestión de Proyectos';
+$seo_description = 'Curso de Metodologías Ágiles online. Aprende Scrum, Kanban y gestión de proyectos con certificado oficial. Líderes en capacitaciones laborales y educación online.';
+$seo_keywords = 'curso metodologías ágiles, scrum online, gestión de proyectos, curso scrum certificado, kanban, agile, capacitaciones laborales, project management';
+$seo_slug = 'metodologias-agiles';
+$seo_og_title = 'Curso de Metodologías Ágiles Online | Scrum | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/agile4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Metodologías Ágiles",
+    "description" => "Aprende Scrum, Kanban y gestión de proyectos con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/metodologias-agiles/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

@@ -176,7 +176,7 @@ if (isset($_GET['test'])) {
         <?php include('n-pages/footer-cursos.php') ?>
         <script src="../a-libraries/js/mailcheck.js"></script>
     <script src="../a-libraries/js/jquery.validate.min.js"></script>
-        <script src="../a-libraries/js/checkoutv3.js?t=1"></script>
+        <script src="../a-libraries/js/checkoutv3.js?t=2"></script>
         <script>
             !function (f, b, e, v, n, t, s)
             {

@@ -8,6 +8,18 @@ if (isset($_GET['test'])) {
     error_reporting(E_ALL);
 }
 
+$__logFile = dirname(__DIR__) . '/log-errores-checkout.txt';
+function logCheckout($tipo, $detalle, $extra = []) {
+    global $__logFile;
+    $line = date('Y-m-d H:i:s') . ' | '
+        . str_pad($tipo, 30) . ' | '
+        . 'curso=' . ($extra['curso'] ?? ($_GET['curso'] ?? '')) . ' | '
+        . 'email=' . ($extra['email'] ?? ($_GET['email'] ?? '')) . ' | '
+        . 'detalle=' . $detalle
+        . PHP_EOL;
+    @file_put_contents($__logFile, $line, FILE_APPEND | LOCK_EX);
+}
+
 // SDK de Stripe
 require_once dirname(__DIR__) . '/n-libraries/vendor/autoload.php';
 
@@ -67,6 +79,7 @@ try {
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($rows)) {
+        logCheckout('PHP_CURSO_NO_ENCONTRADO', 'curso=' . $curso);
         echo 'error:curso_no_encontrado';
         exit;
     }
@@ -79,6 +92,7 @@ try {
     $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 
     if (empty($stripeSecretRaw)) {
+        logCheckout('PHP_STRIPE_KEY_MISSING', 'STRIPE_SECRET_KEY vacio para curso=' . $curso);
         if (isset($_GET['test'])) {
             echo 'Error: STRIPE_SECRET_KEY vacio o columna inexistente en cursos_detalle<br>';
         }
@@ -181,6 +195,7 @@ try {
     echo $session->url;
 
 } catch (PDOException $e) {
+    logCheckout('PHP_DB_ERROR', $e->getMessage());
     error_log('DB Error en realizarVenta: ' . $e->getMessage());
     if (isset($_GET['test'])) {
         echo 'DB Error: ' . $e->getMessage();
@@ -188,6 +203,7 @@ try {
         echo 'error:db';
     }
 } catch (\Stripe\Exception\ApiErrorException $e) {
+    logCheckout('PHP_STRIPE_ERROR', $e->getMessage());
     error_log('Stripe Error en realizarVenta: ' . $e->getMessage());
     if (isset($_GET['test'])) {
         echo 'Stripe Error: ' . $e->getMessage();
@@ -195,6 +211,7 @@ try {
         echo 'error:stripe_' . $e->getStripeCode();
     }
 } catch (\Exception $e) {
+    logCheckout('PHP_GENERAL_ERROR', $e->getMessage());
     error_log('Error general en realizarVenta: ' . $e->getMessage());
     if (isset($_GET['test'])) {
         echo 'Error general: ' . $e->getMessage();

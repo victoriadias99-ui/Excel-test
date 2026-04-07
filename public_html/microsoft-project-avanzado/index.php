@@ -11,6 +11,25 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioCurso = '$' . $value . ' ARS';
 
+// SEO
+$seo_title = 'Curso de Microsoft Project Avanzado Online | Experto en Gestión de Proyectos';
+$seo_description = 'Curso de Microsoft Project Avanzado online. Conviértete en experto en gestión de proyectos. Certificado oficial. Líderes en capacitaciones laborales.';
+$seo_keywords = 'curso microsoft project avanzado, gestión de proyectos experto, project management avanzado, microsoft project certificado, capacitaciones laborales';
+$seo_slug = 'microsoft-project-avanzado';
+$seo_og_title = 'Curso de Microsoft Project Avanzado Online | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/msproject4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Microsoft Project Avanzado",
+    "description" => "Nivel experto en gestión de proyectos con Microsoft Project. Certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/microsoft-project-avanzado/",
+    "educationalLevel" => "Advanced",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html>

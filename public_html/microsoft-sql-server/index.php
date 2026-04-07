@@ -21,6 +21,26 @@ $urlCheckout = './checkout.php';
   $precioCurso = 'ddd';
   $urlCheckout = 'ddd';
  */
+
+// SEO
+$seo_title = 'Curso de Microsoft SQL Server Online con Certificado | Bases de Datos y SQL';
+$seo_description = 'Curso de Microsoft SQL Server online. Aprende bases de datos, consultas SQL y administración. Certificado oficial. Ideal para analistas de datos, inteligencia artificial y capacitaciones laborales.';
+$seo_keywords = 'curso sql server, microsoft sql server online, aprender sql, bases de datos curso, consultas sql, administración sql server, capacitaciones laborales, analista de datos, inteligencia artificial';
+$seo_slug = 'microsoft-sql-server';
+$seo_og_title = 'Curso de SQL Server Online con Certificado | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/sqlserver4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Microsoft SQL Server",
+    "description" => "Aprende SQL Server desde cero. Bases de datos, consultas SQL y administración con certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/microsoft-sql-server/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

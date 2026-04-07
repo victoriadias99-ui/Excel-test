@@ -314,6 +314,6 @@ foreach ($data['pack'] as $c => $item) {
 }
 ?>
         </script>
-        <script src="../n-libraries/js/checkoutv4.js?t=2"></script>
+        <script src="../n-libraries/js/checkoutv4.js?t=3"></script>
     </body>
 </html>

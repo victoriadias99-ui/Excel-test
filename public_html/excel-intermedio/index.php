@@ -19,6 +19,26 @@ $precioCursoOficial = 'ddd';
 $precioCurso = 'ddd';
 $urlCheckout = 'ddd';
 */
+
+// SEO
+$seo_title = 'Curso de Excel Intermedio Online con Certificado | Tablas Dinámicas y Funciones';
+$seo_description = 'Curso de Excel Intermedio online. Domina tablas dinámicas, gráficos avanzados y fórmulas complejas. Certificado oficial, acceso de por vida. Líderes en educación online.';
+$seo_keywords = 'curso excel intermedio, excel tablas dinámicas, curso excel online, excel funciones avanzadas, capacitaciones laborales, curso excel certificado, excel intermedio online';
+$seo_slug = 'excel-intermedio';
+$seo_og_title = 'Curso de Excel Intermedio Online | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/excelintermedio4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Excel Nivel Intermedio",
+    "description" => "Domina tablas dinámicas, gráficos avanzados y fórmulas complejas en Excel. Certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/excel-intermedio/",
+    "educationalLevel" => "Intermediate",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 ?>
 <!DOCTYPE html>
 <html lang="es">

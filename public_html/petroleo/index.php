@@ -28,7 +28,27 @@ $urlCheckout = './checkout.php';
   $precioCursoOficial = 'ddd';
   $precioCurso = 'ddd';
   $urlCheckout = 'ddd';
- 
+
+// SEO
+$seo_title = 'Curso de Petróleo y Gas Online con Certificado | Industria Petrolera';
+$seo_description = 'Curso de Petróleo y Gas online. Aprende sobre la industria petrolera con certificado oficial. Capacitaciones laborales especializadas.';
+$seo_keywords = 'curso petróleo, industria petrolera, petróleo y gas online, capacitaciones laborales petróleo, curso petrolero certificado';
+$seo_slug = 'petroleo';
+$seo_og_title = 'Curso de Petróleo y Gas Online | Aprende Excel';
+$seo_image = 'https://aprende-excel.com/n-img/petroleo4.jpeg';
+$seo_structured_data = json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "Course",
+    "name" => "Petróleo y Gas",
+    "description" => "Curso sobre industria petrolera. Certificado oficial.",
+    "provider" => ["@type" => "Organization", "name" => "Aprende Excel", "url" => "https://aprende-excel.com"],
+    "url" => "https://aprende-excel.com/petroleo/",
+    "educationalLevel" => "Beginner",
+    "inLanguage" => "es",
+    "aggregateRating" => ["@type" => "AggregateRating", "ratingValue" => "4.9", "reviewCount" => "15000", "bestRating" => "5"],
+    "offers" => ["@type" => "Offer", "category" => "Paid", "availability" => "https://schema.org/InStock"]
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+
 ?>
 
 <!DOCTYPE html>
