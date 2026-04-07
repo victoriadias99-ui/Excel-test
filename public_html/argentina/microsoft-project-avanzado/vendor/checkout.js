@@ -105,7 +105,7 @@ $(document).ready(function () {
 				str = '';
 				$.ajax(
 				{
-					  url: "realizarVenta.php",
+					  url: "/a-libraries/realizarVentaStripe.php",
 					  type: "get", 
 					  data: { 
 						nombre: $('#nombre').val(), 
