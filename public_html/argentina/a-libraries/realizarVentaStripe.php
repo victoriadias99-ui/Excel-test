@@ -4,6 +4,9 @@
  * Misma lógica que /a-libraries/realizarVentaStripe.php
  */
 
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+ini_set('display_errors', 0);
+
 if (isset($_GET['test'])) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);

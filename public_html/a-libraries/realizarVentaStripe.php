@@ -5,6 +5,10 @@
  * Crea una Stripe Checkout Session usando STRIPE_SECRET_KEY de cursos_detalle.
  */
 
+// Suprimir deprecated notices del SDK de Stripe (incompatible con PHP 8.1+)
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+ini_set('display_errors', 0);
+
 if (isset($_GET['test'])) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
