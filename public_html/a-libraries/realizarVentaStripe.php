@@ -66,34 +66,42 @@ try {
 
     $stripePaymentLink = $rows[0]['URL_CHECKOUT'];
 
-    // ── 2. Guardar lead en la tabla ventas ──────────────────
-    $auto_num = new auto_num($cnx, $curso);
-    $id_venta = $auto_num->get_id();
+    // ── 2. Guardar lead en la tabla ventas (no bloquea el pago si falla) ──
+    $id_venta = uniqid($curso . '_');
+    try {
+        $auto_num = new auto_num($cnx, $curso);
+        $id_venta = $auto_num->get_id();
 
-    $stmt1 = $cnx->prepare(
-        "INSERT INTO ventas
-            (CURSO, ID, NOMBRE, APELLIDO, CELULAR, EMAIL, ESTADO_MP)
-         VALUES (?, ?, ?, ?, ?, ?, ?)"
-    );
-    $stmt1->execute([
-        $curso,
-        $id_venta,
-        $nombre,
-        $apellido,
-        $celular,
-        $email,
-        'STRIPE_PENDING',   // Estado inicial — se actualiza vía webhook de Stripe
-    ]);
+        $stmt1 = $cnx->prepare(
+            "INSERT INTO ventas
+                (CURSO, ID, NOMBRE, APELLIDO, CELULAR, EMAIL, ESTADO_MP)
+             VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+        $stmt1->execute([
+            $curso,
+            $id_venta,
+            $nombre,
+            $apellido,
+            $celular,
+            $email,
+            'STRIPE_PENDING',
+        ]);
+
+        if (isset($_GET['test'])) {
+            echo "Lead guardado: $id_venta\n";
+        }
+    } catch (Exception $eLead) {
+        // El lead no se pudo guardar, pero no bloqueamos el pago
+        if (isset($_GET['test'])) {
+            echo "Advertencia lead: " . $eLead->getMessage() . "\n";
+        }
+    }
 
     if (isset($_GET['test'])) {
-        echo "Lead guardado: $id_venta<br>";
-        echo "Stripe URL base: $stripePaymentLink<br>";
+        echo "Stripe URL base: $stripePaymentLink\n";
     }
 
     // ── 3. Armar URL de Stripe con datos pre-cargados ───────
-    // Stripe Payment Links soportan estos query params:
-    //   prefilled_email     → pre-llena el campo email
-    //   client_reference_id → referencia interna (curso-idVenta)
     $separator = (strpos($stripePaymentLink, '?') !== false) ? '&' : '?';
 
     $redirectUrl = $stripePaymentLink
@@ -101,11 +109,11 @@ try {
         . '&client_reference_id='             . urlencode($curso . '-' . $id_venta);
 
     if (isset($_GET['test'])) {
-        echo "Redirect URL: $redirectUrl<br>";
+        echo "Redirect URL: $redirectUrl\n";
         exit;
     }
 
-    // ── 4. Devolver la URL al JS (igual que hacía realizarVenta.php) ─
+    // ── 4. Devolver la URL al JS ────────────────────────────
     echo $redirectUrl;
 
 } catch (PDOException $e) {
