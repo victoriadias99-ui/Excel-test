@@ -52,7 +52,7 @@ try {
 
     // ── 1. Obtener el Stripe Payment Link del curso ─────────
     $stmt = $cnx->prepare(
-        "SELECT URL_CHECKOUT, TITULO FROM cursos_detalle WHERE CURSO = ?"
+        "SELECT * FROM cursos_detalle WHERE CURSO = ?"
     );
     $stmt->bindValue(1, $curso, PDO::PARAM_STR);
     $stmt->execute();
@@ -114,6 +114,6 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo 'error:db_' . $e->getCode();
+    echo 'error:db_' . $e->getCode() . '_' . str_replace(' ', '_', $e->getMessage());
 }
 ?>
