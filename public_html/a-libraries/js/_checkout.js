@@ -110,7 +110,7 @@ $(document).ready(function () {
             str = '';
             $.ajax(
                     {
-                        url: "../realizarVenta.php",
+                        url: "../realizarVentaStripe.php",
                         type: "get",
                         data: {
                             nombre: $('#nombre').val(),
