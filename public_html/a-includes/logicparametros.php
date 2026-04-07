@@ -30,38 +30,63 @@ $ip = explode(',', str_replace(' ', '', $ip))[0];
  * La consulta de los datos geograficos se hace por medio de una api https://ipdata.co/
  * donde se tendra que registrar y obtener tu nueva key y cambiarla en $keyApi
 *  */
-$keyApi = '670ffe7a0bd967e949ee51ff856a24a4812fe48f9efe99140e1ce4fd';
+// FIX BUG-07: API key leída desde variable de entorno Railway.
+// Si no está configurada aún, usa la key de fallback para no romper producción.
+// ⚠️ Configurar en Railway Dashboard → Variables → IPDATA_API_KEY y luego borrar el fallback.
+$keyApi = getenv('IPDATA_API_KEY') ?: '670ffe7a0bd967e949ee51ff856a24a4812fe48f9efe99140e1ce4fd';
+
+// Valores por defecto en caso de fallo de la API de geolocalización
+$dataDefault = [
+    'country_code' => 'AR',
+    'currency'     => ['code' => 'ARS', 'symbol' => '$'],
+];
+
 if(isset($productoIP) && $productoIP != null){
     $dataIP = getIP($ip, $productoIP);
     if ($dataIP == null) {
-        $httpClient = new Psr18Client();
-        $psr17Factory = new Psr17Factory();
-        $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
-        $data = $ipdata->lookup($ip);
-
-        insertIP($ip, $productoIP, json_encode($data), json_encode($_COOKIE));
-    } else {
-        $data = json_decode($dataIP['data'], true);
-        updateIP($ip, $productoIP, $dataIP['visitas'] + 1, json_encode($_COOKIE));
-    }
-} else {
-    $dataC =  isset($idcurso) ? $idcurso : (isset($_GET['curso']) ? $_GET['curso'] : null);
-    if($dataC == null){
-        $httpClient = new Psr18Client();
-        $psr17Factory = new Psr17Factory();
-        $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
-        $data = $ipdata->lookup($ip);
-    } else {
-        $dataIP = getIP($ip, $dataC) ;
-        if ($dataIP == null) {
+        try {
             $httpClient = new Psr18Client();
             $psr17Factory = new Psr17Factory();
             $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
             $data = $ipdata->lookup($ip);
-
+            if (empty($data['country_code'])) { $data = $dataDefault; }
+        } catch (\Exception $e) {
+            $data = $dataDefault;
+        }
+        insertIP($ip, $productoIP, json_encode($data), json_encode($_COOKIE));
+    } else {
+        $data = json_decode($dataIP['data'], true);
+        if (empty($data['country_code'])) { $data = $dataDefault; }
+        updateIP($ip, $productoIP, $dataIP['visitas'] + 1, json_encode($_COOKIE));
+    }
+} else {
+    $dataC = isset($idcurso) ? $idcurso : (isset($_GET['curso']) ? $_GET['curso'] : null);
+    if($dataC == null){
+        try {
+            $httpClient = new Psr18Client();
+            $psr17Factory = new Psr17Factory();
+            $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
+            $data = $ipdata->lookup($ip);
+            if (empty($data['country_code'])) { $data = $dataDefault; }
+        } catch (\Exception $e) {
+            $data = $dataDefault;
+        }
+    } else {
+        $dataIP = getIP($ip, $dataC);
+        if ($dataIP == null) {
+            try {
+                $httpClient = new Psr18Client();
+                $psr17Factory = new Psr17Factory();
+                $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
+                $data = $ipdata->lookup($ip);
+                if (empty($data['country_code'])) { $data = $dataDefault; }
+            } catch (\Exception $e) {
+                $data = $dataDefault;
+            }
             insertIP($ip, $dataC, json_encode($data), json_encode($_COOKIE));
         } else {
             $data = json_decode($dataIP['data'], true);
+            if (empty($data['country_code'])) { $data = $dataDefault; }
             updateIP($ip, $dataC, $dataIP['visitas'] + 1, json_encode($_COOKIE));
         }
     }

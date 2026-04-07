@@ -102,7 +102,7 @@ $(document).ready(function () {
             str = '';
             $.ajax(
                     {
-                        url: "/n-libraries/realizarVenta.php",
+                        url: "/a-libraries/realizarVentaStripe.php",
                         type: "get",
                         data: {
                             nombre: $('#nombre').val(),
@@ -155,4 +155,15 @@ $(document).ready(function () {
     function getFloatValue(value) {
         return parseFloat(Math.round(value * 100) / 100).toFixed(2);
     }
+
+    // FIX BFCACHE: forzar reload si la página es restaurada desde bfcache
+    // al volver atrás desde la pasarela de pago. Evita estado JS corrupto
+    // en upsells/pack (checkboxes desincronizados con #amount y #pack).
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+    window.addEventListener('unload', function () {});
+
 });

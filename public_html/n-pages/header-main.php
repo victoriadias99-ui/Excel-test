@@ -92,20 +92,14 @@ $urlCheckoutPlantillas = 'plantillas/finanzas/';
 				<!--<li class="nav-item">
                     <a class="nav-link" href="https://aprende-excel.com/clases-en-vivo/">Clases en vivo</a>
                 </li>-->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="suscripciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Suscripciones
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="suscripciones">
-                        <a class="dropdown-item" href="https://buy.stripe.com/5kAg1W8ZhbwDgus145">Suscripciones Mensual</a>
-                        <a class="dropdown-item" href="https://buy.stripe.com/14k5nib7pdEL1zyfYY">Suscripciones Anual</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="suscripcion-acceso-ilimitado/">Suscripciones</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/plan-empresa/">Plan Empresa</a>
                 </li>
 				 <li class="nav-item">
-                  <b><a class="nav-link" href="https://academia.aprende-excel.com/">Iniciar sesión</a></b>
+                  <b><a class="nav-link" href="<?= htmlspecialchars(getenv('ACADEMIA_URL') ?: 'https://academia-production-c4cc.up.railway.app') ?>">Iniciar sesión</a></b>
                 </li>
             </ul>
         </div>

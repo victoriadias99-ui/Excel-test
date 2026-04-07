@@ -71,7 +71,7 @@
         <div class="col d-xl-flex justify-content-xl-center align-items-xl-center p-5"></div>
     </div>
     <div class="row px-5 py-3" style="border-top-width: 2px;border-top-color: #008b69;">
-        <div class="col" style="text-align: left;"><span>2021 Todos los derechos reservados</span></div>
+        <div class="col" style="text-align: left;"><span><?php echo date('Y'); ?> Todos los derechos reservados</span></div>
         <div class="col text-right"><span><a href="javascript:void(0)" data-toggle="modal" data-target="#terms">Términos y Condiciones</a></span></div>
     </div>
 </footer>

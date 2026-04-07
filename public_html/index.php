@@ -1,16 +1,106 @@
 <?php
-if(isset($_GET['test'])){
+// FIX BUG-11: display_errors solo activo en entorno local o con variable de entorno DEBUG=true.
+// Antes: cualquier visitante podía activarlo con ?test en la URL (exponía paths y errores PHP).
+$isDebugEnv   = getenv('APP_ENV') === 'local' || getenv('APP_DEBUG') === 'true';
+$isLocalIP    = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1']);
+if ($isDebugEnv || $isLocalIP) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', 0);
+    error_reporting(0);
 }
     
 $dirpage = '../';
 
-include("n-includes/funcionsDB.php");
-include("n-includes/logicparametros.php");
+include("a-includes/funcionsDB.php");
+include("a-includes/logicparametros.php");
+include("a-includes/logicprecios.php");
 
+$numberWhatsapp = getenv('WHATSAPP_NUMBER') ?: '';
 $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hola!%20Te%20escribo%20por%20el%20curso%20de%20Excel';
+
+// Helper: extrae precio, precio oficial y URL de checkout desde getCursoDetalleCheckout()
+// $moneda: código ISO de la moneda del visitante (ej: 'COP', 'MXN', 'ARS')
+function extraerDatosCurso($idCurso, $simbolo, $moneda) {
+    $detalle = getCursoDetalleCheckout($idCurso);
+    $producto = isset($detalle['producto']) ? $detalle['producto'] : null;
+
+    if ($producto === null) {
+        return [
+            'precio'         => '',
+            'precioOficial'  => '',
+            'urlCheckout'    => '#',
+        ];
+    }
+
+    $precioRaw        = isset($producto['PRECIO'])         ? $producto['PRECIO']         : '';
+    $precioOficialRaw = isset($producto['PRECIO_OFICIAL']) ? $producto['PRECIO_OFICIAL'] : '';
+    $urlCheckout      = isset($producto['URL_CHECKOUT'])   ? $producto['URL_CHECKOUT']   : '#';
+
+    $precio        = $precioRaw        !== '' ? $simbolo . ' ' . convertirPrecio($precioRaw,        $moneda) : '';
+    $precioOficial = $precioOficialRaw !== '' ? $simbolo . ' ' . convertirPrecio($precioOficialRaw, $moneda) : '';
+
+    return [
+        'precio'        => $precio,
+        'precioOficial' => $precioOficial,
+        'urlCheckout'   => $urlCheckout,
+    ];
+}
+
+// Consultar detalles de cada curso desde la base de datos
+$datosCursoExcelPromo        = extraerDatosCurso('excel-promo',          $simbolo, $moneda);
+$datosCursoExcelInicial      = extraerDatosCurso('excel-inicial',        $simbolo, $moneda);
+$datosCursoExcelIntermedio   = extraerDatosCurso('excel-intermedio',     $simbolo, $moneda);
+$datosCursoExcelAvanzado     = extraerDatosCurso('excel-avanzado',       $simbolo, $moneda);
+$datosCursoSqlServer         = extraerDatosCurso('sql-server',           $simbolo, $moneda);
+$datosCursoPackOffice        = extraerDatosCurso('pack-office',          $simbolo, $moneda);
+$datosCursoPowerBi           = extraerDatosCurso('power-bi',             $simbolo, $moneda);
+$datosCursoPowerBiAvanzado   = extraerDatosCurso('power-bi-avanzado',    $simbolo, $moneda);
+$datosCursoExcelPromoPowerBI = extraerDatosCurso('excel-promo-power-bi', $simbolo, $moneda);
+$datosCursoPlantillas        = extraerDatosCurso('plantillas',           $simbolo, $moneda);
+
+// Variables de precio y URL para cada curso
+$precioCursoExcelPromo              = $datosCursoExcelPromo['precio'];
+$precioCursoOficialExcelPromo       = $datosCursoExcelPromo['precioOficial'];
+$urlCheckoutExcelPromo              = $datosCursoExcelPromo['urlCheckout'];
+
+$precioCursoExcelInicial            = $datosCursoExcelInicial['precio'];
+$precioCursoOficialExcelInicial     = $datosCursoExcelInicial['precioOficial'];
+$urlCheckoutExcelInicial            = $datosCursoExcelInicial['urlCheckout'];
+
+$precioCursoExcelIntermedio         = $datosCursoExcelIntermedio['precio'];
+$precioCursoOficialExcelIntermedio  = $datosCursoExcelIntermedio['precioOficial'];
+$urlCheckoutExcelIntermedio         = $datosCursoExcelIntermedio['urlCheckout'];
+
+$precioCursoExcelAvanzado           = $datosCursoExcelAvanzado['precio'];
+$precioCursoOficialExcelAvanzado    = $datosCursoExcelAvanzado['precioOficial'];
+$urlCheckoutExcelAvanzado           = $datosCursoExcelAvanzado['urlCheckout'];
+
+$precioCursoSqlServer               = $datosCursoSqlServer['precio'];
+$precioCursoOficialSqlServer        = $datosCursoSqlServer['precioOficial'];
+$urlCheckoutSqlServer               = $datosCursoSqlServer['urlCheckout'];
+
+$precioCursoPackOffice              = $datosCursoPackOffice['precio'];
+$precioCursoOficialPackOffice       = $datosCursoPackOffice['precioOficial'];
+$urlCheckoutPackOffice              = $datosCursoPackOffice['urlCheckout'];
+
+$precioCursoPowerBi                 = $datosCursoPowerBi['precio'];
+$precioCursoOficialPowerBi          = $datosCursoPowerBi['precioOficial'];
+$urlCheckoutPowerBi                 = $datosCursoPowerBi['urlCheckout'];
+
+$precioCursoPowerBiAvanzado         = $datosCursoPowerBiAvanzado['precio'];
+$precioCursoOficialPowerBiAvanzado  = $datosCursoPowerBiAvanzado['precioOficial'];
+$urlCheckoutPowerBiAvanzado         = $datosCursoPowerBiAvanzado['urlCheckout'];
+
+$precioCursoExcelPromoPowerBI       = $datosCursoExcelPromoPowerBI['precio'];
+$precioCursoOficialExcelPromoPowerBI = $datosCursoExcelPromoPowerBI['precioOficial'];
+$urlCheckoutExcelPromoPowerBI       = $datosCursoExcelPromoPowerBI['urlCheckout'];
+
+$precioCursoPlantillas              = $datosCursoPlantillas['precio'];
+$precioCursoOficialPlantillas       = $datosCursoPlantillas['precioOficial'];
+$urlCheckoutPlantillas              = $datosCursoPlantillas['urlCheckout'];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -24,7 +114,23 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
 
     <body style="font-family: 'Raleway Regular';">
         <?php include('n-pages/header-main.php') ?>
-        
+
+        <?php if (isset($_GET['pago'])): ?>
+            <?php if ($_GET['pago'] === 'exitoso'): ?>
+            <div style="background:#28a745;color:#fff;text-align:center;padding:16px 20px;font-size:1.1rem;font-weight:bold;">
+                ✅ ¡Tu pago fue procesado con éxito! En breve vas a recibir el acceso al curso por email.
+            </div>
+            <?php elseif ($_GET['pago'] === 'cancelado'): ?>
+            <div style="background:#ffc107;color:#333;text-align:center;padding:16px 20px;font-size:1.05rem;">
+                ⚠️ El pago fue cancelado. Podés volver a intentarlo cuando quieras.
+            </div>
+            <?php elseif ($_GET['pago'] === 'pendiente'): ?>
+            <div style="background:#17a2b8;color:#fff;text-align:center;padding:16px 20px;font-size:1.05rem;">
+                🕐 Tu pago está siendo procesado. Te avisamos por email cuando se confirme.
+            </div>
+            <?php endif; ?>
+        <?php endif; ?>
+
         <section class="d-none d-md-block">
             <div class="row">
                 <div class="col-md-6 m-auto text-center">
@@ -80,7 +186,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/excel-inicial-nueva-2024_11zon.webp" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/excel-inicial-nueva-2024_11zon.webp" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">3 Niveles - Pack Experto</p>
                                 <p style="font-size: 0.7em;text-align: left;">Convertite en un Experto en Excel con este pack de 3 cursos. ¡Sé el experto que las empresas están buscando!</p>
@@ -96,7 +202,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-excelinicial.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/c-excelinicial.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Inicial</p>
                                 <p style="font-size: 0.7em;text-align: left;">Sin requisitos previos, éste curso te va a enseñar a usar Microsoft Excel: la herramienta laboral más solicitada por las empresas.</p>
@@ -113,7 +219,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-excelintermedio.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/c-excelintermedio.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Intermedio</p>
                                 <p style="font-size: 0.7em;text-align: left;">Entrenamiento para usuarios que ya tienen los conocimientos básicos de Microsoft Excel, para aprender en profundidad la mayoría de sus funcionalidades.</p>
@@ -130,7 +236,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-excelavanzado.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/c-excelavanzado.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Avanzado</p>
                                 <p style="font-size: 0.7em;text-align: left;">Curso para terminar de conocer Excel y dominar sus funcionalidades más avanzadas. Ser Experto en Excel otorga una gran ventaja y abre las puertas a empleos muy bien pagos.</p>
@@ -152,7 +258,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="" src="n-img/c-sql.jpeg" style="width:100%">
+                            <img loading="lazy" class="" src="n-img/c-sql.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft SQL Server</p>
                                 <p style="font-size: 0.7em;text-align: left;">Aprendé a programar en base de datos desde cero. Recomendable para principiantes</p>
@@ -169,7 +275,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-office2.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/c-office2.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Pack Office</p>
                                 <p style="font-size: 0.7em;text-align: left;">Pack de conocimientos clave e infaltables en un Currículum. Dominá las 3 herramientas más solicitadas por las empresas.</p>
@@ -185,7 +291,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-powerbi.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/c-powerbi.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft Power BI</p>
                                 <p style="font-size: 0.7em;text-align: left;">Un especialista en Power BI gana un sueldo 3 vecess mayor a la media. Ésta herramienta de Inteligencia Empresarial permite crear tableros para visualizar datos. Sin requisitos previos</p>
@@ -202,7 +308,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-powerbi-avanzado.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/c-powerbi-avanzado.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft Power BI Avanzado</p>
                                 <p style="font-size: 0.7em;text-align: left;">Profundizá tus conocimientos a través de este Curso Avanzado de Power BI en 4.5 horas de curso</p>
@@ -219,7 +325,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/pack-power-bi-y-excel.jpg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="n-img/pack-power-bi-y-excel.jpg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft Power BI y Pack Excel</p>
                                 <p style="font-size: 0.7em;text-align: left;">Con estos cursos vas a aprender a usar a fondo Microsoft Power y Excel en sus tres niveles. Explicados paso a paso en un total de 12.5 hs de videos, te enseñamos a usarlas en profundidad.</p>
@@ -235,7 +341,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hol
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="/plantillas/finanzas/assets/img/finanzas.png" style="width:100%">
+                            <img loading="lazy" class="img-fluid" src="/plantillas/finanzas/assets/img/finanzas.png" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Pack de plantillas de finanzas</p>
                                 <p style="font-size: 0.7em;text-align: left;">Accede a estas plantillas y sé un profesional.<br>
@@ -253,7 +359,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
         </section>
 
         <section class="seccion-5 section-background-verde-min position-relative d-flex align-items-center">
-            <img class="d-none d-md-block background-verde-mujer-escuchando-min" src="n-img/background-verde-mujer-escuchando-min.jpg" style="width:100%">    
+            <img class="d-none d-md-block background-verde-mujer-escuchando-min" src="n-img/background-verde-mujer-escuchando-min.jpg" loading="lazy" style="width:100%">    
             <div class="row mt-0 py-0 mt-md-5 py-md-5" style="width:100%">
                 <div class="d-xl-flex align-items-xl-center col-md-3 pt-5 p-md-5">
                     <h3 class="ml-3 text-center text-md-left" style="font-family: 'Raleway Black';color: #ffffff;font-size: 1.5em;">¿Qué opinan nuestros estudiantes?</h3>
@@ -270,7 +376,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                                     <div class="col-md-4 pb-5 px-5 p-md-5">
                                         <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                                             <div class="col" style="text-align: center;">
-                                                <img class="review-persona img-fluid" src="n-img/persona-1.jpeg">
+                                                <img loading="lazy" class="review-persona img-fluid" src="n-img/persona-1.jpeg">
                                                 <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
                                                 <p style="font-size: 0.7em;text-align: left;">Lo recomiendo, el profe explica muy bien y es facil ver los videos. gracias.</p>
                                                 <h5 style="font-family: 'Raleway Bold';color: #00173B;">Belén</h5>
@@ -280,7 +386,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                                     <div class="col-md-4 p-5">
                                         <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                                             <div class="col" style="text-align: center;">
-                                                <img class="review-persona img-fluid" src="n-img/persona-2.jpeg">
+                                                <img loading="lazy" class="review-persona img-fluid" src="n-img/persona-2.jpeg">
                                                 <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
                                                 <p style="font-size: 0.7em;text-align: left;">Introduce muchas herramientas en excel. Muy satisfecho.</p>
                                                 <h5 style="font-family: 'Raleway Bold';color: #00173B;">Federico</h5>
@@ -290,7 +396,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                                     <div class="col-md-4 p-5">
                                         <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                                             <div class="col" style="text-align: center;">
-                                                <img class="review-persona img-fluid" src="n-img/persona-3.jpeg">
+                                                <img loading="lazy" class="review-persona img-fluid" src="n-img/persona-3.jpeg">
                                                 <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
                                                 <p style="font-size: 0.7em;text-align: left;">Enseña muy bien, tengo poco manejo de pc y me fue de mucha utilidad.</p>
                                                 <h5 style="font-family: 'Raleway Bold';color: #00173B;">Ramiro</h5>
@@ -304,7 +410,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                                     <div class="col-md-4 pb-5 px-5 p-md-5">
                                         <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                                             <div class="col" style="text-align: center;">
-                                                <img class="review-persona img-fluid" src="n-img/persona-4.jpeg">
+                                                <img loading="lazy" class="review-persona img-fluid" src="n-img/persona-4.jpeg">
                                                 <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
                                                 <p style="font-size: 0.7em;text-align: left;">Muy completo! gracias.</p>
                                                 <h5 style="font-family: 'Raleway Bold';color: #00173B;">Daniel</h5>
@@ -314,7 +420,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                                     <div class="col-md-4 p-5">
                                         <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                                             <div class="col" style="text-align: center;">
-                                                <img class="review-persona img-fluid" src="n-img/persona-5.jpeg">
+                                                <img loading="lazy" class="review-persona img-fluid" src="n-img/persona-5.jpeg">
                                                 <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
                                                 <p style="font-size: 0.7em;text-align: left;">Transmiten muy claro su conocimiento, algunas cosas yo ya las sabia pero me sirvio para profundizar lo que se de excel.</p>
                                                 <h5 style="font-family: 'Raleway Bold';color: #00173B;">Laura</h5>
@@ -324,7 +430,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                                     <div class="col-md-4 p-5">
                                         <div class="px-3 py-3" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                                             <div class="col" style="text-align: center;">
-                                                <img class="review-persona img-fluid" src="n-img/persona-6.jpeg">
+                                                <img loading="lazy" class="review-persona img-fluid" src="n-img/persona-6.jpeg">
                                                 <p style="text-align: center;"><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i><i class="fa fa-star" style="color: #F7AC3B;"></i></p>
                                                 <p style="font-size: 0.7em;text-align: left;">Excelente.</p>
                                                 <h5 style="font-family: 'Raleway Bold';color: #00173B;">Alejandro</h5>
@@ -353,30 +459,30 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
             </div>
             <div class="row px-md-5 py-md-5">
                 <div class="col-6 col-md-3 py-3 px-5  d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-cruzceleste.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-cruzceleste.jpeg"/>
                 </div>
                 <div class="col-6 col-md-3 py-3 px-5  d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-dggroup.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-dggroup.jpeg"/>
                 </div>
                 <div class="col-6 col-md-3 py-3 px-5  d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-fincaelpongo.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-fincaelpongo.jpeg"/>
                 </div>
                 <div class="col-6 col-md-3 py-3 px-5 d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-greenoil.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-greenoil.jpeg"/>
                 </div>
 
                 <div class="col-6 col-md-3 py-3 px-5 d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-santarita.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-santarita.jpeg"/>
                 </div>
                 <div class="col-6 col-md-3 py-3 px-5 d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-simiente.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-simiente.jpeg"/>
                 </div>
                 <div class="col-6 col-md-3 py-3 px-5 d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-sumed.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-sumed.jpeg"/>
                 </div>
 
                 <div class="col-6 col-md-3 py-3 px-5 d-flex align-items-center">
-                    <img class="img-fluid" src="n-img/e-nosis.jpeg"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/e-nosis.jpeg"/>
                 </div>
             </div>
         </section>	
@@ -384,7 +490,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
         <section class="mt-md-5 mb-md-5">
             <div class="row">
                 <div class="col-md-6 p-md-5 m-5 m-md-0">
-                    <img class="img-fluid" src="n-img/imagen-persona-min.png"/>
+                    <img loading="lazy" class="img-fluid" src="n-img/imagen-persona-min.png"/>
                 </div>
                 <div class="col-md-6 p-md-5 mb-5 mb-md-0 mx-5 mx-md-0 ">
                     <h1 class="m-auto" style="font-family: 'Raleway Black'; color:#00173B;">¿Tienes un <span style="color: #008B69;">negocio?</span></h1>

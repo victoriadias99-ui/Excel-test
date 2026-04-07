@@ -1,4 +1,5 @@
 <?php
+include('../../n-includes/checkout-headers.php');
 $dirpage = '../'; // Esta variable tiene como valor la dirección de la raiz del proyecto
 
 $idcurso = 'excel_avanzado'; // Variable que contiene el id del curso a visualizar

@@ -1,7 +1,7 @@
 <?php
 $haveWhatsapp = false;
 $numberWhatsapp = "5491125621394";
-$country_code = trim($_SERVER["HTTP_CF_IPCOUNTRY"]);
+$country_code = trim($_SERVER["HTTP_CF_IPCOUNTRY"] ?? "");
 
 // Verificar si la URL actual no contiene '/dinamico' después del dominio
 

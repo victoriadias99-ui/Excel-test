@@ -1,4 +1,7 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
+
 if (isset($_GET['test'])) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -57,14 +60,14 @@ try {
     $auto_num = new auto_num($cnx, $curso);
     $id_venta = $auto_num->get_id();
 
-    // Traer datos del curso (ahora usa STRIPE_SECRET_KEY en vez de ACCESS_TOKEN_MP)
-    $stmt = $cnx->prepare("SELECT TITULO, DESCRIPCION, PRECIO_UNITARIO, STRIPE_SECRET_KEY FROM cursos_detalle WHERE CURSO = ?");
+    // Traer datos del curso (SELECT * para compatibilidad con cualquier esquema de BD)
+    $stmt = $cnx->prepare("SELECT * FROM cursos_detalle WHERE CURSO = ?");
     $stmt->bindValue(1, $curso, PDO::PARAM_STR);
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($rows)) {
-        echo $urlcurso . 'checkout.php?error=curso_no_encontrado';
+        echo 'error:curso_no_encontrado';
         exit;
     }
 
@@ -72,9 +75,17 @@ try {
     $pagoTotal  = $precioBase;
 
     // --- Clave Stripe ---
-    // Si la clave viene en formato JSON por dominio (igual que MP), la decodificamos
-    $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'];
+    $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';
     $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+
+    if (empty($stripeSecretRaw)) {
+        if (isset($_GET['test'])) {
+            echo 'Error: STRIPE_SECRET_KEY vacio o columna inexistente en cursos_detalle<br>';
+        }
+        error_log('realizarVenta: STRIPE_SECRET_KEY vacio para curso ' . $curso);
+        echo 'error:stripe_key_missing';
+        exit;
+    }
 
     if (strpos($stripeSecretRaw, '{') === false) {
         $stripeSecret = $stripeSecretRaw;
@@ -97,9 +108,8 @@ try {
         $montoDesc      = intval($precioBase * ($porcentajeDesc / 100));
         $pagoTotal      = $precioBase - $montoDesc;
 
-        // Crear un coupon temporal en Stripe para reflejar el descuento
         $coupon = \Stripe\Coupon::create([
-            'amount_off' => $montoDesc * 100, // en centavos
+            'amount_off' => $montoDesc * 100,
             'currency'   => 'ars',
             'duration'   => 'once',
             'name'       => $rows_descuento[0]['DESCRIPCION'],
@@ -117,7 +127,7 @@ try {
     $stmt1->bindValue(6,  $celular,  PDO::PARAM_STR);
     $stmt1->bindValue(7,  $email,    PDO::PARAM_STR);
     $stmt1->bindValue(8,  'pending', PDO::PARAM_STR);
-    $stmt1->bindValue(9,  '',        PDO::PARAM_STR); // se actualiza en el webhook
+    $stmt1->bindValue(9,  '',        PDO::PARAM_STR);
     $stmt1->bindValue(10, $__url,    PDO::PARAM_STR);
     $stmt1->bindValue(11, '',        PDO::PARAM_STR);
     $stmt1->execute();
@@ -127,7 +137,7 @@ try {
         [
             'price_data' => [
                 'currency'     => 'ars',
-                'unit_amount'  => $precioBase * 100, // centavos
+                'unit_amount'  => $precioBase * 100,
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
                     'description' => $rows[0]['DESCRIPCION'],
@@ -153,7 +163,7 @@ try {
             'email'    => $email,
             'dominio'  => $__url,
         ],
-        'success_url' => $urlRoot . 'pago_exitoso.php?monto=' . $pagoTotal . '&idVenta=' . $id_venta,
+        'success_url' => $urlRoot . '?pago=exitoso&idVenta=' . $id_venta,
         'cancel_url'  => $urlcurso . 'checkout.php',
     ];
 
@@ -163,21 +173,33 @@ try {
 
     $session = \Stripe\Checkout\Session::create($sessionParams);
 
-    // Guardar el Session ID de Stripe en PREFERENCIA_ID_MP para trazabilidad
     $cnx->prepare("UPDATE ventas SET PREFERENCIA_ID_MP=? WHERE CURSO=? AND ID=?")
         ->execute([$session->id, $curso, $id_venta]);
 
-    // Facebook Events
     ApiFacebookEventsFunciones::initPaymentSendDataInitPaymentFacebook($email, $pagoTotal, 'ARS', $urlcurso);
 
-    // Devolver la URL de Stripe al JS (igual que antes devolvía $preference->init_point)
     echo $session->url;
 
 } catch (PDOException $e) {
     error_log('DB Error en realizarVenta: ' . $e->getMessage());
-    echo $urlcurso . 'checkout.php?error=db';
+    if (isset($_GET['test'])) {
+        echo 'DB Error: ' . $e->getMessage();
+    } else {
+        echo 'error:db';
+    }
 } catch (\Stripe\Exception\ApiErrorException $e) {
     error_log('Stripe Error en realizarVenta: ' . $e->getMessage());
-    echo $urlcurso . 'checkout.php?error=stripe';
+    if (isset($_GET['test'])) {
+        echo 'Stripe Error: ' . $e->getMessage();
+    } else {
+        echo 'error:stripe_' . $e->getStripeCode();
+    }
+} catch (\Exception $e) {
+    error_log('Error general en realizarVenta: ' . $e->getMessage());
+    if (isset($_GET['test'])) {
+        echo 'Error general: ' . $e->getMessage();
+    } else {
+        echo 'error:general';
+    }
 }
 ?>

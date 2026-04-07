@@ -118,7 +118,7 @@ $(document).ready(function () {
             str = '';
             $.ajax(
                     {
-                        url: "/n-libraries/realizarVenta.php",
+                        url: "/a-libraries/realizarVentaStripe.php",
                         type: "get",
                         data: {
                             nombre: $('#nombre').val(),
@@ -131,12 +131,18 @@ $(document).ready(function () {
                             descuento: $('#descuento').val()
                         },
                         success: function (response) {
+                            if (response.indexOf('error:') === 0) {
+                                $('#spinnerloading').hide();
+                                $('#proceder_pago').show();
+                                alert('Hubo un problema al procesar tu solicitud. Por favor intentá de nuevo o contactanos por WhatsApp.');
+                                return;
+                            }
                             window.location.href = response;
                         },
                         error: function (xhr) {
-                            alert(xhr);
                             $('#spinnerloading').hide();
                             $('#proceder_pago').show();
+                            alert('Error de conexión. Por favor intentá de nuevo.');
                         }
                     });
         }
@@ -171,4 +177,21 @@ $(document).ready(function () {
     function getFloatValue(value) {
         return parseFloat(Math.round(value * 100) / 100).toFixed(2);
     }
+
+    // FIX BFCACHE: cuando el usuario vuelve atrás desde la pasarela de pago,
+    // el browser puede restaurar la página desde bfcache con estado JS corrupto:
+    // los checkboxes de upsell y el monto quedan desincronizados con #pack.
+    // Solución: si la página se restaura desde bfcache (event.persisted = true),
+    // forzar un reload para que PHP regenere el estado limpio desde la BD.
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+
+    // Prevención adicional: el evento 'unload' desactiva el bfcache en browsers
+    // que aún lo ignoran con el header no-store. Sin lógica, solo registrarlo
+    // es suficiente para excluir la página del bfcache en Safari/iOS.
+    window.addEventListener('unload', function () {});
+
 });

@@ -101,7 +101,7 @@ $(document).ready(function() {
             $('#spinnerloading').show();
             str = '';
             $.ajax({
-                url: "../src/realizarVenta.php",
+                url: "../a-libraries/realizarVentaStripe.php",
                 type: "get",
                 data: {
                     nombre: $('#nombre').val(),

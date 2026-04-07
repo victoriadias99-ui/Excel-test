@@ -101,23 +101,27 @@ $(document).ready(function () {
             str = '';
             $.ajax(
                     {
-                        url: "../a-libraries/realizarVenta.php",
+                        url: "../a-libraries/realizarVentaStripe.php",
                         type: "get",
                         data: {
-                            nombre: $('#nombre').val(),
+                            nombre:   $('#nombre').val(),
                             apellido: $('#apellido').val(),
-                            celular: $('#celular').val(),
-                            email: $('#email').val(),
-                            curso: $('#curso').val(),
-                            dir: $('#dir').val(),
-                            pack: $('#pack').val(),
-                            descuento: $('#descuento').val()
+                            celular:  $('#celular').val(),
+                            email:    $('#email').val(),
+                            curso:    $('#curso').val(),
+                            pack:     $('#pack').val()
                         },
                         success: function (response) {
+                            if (response.indexOf('error:') === 0) {
+                                $('#spinnerloading').hide();
+                                alert('Hubo un problema al procesar tu solicitud. Por favor intentá de nuevo.');
+                                return;
+                            }
                             window.location.href = response;
                         },
                         error: function (xhr) {
-                            alert(xhr);
+                            $('#spinnerloading').hide();
+                            alert('Error de conexión. Por favor intentá de nuevo.');
                         }
                     });
         }
