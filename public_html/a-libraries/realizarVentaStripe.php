@@ -72,21 +72,17 @@ try {
 
     $stmt1 = $cnx->prepare(
         "INSERT INTO ventas
-            (CURSO, ID, NOMBRE, APELLIDO, PREFIJO_CEL, CELULAR, EMAIL, ESTADO_MP, PREFERENCIA_ID_MP, DOMINIO, ACCESS_TOKEN)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            (CURSO, ID, NOMBRE, APELLIDO, CELULAR, EMAIL, ESTADO_MP)
+         VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
     $stmt1->execute([
         $curso,
         $id_venta,
         $nombre,
         $apellido,
-        0,
         $celular,
         $email,
         'STRIPE_PENDING',   // Estado inicial — se actualiza vía webhook de Stripe
-        '',                 // No aplica para Stripe
-        $dominio,
-        '',
     ]);
 
     if (isset($_GET['test'])) {
