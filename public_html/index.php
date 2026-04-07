@@ -3,7 +3,7 @@
 // Antes: cualquier visitante podía activarlo con ?test en la URL (exponía paths y errores PHP).
 $isDebugEnv   = getenv('APP_ENV') === 'local' || getenv('APP_DEBUG') === 'true';
 $isLocalIP    = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1']);
-if (($isDebugEnv || $isLocalIP) && isset($_GET['test'])) {
+if ($isDebugEnv || $isLocalIP) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
