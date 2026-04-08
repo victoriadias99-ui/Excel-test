@@ -7,7 +7,12 @@ if (isset($_GET['test'])) {
 
 $dirpage = '';
 include("a-includes/funcionsDB.php");
-$idCurso = $_GET['CURSO'];
+$idCurso = isset($_GET['CURSO']) ? $_GET['CURSO'] : null;
+if (empty($idCurso)) {
+    http_response_code(400);
+    echo 'Curso no especificado';
+    exit;
+}
 $producto = getCursoDetalle($idCurso);
 $urlGrupos = [];
 $pos = strpos($producto['URL_FACEBOOK_GROUP'], '{');
@@ -77,7 +82,7 @@ if (isset($_GET['test'])) {
                                 echo '<h5 class="mt-5">Cuando finalices los 3 cursos, envíanos un correo o Whatsapp para emitir tu certificado internacional</h5>';
 
                             } else {
-                            echo '<a class="btn btn-block btn-lg py-4 btn-outline-light" target="_blank" style="background-color:#e6007e;" href="' . $value . '"><b>EMPEZAR EL CURSO "' . strtoupper($key) . '" &nbsp;</b>👉</a>';
+                            echo '<a class="btn btn-block btn-lg py-4 btn-outline-light" target="_blank" style="background-color:#e6007e;" href="' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"><b>EMPEZAR EL CURSO "' . htmlspecialchars(strtoupper($key), ENT_QUOTES, 'UTF-8') . '" &nbsp;</b>👉</a>';
                             }
                         }
                         ?>

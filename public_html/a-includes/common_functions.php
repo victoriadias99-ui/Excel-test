@@ -1,34 +1,36 @@
 <?php
 	function format_date_to_database($datein)
 	{
+		$format_dt = '';
 		if (!empty($datein))
 		{
 			$invert = explode("/",$datein);
 			$fecha_invert = $invert[2]."/".$invert[1]."/".$invert[0];
-			$format_dt = str_replace('/', '-', $fecha_invert);  
-		}		
+			$format_dt = str_replace('/', '-', $fecha_invert);
+		}
 		return $format_dt;
-	}	
-	
-	
+	}
+
+
 	function format_date_from_database($datein)
 	{
+		$format_dt = '';
 		if (!empty($datein))
 		{
 			$invert = explode("-",$datein);
 			$fecha_invert = $invert[2]."-".$invert[1]."-".$invert[0];
-			$format_dt = str_replace('-', '/', $fecha_invert);  
-		}			
+			$format_dt = str_replace('-', '/', $fecha_invert);
+		}
 		return $format_dt;
-	
-	}	
-	
+
+	}
+
 	function get_current_page()
 	{
-		$path = $PHP_SELF;
-		$page = basename($page, ".php");  
-		
-		return $page; 
+		$path = $_SERVER['PHP_SELF'];
+		$page = basename($path, ".php");
+
+		return $page;
 	}
 	
 

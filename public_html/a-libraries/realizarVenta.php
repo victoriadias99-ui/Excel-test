@@ -53,9 +53,9 @@ $ip = explode(',', str_replace(' ', '', $ip))[0];
 
 try {
     $cnx = OpenCon();
-    $consulta = "UPDATE `ip_visita` SET `correo` = '$email' WHERE `ip` = '$ip' and `id_producto` ='" . $_GET['curso'] . "'";
+    $consulta = "UPDATE `ip_visita` SET `correo` = ? WHERE `ip` = ? AND `id_producto` = ?";
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$email, $ip, $_GET['curso']]);
 
     $auto_num = new auto_num($cnx, $curso);
     $id_venta = $auto_num->get_id();

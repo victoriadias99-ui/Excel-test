@@ -81,12 +81,12 @@ if ($topic == 'payment') {
 
     //Format variables	
     if ($fecha_compra != null) {
-        $fecha_compra = new datetime($fecha_compra);
+        $fecha_compra = new DateTime($fecha_compra);
         $fecha_compra = $fecha_compra->format('Y-m-d H:i:s');
     }
 
     if ($fecha_acreditacion != null) {
-        $fecha_acreditacion = new datetime($fecha_acreditacion);
+        $fecha_acreditacion = new DateTime($fecha_acreditacion);
         $fecha_acreditacion = $fecha_acreditacion->format('Y-m-d H:i:s');
     }
 
@@ -123,8 +123,8 @@ if ($topic == 'payment') {
 
     // Crear/actualizar usuario en la Academia si el pago fue aprobado
     if ($payment->status === 'approved') {
-        $academiaUrl    = 'https://academia-production-c4cc.up.railway.app/api/webhook/purchase';
-        $academiaSecret = 'wh_landing_academia_2026';
+        $academiaUrl    = getenv('ACADEMIA_WEBHOOK_URL') ?: 'https://academia-production-c4cc.up.railway.app/api/webhook/purchase';
+        $academiaSecret = getenv('ACADEMIA_WEBHOOK_SECRET') ?: 'wh_landing_academia_2026';
 
         $cursoSlugMap = [
             'excel'              => 'excel',
@@ -200,9 +200,8 @@ if ($topic == 'payment') {
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $webHookUrl = $rows[0]['WEBHOOK_URL'];
-    //if (isset($rows[0]['WEBHOOK_URL']))
-    //{
+    $webHookUrl = isset($rows[0]['WEBHOOK_URL']) ? $rows[0]['WEBHOOK_URL'] : null;
+    if ($webHookUrl) {
     $consulta = "SELECT CURSO,ID,FECHA,NOMBRE,APELLIDO,CELULAR,EMAIL,PAGO_ID_MP,ESTADO_MP,ESTADO_DETALLE_MP,FECHA_COMPRA_MP,FECHA_ACREDITACION_MP,PAGO_TIPO_MP,PAGO_DESCR_MP,PAGADOR_EMAIL_MP,PAGADOR_NOMBRE_MP,PAGADOR_APELLIDO_MP,PAGADOR_TIPO_MP,PAGADOR_ID_MP,METODO_PAGO_MP,FEE_MP,IMP_RECIBIDO_NETO_MP  FROM ventas WHERE CURSO=? AND ID=?";
     $stmt = $cnx->prepare($consulta);
     $stmt->bindValue(1, $curso, PDO::PARAM_STR);
@@ -265,13 +264,14 @@ if ($topic == 'payment') {
 
     $result = curl_exec($ch);
     curl_close($ch);
+    } // cierre if ($webHookUrl)
 }
 
 //datos para enviar a sendinblue
-echo "<input type='text' id='nombre' name='nombre' value='$nombre' hidden>"; 
-echo "<input type='text' id='apellido' name='apellido' value='$apellido' hidden>"; 
-echo "<input type='text' id='mail' name='mail' value='$mail' hidden> "; 
-echo "<input type='text' id='monto' name='monto' value='$monto_acreditado' hidden> "; 
+echo "<input type='text' id='nombre' name='nombre' value='" . htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') . "' hidden>";
+echo "<input type='text' id='apellido' name='apellido' value='" . htmlspecialchars($apellido, ENT_QUOTES, 'UTF-8') . "' hidden>";
+echo "<input type='text' id='mail' name='mail' value='" . htmlspecialchars($mail, ENT_QUOTES, 'UTF-8') . "' hidden> ";
+echo "<input type='text' id='monto' name='monto' value='" . htmlspecialchars($monto_acreditado, ENT_QUOTES, 'UTF-8') . "' hidden> "; 
 
 ?>
 

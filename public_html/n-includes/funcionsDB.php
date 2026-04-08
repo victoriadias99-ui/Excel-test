@@ -4,42 +4,41 @@ include("class.autonum.php");
 
 function updateCountContact($_num, $_lista) {
     $cnx = OpenCon();
-    $consulta = 'UPDATE `v2_contacto_contador` SET `ultimo` = '.$_num.' WHERE lista = "'.$_lista.'"';
+    $consulta = 'UPDATE `v2_contacto_contador` SET `ultimo` = ? WHERE lista = ?';
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$_num, $_lista]);
 }
 
 function getCountContact($_lista) {
     $cnx = OpenCon();
-    $consulta = "SELECT * FROM `v2_contacto_contador` WHERE `lista` ='" . $_lista ."'";
+    $consulta = "SELECT * FROM `v2_contacto_contador` WHERE `lista` = ?";
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$_lista]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     return count($rows) == 0 ? null : $rows[0]['ultimo'];
 }
 
 function insertContact($_email, $_fecha, $_nombre, $_pais, $_sms, $_lista) {
     $cnx = OpenCon();
-    $consulta = 'INSERT INTO `v2_contacto`(`email`, `fecha_registro`, `nombre`, `pais`, `sms`, `lista`) '
-    . 'VALUES ("'.$_email.'","'.$_fecha.'","'.$_nombre.'","'.$_pais.'","'.$_sms.'","'.$_lista.'")';
+    $consulta = 'INSERT INTO `v2_contacto`(`email`, `fecha_registro`, `nombre`, `pais`, `sms`, `lista`) VALUES (?, ?, ?, ?, ?, ?)';
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$_email, $_fecha, $_nombre, $_pais, $_sms, $_lista]);
 }
 
 function getContact($_email, $_lista) {
     $cnx = OpenCon();
-    $consulta = "SELECT * FROM `v2_contacto` WHERE `email` = '$_email' and `lista` ='" . $_lista ."'";
+    $consulta = "SELECT * FROM `v2_contacto` WHERE `email` = ? AND `lista` = ?";
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$_email, $_lista]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     return count($rows) == 0 ? null : $rows[0];
 }
 
 function deleteContact($_email, $_lista) {
     $cnx = OpenCon();
-    $consulta = "DELETE FROM `v2_contacto` WHERE `email` = '$_email' and `lista` ='" . $_lista ."'";
+    $consulta = "DELETE FROM `v2_contacto` WHERE `email` = ? AND `lista` = ?";
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$_email, $_lista]);
 }
 
 function getTimer($_ip, $idCurso, $timezone) {
@@ -92,19 +91,18 @@ function insertIP($_ip, $idCurso, $data = null, $cache = null) {
 }
 
 function getIP($_ip, $idCurso) {
-    $consulta = "SELECT * FROM `ip_visita` WHERE `ip` = '$_ip' and `id_producto` ='" . $idCurso ."'";
+    $consulta = "SELECT * FROM `ip_visita` WHERE `ip` = ? AND `id_producto` = ?";
 
     $cnx = OpenCon();
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$_ip, $idCurso]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return count($rows) == 0 ? null : $rows[0];
 }
 
 function getVenta($idVenta) {
-    $consulta = "SELECT * FROM `ventas` WHERE `ID` = '$idVenta'";
-    //echo $consulta;
+    $consulta = "SELECT * FROM `ventas` WHERE `ID` = ?";
     $cnx = OpenCon();
     $stmt = $cnx->prepare($consulta);
     $stmt->bindValue(1, $idVenta, PDO::PARAM_STR);
@@ -146,11 +144,12 @@ function getCursoDetalleCheckout($idCurso){
     
     
     
-    $consulta = "SELECT * FROM cursos_botones where ids like '%$idCurso%';";
+    $consulta = "SELECT * FROM cursos_botones WHERE ids LIKE ?";
+    $likeParam = '%' . $idCurso . '%';
     if(isset($_GET['test']))
         echo $consulta;
     $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt->execute([$likeParam]);
     $botones = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     $data = [

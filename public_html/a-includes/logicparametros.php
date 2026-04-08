@@ -122,8 +122,9 @@ if (!isset($_GET['dev'])) {
         /**
          * aprende-excel.com, aprendiendo-excel.online, aprendiendo-excel.com a -> excel-facil.com
          * **/
-        $actual_link = "https://excel-facil.com$_SERVER[REQUEST_URI]?4";
-        header("Location: $actual_link");
+        $sanitizedUri = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
+        $actual_link = "https://excel-facil.com" . $sanitizedUri . "?4";
+        header("Location: " . $actual_link);
         die();
     }
 }
