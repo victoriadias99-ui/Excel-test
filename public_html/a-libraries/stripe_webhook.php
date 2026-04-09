@@ -413,4 +413,11 @@ echo json_encode([
     'status'          => 'ok',
     'academia_status' => $http_status,
     'academia_body'   => $response,
+    'debug' => [
+        'buyer_email'    => $buyer_email,
+        'curso_raw'      => $curso_raw,
+        'academia_slug'  => $academia_slug ?? 'no definido',
+        'password_plain' => !empty($password_plain) ? 'generado' : 'vacio (usuario ya existia)',
+        'buyer_name'     => $buyer_name,
+    ]
 ]);
