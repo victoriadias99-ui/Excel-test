@@ -136,7 +136,7 @@ if (!empty($client_ref)) {
 }
 
 // ── 4. Actualizar tabla ventas ───────────────────────────────────────────────
-include(__DIR__ . '/../a-includes/conexion.php');
+include(__DIR__ . '/../n-includes/conexion.php');
 
 try {
     $cnx = OpenCon();
