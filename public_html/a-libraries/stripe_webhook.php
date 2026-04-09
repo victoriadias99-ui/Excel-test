@@ -34,7 +34,7 @@ if (isset($_GET['test_manual'])) {
     ob_end_clean();
     
     $cnx = OpenCon();
-    $buyer_email = 'test_manual@test.com';
+    $buyer_email = 'test_manual2@test.com';
     $buyer_name  = 'Test Manual';
     $academia_slug = 'sql';
     $password_plain = bin2hex(random_bytes(5));
