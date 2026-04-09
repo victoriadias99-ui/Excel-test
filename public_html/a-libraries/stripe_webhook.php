@@ -53,7 +53,7 @@ header('Content-Type: application/json');
 
 $payload        = file_get_contents('php://input');
 $sig_header     = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
-$webhook_secret = getenv('STRIPE_WEBHOOK_SECRET') ?: '';
+$webhook_secret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? getenv('STRIPE_WEBHOOK_SECRET') ?? '';
 
 // ── 1. Verificar firma de Stripe ─────────────────────────────────────────────
 if (empty($webhook_secret)) {
