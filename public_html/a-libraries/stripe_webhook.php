@@ -50,6 +50,14 @@ const CURSO_SLUG_MAP = [
 ];
 
 header('Content-Type: application/json');
+if (isset($_GET['debug'])) {
+    echo json_encode([
+        'env' => getenv('STRIPE_WEBHOOK_SECRET'),
+        '_ENV' => $_ENV['STRIPE_WEBHOOK_SECRET'] ?? 'no disponible',
+        'all_env_keys' => array_keys($_ENV)
+    ]);
+    exit;
+}
 
 $payload        = file_get_contents('php://input');
 $sig_header     = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
