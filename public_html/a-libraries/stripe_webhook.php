@@ -34,11 +34,13 @@ if (isset($_GET['test_manual'])) {
     ob_end_clean();
     
     $cnx = OpenCon();
-    $buyer_email = 'test_manual2@test.com';
-    $buyer_name  = 'Test Manual';
+    $buyer_email = 'test_manual@test.com';
     $academia_slug = 'sql';
     $password_plain = bin2hex(random_bytes(5));
     $password_hash  = password_hash($password_plain, PASSWORD_BCRYPT);
+
+    // Borrar usuario de prueba si ya existe
+    $cnx->prepare("DELETE FROM academia_usuarios WHERE email=?")->execute([$buyer_email]);
 
     $stmtIns = $cnx->prepare(
         "INSERT INTO academia_usuarios (email, password, nombre, apellido, cursos, activo, fecha_creacion) VALUES (?,?,?,?,?,1,NOW())"
