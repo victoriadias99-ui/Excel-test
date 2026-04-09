@@ -186,9 +186,12 @@ try {
     }
 
 } catch (PDOException $e) {
-    // No abortamos: el pago esta confirmado, continuamos con el webhook
     error_log('stripe_webhook DB error: ' . $e->getMessage());
 }
+
+// DEBUG TEMPORAL
+error_log('stripe_webhook DEBUG: buyer_email=' . $buyer_email . ' curso_raw=' . $curso_raw . ' academia_slug=' . ($academia_slug ?? 'no definido aun'));
+
 // ── 4b. Crear/actualizar usuario en academia_usuarios ────────────────────────
 $password_plain = '';
 try {
