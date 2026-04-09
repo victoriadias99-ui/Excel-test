@@ -28,6 +28,50 @@ const CURSO_SLUG_MAP = [
 
 header('Content-Type: application/json');
 
+if (isset($_GET['test_manual'])) {
+    ob_start();
+    include(__DIR__ . '/../n-includes/conexion.php');
+    ob_end_clean();
+    
+    $cnx = OpenCon();
+    $buyer_email = 'test_manual@test.com';
+    $buyer_name  = 'Test Manual';
+    $academia_slug = 'sql';
+    $password_plain = bin2hex(random_bytes(5));
+    $password_hash  = password_hash($password_plain, PASSWORD_BCRYPT);
+
+    $stmtIns = $cnx->prepare(
+        "INSERT INTO academia_usuarios (email, password, nombre, apellido, cursos, activo, fecha_creacion) VALUES (?,?,?,?,?,1,NOW())"
+    );
+    $stmtIns->execute([$buyer_email, $password_hash, 'Test', 'Manual', $academia_slug]);
+
+    $resend_key = $_ENV['RESEND_API_KEY'] ?? getenv('RESEND_API_KEY') ?? '';
+    $chMail = curl_init('https://api.resend.com/emails');
+    curl_setopt_array($chMail, [
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode([
+            'from'    => 'Aprende Excel <soporte@aprende-excel.com>',
+            'to'      => ['victoria.pdias99@gmail.com'],
+            'subject' => 'Test manual webhook',
+            'html'    => '<p>Password: ' . $password_plain . '</p>',
+        ]),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 10,
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Authorization: Bearer ' . $resend_key],
+    ]);
+    $mailResponse = curl_exec($chMail);
+    $mailStatus   = curl_getinfo($chMail, CURLINFO_HTTP_CODE);
+    curl_close($chMail);
+
+    echo json_encode([
+        'password_plain' => $password_plain,
+        'resend_status'  => $mailStatus,
+        'resend_body'    => $mailResponse,
+        'resend_key_set' => !empty($resend_key),
+    ]);
+    exit;
+}
+
 $payload        = file_get_contents('php://input');
 $sig_header     = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
 $webhook_secret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? getenv('STRIPE_WEBHOOK_SECRET') ?? '';
