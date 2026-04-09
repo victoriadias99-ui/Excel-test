@@ -189,6 +189,151 @@ try {
     // No abortamos: el pago esta confirmado, continuamos con el webhook
     error_log('stripe_webhook DB error: ' . $e->getMessage());
 }
+// ── 4b. Crear/actualizar usuario en academia_usuarios ────────────────────────
+$password_plain = '';
+try {
+    // Verificar si el usuario ya existe
+    $stmtCheck = $cnx->prepare("SELECT id, cursos FROM academia_usuarios WHERE email = ?");
+    $stmtCheck->execute([$buyer_email]);
+    $userExist = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+    if ($userExist) {
+        // Usuario existe → agregar el nuevo curso si no lo tiene
+        $cursosActuales = $userExist['cursos'];
+        $cursosArray = array_filter(array_map('trim', explode(',', $cursosActuales)));
+        if (!in_array($academia_slug ?? $curso_raw, $cursosArray)) {
+            $cursosArray[] = $academia_slug ?? $curso_raw;
+        }
+        $nuevosCursos = implode(',', $cursosArray);
+        $stmtUpd = $cnx->prepare("UPDATE academia_usuarios SET cursos = ?, activo = 1 WHERE email = ?");
+        $stmtUpd->execute([$nuevosCursos, $buyer_email]);
+    } else {
+        // Usuario nuevo → crear con contraseña aleatoria
+        $password_plain = bin2hex(random_bytes(5)); // 10 chars
+        $password_hash  = password_hash($password_plain, PASSWORD_BCRYPT);
+
+        $name_parts2 = explode(' ', trim($buyer_name), 2);
+        $nom = $name_parts2[0] ?? $buyer_name;
+        $ape = $name_parts2[1] ?? '';
+
+        $stmtIns = $cnx->prepare(
+            "INSERT INTO academia_usuarios (email, password, nombre, apellido, cursos, activo, fecha_creacion)
+             VALUES (?, ?, ?, ?, ?, 1, NOW())"
+        );
+        $stmtIns->execute([
+            $buyer_email,
+            $password_hash,
+            $nom,
+            $ape,
+            $academia_slug ?? $curso_raw,
+        ]);
+    }
+} catch (PDOException $e2) {
+    error_log('stripe_webhook academia_usuarios error: ' . $e2->getMessage());
+}
+
+// ── 4c. Enviar email por Resend ──────────────────────────────────────────────
+if (!empty($password_plain)) {
+    // Solo enviamos credenciales a usuarios nuevos
+    $resend_key = $_ENV['RESEND_API_KEY'] ?? getenv('RESEND_API_KEY') ?? '';
+
+    if (!empty($resend_key)) {
+        $name_parts3 = explode(' ', trim($buyer_name), 2);
+        $emailNombre = $name_parts3[0] ?? $buyer_name;
+
+        $htmlEmail = '<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Poppins, sans-serif; background:#ffffff; padding:20px 0; }
+  .container { max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; }
+  .header { background:#1a472a; padding:40px 20px; text-align:center; border-bottom:4px solid #4ecdc4; }
+  .header h1 { font-size:28px; color:#ffffff; margin:0 0 8px 0; }
+  .header p { font-size:14px; color:#e8f5e9; margin:0; }
+  .main { padding:40px 30px; }
+  .main h2 { font-size:22px; color:#1a472a; margin:0 0 16px 0; }
+  .main p { font-size:15px; color:#555; line-height:1.6; margin:0 0 24px 0; }
+  .creds { padding:0 30px 30px; }
+  .creds-label { font-size:13px; font-weight:600; color:#1a472a; text-transform:uppercase; letter-spacing:.5px; margin:0 0 16px 0; }
+  .cred-box { background:#f8f9fa; padding:16px; border-radius:8px; border-left:4px solid #4ecdc4; margin-bottom:12px; }
+  .cred-title { font-size:12px; font-weight:600; color:#888; text-transform:uppercase; margin:0 0 8px 0; }
+  .cred-value { font-size:16px; font-family:monospace; color:#1a472a; margin:0; font-weight:600; word-break:break-all; }
+  .security { font-size:13px; color:#d32f2f; background:#ffebee; padding:12px 14px; border-radius:6px; margin:16px 0 0 0; line-height:1.5; }
+  .cta { padding:30px; text-align:center; }
+  .btn { background:#4ecdc4; color:#ffffff; border-radius:8px; font-weight:600; font-size:15px; text-decoration:none; display:inline-block; padding:16px 40px; }
+  .links { padding:20px 30px; background:#f8f9fa; text-align:center; }
+  .links a { color:#1a472a; text-decoration:none; font-size:14px; font-weight:500; margin:0 16px; }
+  .footer { padding:30px; background:#fafafa; text-align:center; }
+  .footer p { font-size:12px; color:#999; margin:8px 0; line-height:1.5; }
+  .footer a { color:#1a472a; text-decoration:none; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📊 Aprende Excel</h1>
+    <p>Tu acceso está listo</p>
+  </div>
+  <div class="main">
+    <h2>¡Bienvenido, ' . htmlspecialchars($emailNombre) . '! 🎉</h2>
+    <p>Gracias por confiar en nosotros. Tu cuenta ha sido activada exitosamente y ya podés acceder a todos nuestros cursos.</p>
+  </div>
+  <div class="creds">
+    <p class="creds-label">Tus datos de acceso:</p>
+    <div class="cred-box">
+      <p class="cred-title">📧 Usuario</p>
+      <p class="cred-value">' . htmlspecialchars($buyer_email) . '</p>
+    </div>
+    <div class="cred-box">
+      <p class="cred-title">🔐 Contraseña</p>
+      <p class="cred-value">' . htmlspecialchars($password_plain) . '</p>
+    </div>
+    <p class="security">⚠️ <strong>Importante:</strong> Por tu seguridad, recomendamos cambiar la contraseña en tu primer acceso. No compartas estos datos con nadie.</p>
+  </div>
+  <div class="cta">
+    <a class="btn" href="https://academia-production-c4cc.up.railway.app/">Inicia Sesión Aquí</a>
+  </div>
+  <div class="links">
+    <a href="https://academia-production-c4cc.up.railway.app/">Portal de Cursos</a>
+    <a href="https://aprende-excel.com/ayuda">Centro de Ayuda</a>
+  </div>
+  <div class="footer">
+    <p>¿Necesitás ayuda? Contáctanos en <a href="mailto:soporte@aprende-excel.com">soporte@aprende-excel.com</a></p>
+    <p>© 2025 Aprende Excel. Todos los derechos reservados.</p>
+  </div>
+</div>
+</body>
+</html>';
+
+        $emailPayload = json_encode([
+            'from'    => 'Aprende Excel <soporte@aprende-excel.com>',
+            'to'      => [$buyer_email],
+            'subject' => '¡Tu acceso a Aprende Excel está listo! 🎉',
+            'html'    => $htmlEmail,
+        ]);
+
+        $chMail = curl_init('https://api.resend.com/emails');
+        curl_setopt_array($chMail, [
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $emailPayload,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $resend_key,
+            ],
+        ]);
+        $mailResponse = curl_exec($chMail);
+        $mailStatus   = curl_getinfo($chMail, CURLINFO_HTTP_CODE);
+        $mailError    = curl_error($chMail);
+        curl_close($chMail);
+
+        if ($mailError || $mailStatus >= 400) {
+            error_log('stripe_webhook resend error: ' . $mailError . ' status=' . $mailStatus . ' body=' . $mailResponse);
+        }
+    }
+}
 
 // ── 5. Determinar slugs de cursos para la Academia ───────────────────────────
 // Si existe un mapeo explicito, usarlo; sino usar el curso_raw directamente.
