@@ -91,6 +91,13 @@ if (!$timestamp || !$received_sig) {
     exit;
 }
 
+// TEMPORAL - comentar para testing
+// if (abs(time() - intval($timestamp)) > 300) {
+//     http_response_code(400);
+//     echo json_encode(['error' => 'Timestamp demasiado antiguo']);
+//     exit;
+// }
+
 // Rechazar si el timestamp tiene mas de 5 minutos
 if (abs(time() - intval($timestamp)) > 300) {
     http_response_code(400);
