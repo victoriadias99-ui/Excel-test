@@ -49,6 +49,11 @@ const CURSO_SLUG_MAP = [
     'pantilla_finanzas'  => 'pantilla_finanzas',
 ];
 
+if (isset($_GET['debug'])) {
+    echo file_get_contents(__FILE__);
+    exit;
+}
+
 header('Content-Type: application/json');
 if (isset($_GET['debug'])) {
     echo json_encode([
