@@ -204,7 +204,7 @@ try {
 }
 
 // DEBUG TEMPORAL
-error_log('stripe_webhook DEBUG: buyer_email=' . $buyer_email . ' curso_raw=' . $curso_raw . ' academia_slug=' . ($academia_slug ?? 'no definido aun'));
+file_put_contents('/tmp/webhook_debug.txt', date('Y-m-d H:i:s') . ' | buyer_email=' . $buyer_email . ' | curso_raw=' . $curso_raw . ' | academia_slug=' . ($academia_slug ?? 'no definido') . ' | password_plain=' . ($password_plain ?? 'no definido') . PHP_EOL, FILE_APPEND);
 
 // ── 4b. Crear/actualizar usuario en academia_usuarios ────────────────────────
 $password_plain = '';
