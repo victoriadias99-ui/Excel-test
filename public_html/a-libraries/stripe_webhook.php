@@ -51,7 +51,7 @@ if (isset($_GET['test_manual'])) {
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => json_encode([
             'from'    => 'Aprende Excel <onboarding@resend.dev>',
-            'to'      => ['victoria.pdias99@gmail.com'],
+            'to'      => ['victoriadias99@outlook.com'],
             'subject' => 'Test manual webhook',
             'html'    => '<p>Password: ' . $password_plain . '</p>',
         ]),
