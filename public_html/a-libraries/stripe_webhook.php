@@ -98,6 +98,13 @@ if (!$timestamp || !$received_sig) {
 //     exit;
 // }
 
+// TEMPORAL - comentar para testing
+// if (!hash_equals($expected_sig, $received_sig)) {
+//     http_response_code(400);
+//     echo json_encode(['error' => 'Firma invalida']);
+//     exit;
+// }
+
 // Rechazar si el timestamp tiene mas de 5 minutos
 if (abs(time() - intval($timestamp)) > 300) {
     http_response_code(400);
