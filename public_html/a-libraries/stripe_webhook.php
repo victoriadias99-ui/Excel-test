@@ -302,3 +302,58 @@ body{font-family:Poppins,sans-serif;background:#fff;padding:20px 0}
         curl_setopt_array($chMail, [
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS
+                          => json_encode([
+                'from'    => 'Aprende Excel <soporte@aprende-excel.com>',
+                'to'      => [$buyer_email],
+                'subject' => '¡Tu acceso a Aprende Excel está listo! 🎉',
+                'html'    => $htmlEmail,
+            ]),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $resend_key,
+            ],
+        ]);
+        $mailResponse = curl_exec($chMail);
+        $mailStatus   = curl_getinfo($chMail, CURLINFO_HTTP_CODE);
+        curl_close($chMail);
+
+        if ($mailStatus >= 400) {
+            error_log('stripe_webhook resend error status=' . $mailStatus . ' body=' . $mailResponse);
+        }
+    }
+}
+
+$academia_url    = $_ENV['ACADEMIA_WEBHOOK_URL']    ?? getenv('ACADEMIA_WEBHOOK_URL')    ?? '';
+$academia_secret = $_ENV['ACADEMIA_WEBHOOK_SECRET'] ?? getenv('ACADEMIA_WEBHOOK_SECRET') ?? '';
+$http_status     = 0;
+$response        = '';
+
+if (!empty($academia_url) && !empty($academia_slug)) {
+    $name_parts = explode(' ', trim($buyer_name), 2);
+    $body = json_encode([
+        'email'    => $buyer_email,
+        'nombre'   => $name_parts[0] ?? $buyer_name,
+        'apellido' => $name_parts[1] ?? '',
+        'cursos'   => [$academia_slug],
+    ]);
+    $ch = curl_init($academia_url);
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $body,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 15,
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($body),
+            'x-webhook-secret: ' . $academia_secret,
+        ],
+    ]);
+    $response    = curl_exec($ch);
+    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+}
+
+http_response_code(200);
+echo json_encode(['status' => 'ok', 'academia_status' => $http_status]);
