@@ -38,11 +38,7 @@ if (isset($_GET['test_compra'])) {
     $buyer_name    = 'Victoria Dias';
     $curso_raw     = 'sql';
     $academia_slug = 'sql';
-    $id_venta      = 'TEST001';
-    $payment_intent = 'pi_test_001';
-    $amount_total  = 70000;
 
-    // Borrar usuario de prueba si ya existe
     $cnx->prepare("DELETE FROM academia_usuarios WHERE email=?")->execute([$buyer_email]);
 
     $password_plain = bin2hex(random_bytes(5));
@@ -166,7 +162,7 @@ if (!$event || $event['type'] !== 'checkout.session.completed') {
 }
 
 $session        = $event['data']['object'];
-$buyer_email    = $session['customer_details']['email'] ?? '';
+$buyer_email    = strtolower(trim($session['customer_details']['email'] ?? ''));
 $buyer_name     = $session['customer_details']['name']  ?? '';
 $client_ref     = $session['client_reference_id'] ?? '';
 $amount_total   = $session['amount_total']   ?? 0;
@@ -190,12 +186,10 @@ if (!empty($client_ref)) {
     }
 }
 
-// ── Determinar academia_slug ─────────────────────────────────────────────────
 $academia_slug = !empty($curso_raw)
     ? (CURSO_SLUG_MAP[$curso_raw] ?? $curso_raw)
     : '';
 
-// ── Conexión DB ──────────────────────────────────────────────────────────────
 ob_start();
 include(__DIR__ . '/../n-includes/conexion.php');
 ob_end_clean();
@@ -207,7 +201,6 @@ try {
     error_log('stripe_webhook DB connect error: ' . $e->getMessage());
 }
 
-// ── Actualizar tabla ventas ──────────────────────────────────────────────────
 if ($cnx && !empty($curso_raw) && !empty($id_venta)) {
     try {
         $stmt = $cnx->prepare(
@@ -219,7 +212,6 @@ if ($cnx && !empty($curso_raw) && !empty($id_venta)) {
     }
 }
 
-// ── Obtener nombre si está vacío ─────────────────────────────────────────────
 if ($cnx && empty($buyer_name) && !empty($curso_raw) && !empty($id_venta)) {
     try {
         $q = $cnx->prepare("SELECT NOMBRE, APELLIDO FROM ventas WHERE CURSO=? AND ID=? LIMIT 1");
@@ -229,7 +221,6 @@ if ($cnx && empty($buyer_name) && !empty($curso_raw) && !empty($id_venta)) {
     } catch (PDOException $e) {}
 }
 
-// ── Crear/actualizar usuario en academia_usuarios ────────────────────────────
 $password_plain = '';
 if ($cnx && !empty($buyer_email)) {
     try {
@@ -238,12 +229,12 @@ if ($cnx && !empty($buyer_email)) {
         $userExist = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
         if ($userExist) {
-            $cursosArray = array_filter(array_map('trim', explode(',', $userExist['cursos'])));
+            $cursosArray = array_filter(array_map('trim', explode('|', $userExist['cursos'])));
             if (!in_array($academia_slug, $cursosArray)) {
                 $cursosArray[] = $academia_slug;
             }
             $stmtUpd = $cnx->prepare("UPDATE academia_usuarios SET cursos=?, activo=1 WHERE email=?");
-            $stmtUpd->execute([implode(',', $cursosArray), $buyer_email]);
+            $stmtUpd->execute([implode('|', $cursosArray), $buyer_email]);
         } else {
             $password_plain = bin2hex(random_bytes(5));
             $password_hash  = password_hash($password_plain, PASSWORD_BCRYPT);
@@ -264,7 +255,6 @@ if ($cnx && !empty($buyer_email)) {
     }
 }
 
-// ── Enviar email por Resend ──────────────────────────────────────────────────
 if (!empty($password_plain)) {
     $resend_key  = $_ENV['RESEND_API_KEY'] ?? getenv('RESEND_API_KEY') ?? '';
     $emailNombre = explode(' ', trim($buyer_name))[0] ?? $buyer_name;
@@ -311,59 +301,4 @@ body{font-family:Poppins,sans-serif;background:#fff;padding:20px 0}
         $chMail = curl_init('https://api.resend.com/emails');
         curl_setopt_array($chMail, [
             CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => json_encode([
-                'from'    => 'Aprende Excel <soporte@aprende-excel.com>',
-                'to'      => [$buyer_email],
-                'subject' => '¡Tu acceso a Aprende Excel está listo! 🎉',
-                'html'    => $htmlEmail,
-            ]),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 10,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $resend_key,
-            ],
-        ]);
-        $mailResponse = curl_exec($chMail);
-        $mailStatus   = curl_getinfo($chMail, CURLINFO_HTTP_CODE);
-        curl_close($chMail);
-
-        if ($mailStatus >= 400) {
-            error_log('stripe_webhook resend error status=' . $mailStatus . ' body=' . $mailResponse);
-        }
-    }
-}
-
-// ── Llamar al webhook de la Academia ────────────────────────────────────────
-$academia_url    = $_ENV['ACADEMIA_WEBHOOK_URL']    ?? getenv('ACADEMIA_WEBHOOK_URL')    ?? '';
-$academia_secret = $_ENV['ACADEMIA_WEBHOOK_SECRET'] ?? getenv('ACADEMIA_WEBHOOK_SECRET') ?? '';
-$http_status     = 0;
-$response        = '';
-
-if (!empty($academia_url) && !empty($academia_slug)) {
-    $name_parts = explode(' ', trim($buyer_name), 2);
-    $body = json_encode([
-        'email'    => $buyer_email,
-        'nombre'   => $name_parts[0] ?? $buyer_name,
-        'apellido' => $name_parts[1] ?? '',
-        'cursos'   => [$academia_slug],
-    ]);
-    $ch = curl_init($academia_url);
-    curl_setopt_array($ch, [
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => $body,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 15,
-        CURLOPT_HTTPHEADER     => [
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($body),
-            'x-webhook-secret: ' . $academia_secret,
-        ],
-    ]);
-    $response    = curl_exec($ch);
-    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-}
-
-http_response_code(200);
-echo json_encode(['status' => 'ok', 'academia_status' => $http_status]);
+            CURLOPT_POSTFIELDS
