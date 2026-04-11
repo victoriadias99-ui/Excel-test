@@ -52,7 +52,7 @@ if (isset($_GET['test_manual'])) {
     curl_setopt_array($chMail, [
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => json_encode([
-            'from'    => 'Aprende Excel <onboarding@resend.dev>',
+            'from'    => 'Aprende Excel <soporte@aprende-excel.com>',
             'to'      => ['victoriadias99@outlook.com'],
             'subject' => 'Test manual webhook',
             'html'    => '<p>Password: ' . $password_plain . '</p>',
