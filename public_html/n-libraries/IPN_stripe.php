@@ -238,6 +238,12 @@ try {
     } elseif ($academiaHttpCode >= 400) {
         error_log('IPN_stripe academia HTTP ' . $academiaHttpCode . ': ' . $academiaResponse);
     }
+    // Enviar email con credenciales si la academia creó el usuario
+    $academiaData = json_decode($academiaResponse, true);
+    if (isset($academiaData['created']) && $academiaData['created'] === true) {
+    // La academia creó el usuario y ya envió el email internamente
+    // No necesitamos hacer nada más aquí
+}
 
     // 5. Facebook Events (igual que en IPN_mp.php)
     $consultaIP = "SELECT * FROM `ip_visita` WHERE `correo` = ?";
