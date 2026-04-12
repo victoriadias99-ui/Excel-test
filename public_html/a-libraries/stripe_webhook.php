@@ -36,13 +36,14 @@ if (isset($_GET['test_compra'])) {
 
     $buyer_email   = 'victoria.pdias99@gmail.com';
     $buyer_name    = 'Victoria Dias';
-    $curso_raw     = 'sql';
     $academia_slug = 'sql';
 
     $cnx->prepare("DELETE FROM academia_usuarios WHERE email=?")->execute([$buyer_email]);
 
     $password_plain = bin2hex(random_bytes(5));
     $password_hash  = password_hash($password_plain, PASSWORD_BCRYPT);
+    $password_hash  = str_replace('$2y$', '$2b$', $password_hash);
+
     $stmtIns = $cnx->prepare(
         "INSERT INTO academia_usuarios (email, password, nombre, apellido, cursos, activo, fecha_creacion) VALUES (?,?,?,?,?,1,NOW())"
     );
@@ -50,53 +51,12 @@ if (isset($_GET['test_compra'])) {
 
     $resend_key  = $_ENV['RESEND_API_KEY'] ?? getenv('RESEND_API_KEY') ?? '';
     $emailNombre = 'Victoria';
-    $htmlEmail = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-body{font-family:Poppins,sans-serif;background:#fff;padding:20px 0}
-.container{max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden}
-.header{background:#1a472a;padding:40px 20px;text-align:center;border-bottom:4px solid #4ecdc4}
-.header h1{font-size:28px;color:#fff;margin:0 0 8px}
-.header p{font-size:14px;color:#e8f5e9;margin:0}
-.main{padding:40px 30px}
-.main h2{font-size:22px;color:#1a472a;margin:0 0 16px}
-.main p{font-size:15px;color:#555;line-height:1.6;margin:0 0 24px}
-.creds{padding:0 30px 30px}
-.cred-box{background:#f8f9fa;padding:16px;border-radius:8px;border-left:4px solid #4ecdc4;margin-bottom:12px}
-.cred-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;margin:0 0 8px}
-.cred-value{font-size:16px;font-family:monospace;color:#1a472a;margin:0;font-weight:600;word-break:break-all}
-.security{font-size:13px;color:#d32f2f;background:#ffebee;padding:12px 14px;border-radius:6px;margin:16px 0 0}
-.cta{padding:30px;text-align:center}
-.btn{background:#4ecdc4;color:#fff;border-radius:8px;font-weight:600;font-size:15px;text-decoration:none;display:inline-block;padding:16px 40px}
-.footer{padding:30px;background:#fafafa;text-align:center}
-.footer p{font-size:12px;color:#999;margin:8px 0}
-.footer a{color:#1a472a;text-decoration:none}
-</style></head><body>
-<div class="container">
-  <div class="header"><h1>📊 Aprende Excel</h1><p>Tu acceso está listo</p></div>
-  <div class="main">
-    <h2>¡Bienvenido, ' . $emailNombre . '! 🎉</h2>
-    <p>Gracias por confiar en nosotros. Tu cuenta ha sido activada y ya podés acceder a tus cursos.</p>
-  </div>
-  <div class="creds">
-    <div class="cred-box"><p class="cred-title">📧 Usuario</p><p class="cred-value">' . $buyer_email . '</p></div>
-    <div class="cred-box"><p class="cred-title">🔐 Contraseña</p><p class="cred-value">' . $password_plain . '</p></div>
-    <p class="security">⚠️ <strong>Importante:</strong> Recomendamos cambiar la contraseña en tu primer acceso.</p>
-  </div>
-  <div class="cta"><a class="btn" href="https://academia-production-c4cc.up.railway.app/">Inicia Sesión Aquí</a></div>
-  <div class="footer">
-    <p>¿Necesitás ayuda? <a href="mailto:soporte@aprende-excel.com">soporte@aprende-excel.com</a></p>
-    <p>© 2025 Aprende Excel. Todos los derechos reservados.</p>
-  </div>
-</div></body></html>';
+    $htmlEmail = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Poppins,sans-serif;background:#fff;padding:20px 0}.container{max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden}.header{background:#1a472a;padding:40px 20px;text-align:center;border-bottom:4px solid #4ecdc4}.header h1{font-size:28px;color:#fff;margin:0 0 8px}.header p{font-size:14px;color:#e8f5e9;margin:0}.main{padding:40px 30px}.main h2{font-size:22px;color:#1a472a;margin:0 0 16px}.main p{font-size:15px;color:#555;line-height:1.6;margin:0 0 24px}.creds{padding:0 30px 30px}.cred-box{background:#f8f9fa;padding:16px;border-radius:8px;border-left:4px solid #4ecdc4;margin-bottom:12px}.cred-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;margin:0 0 8px}.cred-value{font-size:16px;font-family:monospace;color:#1a472a;margin:0;font-weight:600;word-break:break-all}.security{font-size:13px;color:#d32f2f;background:#ffebee;padding:12px 14px;border-radius:6px;margin:16px 0 0}.cta{padding:30px;text-align:center}.btn{background:#4ecdc4;color:#fff;border-radius:8px;font-weight:600;font-size:15px;text-decoration:none;display:inline-block;padding:16px 40px}.footer{padding:30px;background:#fafafa;text-align:center}.footer p{font-size:12px;color:#999;margin:8px 0}.footer a{color:#1a472a;text-decoration:none}</style></head><body><div class="container"><div class="header"><h1>Aprende Excel</h1><p>Tu acceso esta listo</p></div><div class="main"><h2>Bienvenido, ' . $emailNombre . '!</h2><p>Gracias por confiar en nosotros. Tu cuenta ha sido activada y ya podes acceder a tus cursos.</p></div><div class="creds"><div class="cred-box"><p class="cred-title">Usuario</p><p class="cred-value">' . $buyer_email . '</p></div><div class="cred-box"><p class="cred-title">Contrasena</p><p class="cred-value">' . $password_plain . '</p></div><p class="security">Importante: Recomendamos cambiar la contrasena en tu primer acceso.</p></div><div class="cta"><a class="btn" href="https://academia-production-c4cc.up.railway.app/">Inicia Sesion Aqui</a></div><div class="footer"><p>Necesitas ayuda? <a href="mailto:soporte@aprende-excel.com">soporte@aprende-excel.com</a></p><p>2025 Aprende Excel. Todos los derechos reservados.</p></div></div></body></html>';
 
     $chMail = curl_init('https://api.resend.com/emails');
     curl_setopt_array($chMail, [
         CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => json_encode([
-            'from'    => 'Aprende Excel <soporte@aprende-excel.com>',
-            'to'      => [$buyer_email],
-            'subject' => '¡Tu acceso a Aprende Excel está listo! 🎉',
-            'html'    => $htmlEmail,
-        ]),
+        CURLOPT_POSTFIELDS     => json_encode(['from' => 'Aprende Excel <soporte@aprende-excel.com>', 'to' => [$buyer_email], 'subject' => 'Tu acceso a Aprende Excel esta listo!', 'html' => $htmlEmail]),
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT        => 10,
         CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Authorization: Bearer ' . $resend_key],
@@ -186,9 +146,7 @@ if (!empty($client_ref)) {
     }
 }
 
-$academia_slug = !empty($curso_raw)
-    ? (CURSO_SLUG_MAP[$curso_raw] ?? $curso_raw)
-    : '';
+$academia_slug = !empty($curso_raw) ? (CURSO_SLUG_MAP[$curso_raw] ?? $curso_raw) : '';
 
 ob_start();
 include(__DIR__ . '/../n-includes/conexion.php');
@@ -203,9 +161,7 @@ try {
 
 if ($cnx && !empty($curso_raw) && !empty($id_venta)) {
     try {
-        $stmt = $cnx->prepare(
-            "UPDATE ventas SET ESTADO_MP='approved', PAGO_ID_MP=?, PAGADOR_EMAIL_MP=?, PAGADOR_NOMBRE_MP=?, FECHA_COMPRA_MP=NOW(), IMP_RECIBIDO_NETO_MP=? WHERE CURSO=? AND ID=?"
-        );
+        $stmt = $cnx->prepare("UPDATE ventas SET ESTADO_MP='approved', PAGO_ID_MP=?, PAGADOR_EMAIL_MP=?, PAGADOR_NOMBRE_MP=?, FECHA_COMPRA_MP=NOW(), IMP_RECIBIDO_NETO_MP=? WHERE CURSO=? AND ID=?");
         $stmt->execute([$payment_intent, $buyer_email, $buyer_name, $amount_total / 100, $curso_raw, $id_venta]);
     } catch (PDOException $e) {
         error_log('stripe_webhook ventas error: ' . $e->getMessage());
@@ -238,10 +194,9 @@ if ($cnx && !empty($buyer_email)) {
         } else {
             $password_plain = bin2hex(random_bytes(5));
             $password_hash  = password_hash($password_plain, PASSWORD_BCRYPT);
+            $password_hash  = str_replace('$2y$', '$2b$', $password_hash);
             $name_parts2    = explode(' ', trim($buyer_name), 2);
-            $stmtIns = $cnx->prepare(
-                "INSERT INTO academia_usuarios (email, password, nombre, apellido, cursos, activo, fecha_creacion) VALUES (?,?,?,?,?,1,NOW())"
-            );
+            $stmtIns = $cnx->prepare("INSERT INTO academia_usuarios (email, password, nombre, apellido, cursos, activo, fecha_creacion) VALUES (?,?,?,?,?,1,NOW())");
             $stmtIns->execute([
                 $buyer_email,
                 $password_hash,
@@ -260,60 +215,15 @@ if (!empty($password_plain)) {
     $emailNombre = explode(' ', trim($buyer_name))[0] ?? $buyer_name;
 
     if (!empty($resend_key)) {
-        $htmlEmail = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-body{font-family:Poppins,sans-serif;background:#fff;padding:20px 0}
-.container{max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden}
-.header{background:#1a472a;padding:40px 20px;text-align:center;border-bottom:4px solid #4ecdc4}
-.header h1{font-size:28px;color:#fff;margin:0 0 8px}
-.header p{font-size:14px;color:#e8f5e9;margin:0}
-.main{padding:40px 30px}
-.main h2{font-size:22px;color:#1a472a;margin:0 0 16px}
-.main p{font-size:15px;color:#555;line-height:1.6;margin:0 0 24px}
-.creds{padding:0 30px 30px}
-.cred-box{background:#f8f9fa;padding:16px;border-radius:8px;border-left:4px solid #4ecdc4;margin-bottom:12px}
-.cred-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;margin:0 0 8px}
-.cred-value{font-size:16px;font-family:monospace;color:#1a472a;margin:0;font-weight:600;word-break:break-all}
-.security{font-size:13px;color:#d32f2f;background:#ffebee;padding:12px 14px;border-radius:6px;margin:16px 0 0}
-.cta{padding:30px;text-align:center}
-.btn{background:#4ecdc4;color:#fff;border-radius:8px;font-weight:600;font-size:15px;text-decoration:none;display:inline-block;padding:16px 40px}
-.footer{padding:30px;background:#fafafa;text-align:center}
-.footer p{font-size:12px;color:#999;margin:8px 0}
-.footer a{color:#1a472a;text-decoration:none}
-</style></head><body>
-<div class="container">
-  <div class="header"><h1>📊 Aprende Excel</h1><p>Tu acceso está listo</p></div>
-  <div class="main">
-    <h2>¡Bienvenido, ' . htmlspecialchars($emailNombre) . '! 🎉</h2>
-    <p>Gracias por confiar en nosotros. Tu cuenta ha sido activada y ya podés acceder a tus cursos.</p>
-  </div>
-  <div class="creds">
-    <div class="cred-box"><p class="cred-title">📧 Usuario</p><p class="cred-value">' . htmlspecialchars($buyer_email) . '</p></div>
-    <div class="cred-box"><p class="cred-title">🔐 Contraseña</p><p class="cred-value">' . htmlspecialchars($password_plain) . '</p></div>
-    <p class="security">⚠️ <strong>Importante:</strong> Recomendamos cambiar la contraseña en tu primer acceso.</p>
-  </div>
-  <div class="cta"><a class="btn" href="https://academia-production-c4cc.up.railway.app/">Inicia Sesión Aquí</a></div>
-  <div class="footer">
-    <p>¿Necesitás ayuda? <a href="mailto:soporte@aprende-excel.com">soporte@aprende-excel.com</a></p>
-    <p>© 2025 Aprende Excel. Todos los derechos reservados.</p>
-  </div>
-</div></body></html>';
+        $htmlEmail = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Poppins,sans-serif;background:#fff;padding:20px 0}.container{max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden}.header{background:#1a472a;padding:40px 20px;text-align:center;border-bottom:4px solid #4ecdc4}.header h1{font-size:28px;color:#fff;margin:0 0 8px}.header p{font-size:14px;color:#e8f5e9;margin:0}.main{padding:40px 30px}.main h2{font-size:22px;color:#1a472a;margin:0 0 16px}.main p{font-size:15px;color:#555;line-height:1.6;margin:0 0 24px}.creds{padding:0 30px 30px}.cred-box{background:#f8f9fa;padding:16px;border-radius:8px;border-left:4px solid #4ecdc4;margin-bottom:12px}.cred-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;margin:0 0 8px}.cred-value{font-size:16px;font-family:monospace;color:#1a472a;margin:0;font-weight:600;word-break:break-all}.security{font-size:13px;color:#d32f2f;background:#ffebee;padding:12px 14px;border-radius:6px;margin:16px 0 0}.cta{padding:30px;text-align:center}.btn{background:#4ecdc4;color:#fff;border-radius:8px;font-weight:600;font-size:15px;text-decoration:none;display:inline-block;padding:16px 40px}.footer{padding:30px;background:#fafafa;text-align:center}.footer p{font-size:12px;color:#999;margin:8px 0}.footer a{color:#1a472a;text-decoration:none}</style></head><body><div class="container"><div class="header"><h1>Aprende Excel</h1><p>Tu acceso esta listo</p></div><div class="main"><h2>Bienvenido, ' . htmlspecialchars($emailNombre) . '!</h2><p>Gracias por confiar en nosotros. Tu cuenta ha sido activada y ya podes acceder a tus cursos.</p></div><div class="creds"><div class="cred-box"><p class="cred-title">Usuario</p><p class="cred-value">' . htmlspecialchars($buyer_email) . '</p></div><div class="cred-box"><p class="cred-title">Contrasena</p><p class="cred-value">' . htmlspecialchars($password_plain) . '</p></div><p class="security">Importante: Recomendamos cambiar la contrasena en tu primer acceso.</p></div><div class="cta"><a class="btn" href="https://academia-production-c4cc.up.railway.app/">Inicia Sesion Aqui</a></div><div class="footer"><p>Necesitas ayuda? <a href="mailto:soporte@aprende-excel.com">soporte@aprende-excel.com</a></p><p>2025 Aprende Excel. Todos los derechos reservados.</p></div></div></body></html>';
 
         $chMail = curl_init('https://api.resend.com/emails');
         curl_setopt_array($chMail, [
             CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS
-                          => json_encode([
-                'from'    => 'Aprende Excel <soporte@aprende-excel.com>',
-                'to'      => [$buyer_email],
-                'subject' => '¡Tu acceso a Aprende Excel está listo! 🎉',
-                'html'    => $htmlEmail,
-            ]),
+            CURLOPT_POSTFIELDS     => json_encode(['from' => 'Aprende Excel <soporte@aprende-excel.com>', 'to' => [$buyer_email], 'subject' => 'Tu acceso a Aprende Excel esta listo!', 'html' => $htmlEmail]),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => 10,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $resend_key,
-            ],
+            CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'Authorization: Bearer ' . $resend_key],
         ]);
         $mailResponse = curl_exec($chMail);
         $mailStatus   = curl_getinfo($chMail, CURLINFO_HTTP_CODE);
