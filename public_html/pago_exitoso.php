@@ -157,7 +157,7 @@ if (isset($_GET['test'])) {
                 <div class="row justify-content-center align-items-center">
                     <div class="col-md-5">
                         <div class="">
-                            <img src="https://excel-facil.com/n-assets/img/logo-excel.png" class="img-fluid" alt="product">
+                            <img src="a-img/logojpg.jpg" class="img-fluid" alt="product">
                         </div>
                     </div>
                     <div class="col-md-1">&nbsp;</div>
@@ -165,9 +165,9 @@ if (isset($_GET['test'])) {
                         <div class="section-heading">
                             <h1 class="mt-5 text-dark pt-5"><b>¡Listo!&nbsp;&nbsp;</b>🙌
                                 <hr>
-                                <p class="lead">Tu pago se acreditó correctamente. ¡Te damos la bienvenida a <?= $producto['TITULO'] ?>! Para ver las instrucciones, clickeá el siguiente botón</p>
+                                <p class="lead">Tu pago se acreditó correctamente. ¡Te damos la bienvenida a <?= $producto['TITULO'] ?>! Hacé click para acceder a la Academia.</p>
                             </h1>
-                            <a class="btn btn-block btn-lg py-4 btn-outline-light" style="background-color:#e6007e;" href="unirse.php?idVenta=<?= $_idVenta ?>"><b>Clickeame&nbsp;</b>👉</a>
+                            <a class="btn btn-block btn-lg py-4 btn-outline-light" style="background-color:#e6007e;" href="https://academia-production-c4cc.up.railway.app/" target="_blank"><b>Ir a la Academia&nbsp;</b>👉</a>
                         </div>
                     </div>
                 </div>
