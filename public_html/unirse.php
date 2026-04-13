@@ -61,7 +61,7 @@ if (isset($_GET['test'])) {
                 <div class="row justify-content-center align-items-center">
                     <div class="col-md-5">
                         <div class="product-img">
-                            <img src="img/laptopconlogo.jpg" class="img-fluid" alt="product">
+                            <img src="a-img/logojpg.jpg" class="img-fluid" alt="product">
                         </div>
                     </div>
                     <div class="col-md-1">&nbsp;</div>
@@ -81,6 +81,7 @@ if (isset($_GET['test'])) {
                             echo '<a class="btn btn-block btn-lg py-4 btn-outline-light" target="_blank" style="background-color:#e6007e;" href="' . $value . '"><b>EMPEZAR EL CURSO "' . strtoupper($key) . '" &nbsp;</b>👉</a>';
                         }
                         ?>
+                        <a class="btn btn-block btn-lg py-4 btn-outline-light mt-3" style="background-color:#1a472a;" href="https://academia-production-c4cc.up.railway.app/" target="_blank"><b>🎓 Ir a la Academia Online &nbsp;</b>👉</a>
                         <div class="mt-4 p-3" style="background:#f8f9fa; border-radius:8px; border:1px solid #dee2e6;">
                             <p class="mb-2"><strong>¿No recibiste el email con tu contraseña?</strong></p>
                             <p class="text-muted small mb-3">Revisá la carpeta de Spam/No deseados. Si aún no lo encontrás, podemos reenviar tus credenciales de acceso.</p>

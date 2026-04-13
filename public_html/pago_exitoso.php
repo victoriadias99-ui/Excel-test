@@ -167,7 +167,7 @@ if (isset($_GET['test'])) {
                                 <hr>
                                 <p class="lead">Tu pago se acreditó correctamente. ¡Te damos la bienvenida a <?= $producto['TITULO'] ?>! Hacé click para acceder a la Academia.</p>
                             </h1>
-                            <a class="btn btn-block btn-lg py-4 btn-outline-light" style="background-color:#e6007e;" href="https://academia-production-c4cc.up.railway.app/" target="_blank"><b>Ir a la Academia&nbsp;</b>👉</a>
+                            <a class="btn btn-block btn-lg py-4 btn-outline-light" style="background-color:#e6007e;" href="unirse.php?idVenta=<?= $_idVenta ?>"><b>Clickeame&nbsp;</b>👉</a>
                         </div>
                     </div>
                 </div>
