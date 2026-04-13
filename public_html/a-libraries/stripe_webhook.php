@@ -34,7 +34,7 @@ if (isset($_GET['test_compra'])) {
     ob_end_clean();
     $cnx = OpenCon();
 
-    $buyer_email   = 'victoria.pdias99@gmail.com';
+    $buyer_email   = 'victoria.pdias99@outlook.com';
     $buyer_name    = 'Victoria Dias';
     $academia_slug = 'sql';
 
