@@ -177,7 +177,7 @@ try {
             'email'    => $email,
             'dominio'  => $__url,
         ],
-        'success_url' => $urlRoot . '?pago=exitoso&idVenta=' . $id_venta,
+        'success_url' => $urlRoot . 'pago_exitoso.php?idVenta=' . $id_venta,
         'cancel_url'  => $urlcurso . 'checkout.php',
     ];
 

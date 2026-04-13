@@ -75,12 +75,50 @@ if (isset($_GET['test'])) {
                         <h4 class="mt-5">✅ ¡Novedad!</h4>
                         <p class="">Ahora también podés realizar el curso a través  <b>de nuestra Academia Online</b>. Allí se encuentran todos los videos para que puedas cursar :).<br><br></p>
                         <hr>
-                        <p class="">Tu usuario y contraseña es: <b><?= strtolower($venta['EMAIL'])?></b></p>
+                        <p class="">Tu usuario es: <b><?= strtolower($venta['EMAIL'])?></b></p>
                         <?php
                         foreach ($jsonUrlGrupos as $key => $value){
                             echo '<a class="btn btn-block btn-lg py-4 btn-outline-light" target="_blank" style="background-color:#e6007e;" href="' . $value . '"><b>EMPEZAR EL CURSO "' . strtoupper($key) . '" &nbsp;</b>👉</a>';
                         }
                         ?>
+                        <div class="mt-4 p-3" style="background:#f8f9fa; border-radius:8px; border:1px solid #dee2e6;">
+                            <p class="mb-2"><strong>¿No recibiste el email con tu contraseña?</strong></p>
+                            <p class="text-muted small mb-3">Revisá la carpeta de Spam/No deseados. Si aún no lo encontrás, podemos reenviar tus credenciales de acceso.</p>
+                            <button id="btn-reenviar" class="btn btn-outline-secondary" type="button">
+                                📧 Reenviar credenciales de acceso
+                            </button>
+                            <div id="reenviar-msg" class="mt-2" style="display:none;"></div>
+                        </div>
+                        <script>
+                        document.getElementById('btn-reenviar').addEventListener('click', function() {
+                            var btn = this;
+                            btn.disabled = true;
+                            btn.textContent = 'Enviando...';
+                            var formData = new FormData();
+                            formData.append('idVenta', '<?= htmlspecialchars($_idVenta, ENT_QUOTES) ?>');
+                            fetch('reenviar_credenciales.php', { method: 'POST', body: formData })
+                                .then(function(r){ return r.json(); })
+                                .then(function(data) {
+                                    var msg = document.getElementById('reenviar-msg');
+                                    msg.style.display = 'block';
+                                    if (data.ok) {
+                                        msg.innerHTML = '<span style="color:green;">✅ ¡Listo! Te enviamos las credenciales a <strong><?= htmlspecialchars(strtolower($venta['EMAIL']), ENT_QUOTES) ?></strong>. Revisá tu bandeja de entrada y spam.</span>';
+                                        btn.textContent = '✅ Email enviado';
+                                    } else {
+                                        msg.innerHTML = '<span style="color:red;">❌ Hubo un problema al enviar el email. Por favor escribinos por WhatsApp.</span>';
+                                        btn.disabled = false;
+                                        btn.textContent = '📧 Reenviar credenciales de acceso';
+                                    }
+                                })
+                                .catch(function() {
+                                    var msg = document.getElementById('reenviar-msg');
+                                    msg.style.display = 'block';
+                                    msg.innerHTML = '<span style="color:red;">❌ Error de conexión. Intentá nuevamente.</span>';
+                                    btn.disabled = false;
+                                    btn.textContent = '📧 Reenviar credenciales de acceso';
+                                });
+                        });
+                        </script>
                     </div>
                 </div>
             </div>
