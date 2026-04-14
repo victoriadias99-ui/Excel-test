@@ -19,6 +19,13 @@ $alumnosMes       = '527';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planes — Aprende Excel</title>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PR68WN3');</script>
+    <!-- End Google Tag Manager -->
     <!-- Bootstrap 4.6 via jsDelivr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <!-- Montserrat Google Fonts -->
@@ -426,6 +433,10 @@ $alumnosMes       = '527';
     </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PR68WN3"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <!-- NAVBAR — solo logo, fondo completo igual al sitio -->
 <header class="position-relative">
@@ -615,7 +626,7 @@ $alumnosMes       = '527';
         el.style.display='flex';el.style.animation='none';void el.offsetWidth;el.style.animation='slideUp 0.4s ease forwards';
         setTimeout(function(){el.style.opacity='0';el.style.transition='opacity 0.35s';setTimeout(function(){el.style.display='none';el.style.opacity='1';el.style.transition='';},350);},5000);
     }
-    setTimeout(function(){show();setInterval(show,25000);},3000);
+    setTimeout(function(){show();setInterval(show,10000);},4000);
 })();
 </script>
 </body>
