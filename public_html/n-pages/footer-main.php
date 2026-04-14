@@ -1,4 +1,37 @@
 
+<!-- ===== COUNTDOWN PROMO BANNER ===== -->
+<div id="promo-countdown-bar" style="position:fixed;top:0;left:0;width:100%;z-index:99999;background:linear-gradient(90deg,#006b52 0%,#008b69 50%,#00a87e 100%);color:#fff;text-align:center;padding:9px 50px 9px 20px;display:flex;align-items:center;justify-content:center;gap:18px;box-shadow:0 3px 12px rgba(0,0,0,0.3);box-sizing:border-box;">
+    <span style="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;">&#127873; PROMO ESPECIAL PARA NUEVOS ALUMNOS</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+        <div style="display:flex;align-items:center;gap:5px;"><span id="pcd-h" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);padding:3px 10px;border-radius:5px;font-size:19px;font-weight:700;min-width:38px;display:inline-block;text-align:center;">00</span><span style="font-size:12px;font-weight:600;opacity:.9;">Hrs</span></div>
+        <span style="font-size:18px;opacity:.5;margin:0 2px;">&#183;</span>
+        <div style="display:flex;align-items:center;gap:5px;"><span id="pcd-m" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);padding:3px 10px;border-radius:5px;font-size:19px;font-weight:700;min-width:38px;display:inline-block;text-align:center;">00</span><span style="font-size:12px;font-weight:600;opacity:.9;">Min</span></div>
+        <span style="font-size:18px;opacity:.5;margin:0 2px;">&#183;</span>
+        <div style="display:flex;align-items:center;gap:5px;"><span id="pcd-s" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);padding:3px 10px;border-radius:5px;font-size:19px;font-weight:700;min-width:38px;display:inline-block;text-align:center;">00</span><span style="font-size:12px;font-weight:600;opacity:.9;">Seg</span></div>
+    </div>
+    <button onclick="document.getElementById('promo-countdown-bar').style.display='none';document.body.style.paddingTop='0';" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:14px;cursor:pointer;width:26px;height:26px;border-radius:50%;line-height:26px;padding:0;">&#x2715;</button>
+</div>
+<script>
+(function(){
+    var D=2*60*60*1000,k='aprendePromoEnd_v1';
+    var st=parseInt(localStorage.getItem(k)||'0');
+    var et=(st&&st>Date.now())?st:Date.now()+D;
+    if(!st||st<=Date.now())localStorage.setItem(k,et);
+    function pad(n){return n<10?'0'+n:''+n;}
+    function tick(){
+        var diff=et-Date.now();
+        if(diff<=0){et=Date.now()+D;localStorage.setItem(k,et);diff=D;}
+        var h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+        var hE=document.getElementById('pcd-h'),mE=document.getElementById('pcd-m'),sE=document.getElementById('pcd-s');
+        if(hE)hE.textContent=pad(h);if(mE)mE.textContent=pad(m);if(sE)sE.textContent=pad(s);
+    }
+    tick();setInterval(tick,1000);
+    var bar=document.getElementById('promo-countdown-bar');
+    if(bar)document.body.style.paddingTop=bar.offsetHeight+'px';
+})();
+</script>
+<!-- ===== END COUNTDOWN PROMO BANNER ===== -->
+
 <footer>
     <!-- Terms & Condition Modal -->
     <div class="modal fade" id="terms" tabindex="-1" role="dialog" aria-labelledby="termstitle" aria-hidden="true">
