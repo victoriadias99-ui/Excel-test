@@ -101,7 +101,18 @@ try {
     $item->quantity = 1;
     $item->description = $rows[0]['DESCRIPCION']. ' |';
     $item->currency_id = "ARS";
-    $item->unit_price = $pagoTotal = $rows[0]['PRECIO_UNITARIO'];
+    // Intentar obtener precio actualizado desde la Academia (Railway)
+    $academiaApiUrl = getenv('ACADEMIA_API_URL') ?: 'https://academia-production-c4cc.up.railway.app';
+    $academiaPrecio = null;
+    $apiRaw = @file_get_contents($academiaApiUrl . '/api/precios');
+    if ($apiRaw !== false) {
+        $apiData = json_decode($apiRaw, true);
+        if (isset($apiData['precios'][$curso]['precio_ars']) && $apiData['precios'][$curso]['precio_ars'] > 0) {
+            $academiaPrecio = intval($apiData['precios'][$curso]['precio_ars']);
+        }
+    }
+    $precioFinal = ($academiaPrecio !== null) ? $academiaPrecio : $rows[0]['PRECIO_UNITARIO'];
+    $item->unit_price = $pagoTotal = $precioFinal;
     $item->picture_url = $urlRoot . "a-img/logojpg.jpg";
 
     // Crea un ítem en la preferencia
@@ -133,7 +144,7 @@ try {
         $itemdesc->quantity = 1;
         $itemdesc->description = $rows[0]['DESCRIPCION'] . 'con descuento del ' . $rows_descuento[0]['PORCENTAJE'] . '%';
         $itemdesc->currency_id = "ARS";
-        $itemdesc->unit_price = $pagoTotal = (($rows[0]['PRECIO_UNITARIO'] * ($rows_descuento[0]['PORCENTAJE'] / 100)) * -1);
+        $itemdesc->unit_price = $pagoTotal = (($precioFinal * ($rows_descuento[0]['PORCENTAJE'] / 100)) * -1);
         $itemdesc->picture_url = $urlRoot . "a-img/logowhite.jpg";
     }
 
