@@ -37,12 +37,12 @@ $(".sc-roll").click(function() {
         + '<span style="font-size:18px;opacity:.5;margin:0 2px;">&#183;</span>'
         + '<div style="display:flex;align-items:center;gap:5px;"><span id="pcd-s" style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);padding:3px 10px;border-radius:5px;font-size:19px;font-weight:700;min-width:38px;display:inline-block;text-align:center;">00</span><span style="font-size:12px;font-weight:600;opacity:.9;">Seg</span></div>'
         + '</div>'
-        + '<button onclick="document.getElementById(\'promo-countdown-bar\').style.display=\'none\';document.body.style.paddingTop=\'0\';" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:14px;cursor:pointer;width:26px;height:26px;border-radius:50%;line-height:26px;padding:0;">&#x2715;</button>';
+        + '';
 
     var s = bar.style;
     s.cssText = 'position:fixed;top:0;left:0;width:100%;z-index:99999;'
         + 'background:linear-gradient(90deg,#4a0a99 0%,#6a0fd4 40%,#903fff 100%);'
-        + 'color:#fff;text-align:center;padding:9px 50px 9px 20px;'
+        + 'color:#fff;text-align:center;padding:9px 20px;'
         + 'display:flex;align-items:center;justify-content:center;gap:18px;'
         + 'box-shadow:0 3px 12px rgba(0,0,0,0.35);box-sizing:border-box;';
 
