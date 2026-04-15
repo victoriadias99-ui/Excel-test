@@ -18,7 +18,9 @@
 // 1. TASA ARS → USD
 // Cuántos ARS equivalen a 1 USD (dólar libre/MEP)
 // ─────────────────────────────────────────────
-define('TASA_ARS_USD', 1100);   // 1 USD = 1100 ARS  ← actualizar cuando varíe
+if (!defined('TASA_ARS_USD')) {
+    define('TASA_ARS_USD', 1100);   // 1 USD = 1100 ARS  ← actualizar cuando varíe
+}
 
 // ─────────────────────────────────────────────
 // 2. TASAS USD → MONEDA LOCAL
@@ -68,6 +70,7 @@ $tasasDesdeUSD = [
  * @param  string        $moneda      Código ISO de la moneda destino (ej: 'COP', 'MXN')
  * @return string                     Precio formateado sin símbolo (ej: "4.200" o "17.50")
  */
+if (!function_exists('convertirPrecio')):
 function convertirPrecio($precioARS, $moneda) {
     global $tasasDesdeUSD;
 
@@ -82,6 +85,7 @@ function convertirPrecio($precioARS, $moneda) {
 
     return formatearPrecio($precioLocal, $moneda);
 }
+endif;
 
 // ─────────────────────────────────────────────
 // 4. FORMATEO DE NÚMEROS SEGÚN MONEDA
@@ -94,6 +98,7 @@ function convertirPrecio($precioARS, $moneda) {
  * @param  string  $moneda   Código ISO de la moneda
  * @return string            Número formateado (sin símbolo)
  */
+if (!function_exists('formatearPrecio')):
 function formatearPrecio($precio, $moneda) {
     // Monedas que usan 2 decimales
     $conDecimales = ['USD', 'EUR', 'BRL', 'PAB', 'PEN', 'BOB', 'UYU'];
@@ -105,3 +110,4 @@ function formatearPrecio($precio, $moneda) {
     // Resto de LatAm: sin decimales, punto como separador de miles
     return number_format($precio, 0, ',', '.');
 }
+endif;
