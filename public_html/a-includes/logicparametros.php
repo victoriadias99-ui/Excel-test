@@ -1,14 +1,15 @@
 <?php
 require_once  dirname(__DIR__) . '/a-libraries/vendor/autoload.php';
 
-use Ipdata\ApiClient\Ipdata;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
 // La página es dinámica (precios por país) — Cloudflare no debe cachearla
-header('Cache-Control: no-store, no-cache, must-revalidate');
-header('Pragma: no-cache');
+if (!headers_sent()) {
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Pragma: no-cache');
+}
 
 // ─── Obtener IP real del visitante ───────────────────────────────────────────
 if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
@@ -22,16 +23,13 @@ if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
 }
 $ip = explode(',', str_replace(' ', '', $ip))[0];
 
-// ─── API key de ipdata (leída desde variable de entorno) ─────────────────────
-$keyApi = getenv('IPDATA_API_KEY') ?: '670ffe7a0bd967e949ee51ff856a24a4812fe48f9efe99140e1ce4fd';
-
-// ─── Default cuando no se puede detectar el país ────────────────────────────
+// ─── Default cuando no se puede detectar el país ─────────────────────────────
 $dataDefault = [
     'country_code' => 'AR',
     'currency'     => ['code' => 'ARS', 'symbol' => '$'],
 ];
 
-// ─── Mapa país → moneda (fallback si la API no devuelve currency) ────────────
+// ─── Mapa país → moneda ───────────────────────────────────────────────────────
 $currencyByCountry = [
     'AR' => ['code' => 'ARS', 'symbol' => '$'],
     'MX' => ['code' => 'MXN', 'symbol' => '$'],
@@ -53,15 +51,14 @@ $currencyByCountry = [
     'CU' => ['code' => 'CUP', 'symbol' => '$'],
     'BR' => ['code' => 'BRL', 'symbol' => 'R$'],
     'US' => ['code' => 'USD', 'symbol' => '$'],
+    'CA' => ['code' => 'USD', 'symbol' => '$'],
     'ES' => ['code' => 'EUR', 'symbol' => '€'],
     'DE' => ['code' => 'EUR', 'symbol' => '€'],
     'FR' => ['code' => 'EUR', 'symbol' => '€'],
     'IT' => ['code' => 'EUR', 'symbol' => '€'],
-    'CA' => ['code' => 'USD', 'symbol' => '$'],
     'GB' => ['code' => 'USD', 'symbol' => '$'],
 ];
 
-// ─── Asegura que $data tenga country_code y currency válidos ─────────────────
 function normalizarDataIP($data, $currencyByCountry, $dataDefault) {
     if (empty($data['country_code'])) {
         return $dataDefault;
@@ -76,22 +73,19 @@ function normalizarDataIP($data, $currencyByCountry, $dataDefault) {
 }
 
 /**
- * Detecta el país de una IP usando ipdata como primario
- * e ip-api.com como fallback gratuito.
- * Nunca bloquea más de 8 segundos en total.
+ * Detecta el país de una IP.
+ * 1° Cloudflare CF-IPCountry header (instantáneo, muy confiable)
+ * 2° ip-api.com (gratis, sin key)
+ * 3° Default AR
  */
-function detectarPais($ip, $keyApi, $currencyByCountry, $dataDefault) {
-    // Intento 1: ipdata.co
-    try {
-        $httpClient = new Psr18Client(HttpClient::create(['timeout' => 4]));
-        $psr17Factory = new Psr17Factory();
-        $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
-        $d = $ipdata->lookup($ip);
-        if (!empty($d['country_code'])) {
-            return normalizarDataIP($d, $currencyByCountry, $dataDefault);
-        }
-    } catch (\Exception $e) {
-        // fall through to backup
+function detectarPais($ip, $currencyByCountry, $dataDefault) {
+    // Intento 1: header de Cloudflare (el más rápido y confiable)
+    $cfCountry = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
+    if ($cfCountry && $cfCountry !== 'XX' && $cfCountry !== 'T1') {
+        $currency = isset($currencyByCountry[$cfCountry])
+            ? $currencyByCountry[$cfCountry]
+            : ['code' => 'USD', 'symbol' => '$'];
+        return ['country_code' => $cfCountry, 'currency' => $currency];
     }
 
     // Intento 2: ip-api.com (gratis, sin key, muy rápido)
@@ -112,16 +106,12 @@ function detectarPais($ip, $keyApi, $currencyByCountry, $dataDefault) {
                 return ['country_code' => $cc, 'currency' => $currency];
             }
         }
-    } catch (\Exception $e) {
-        // fall through to default
-    }
+    } catch (\Exception $e) { }
 
     return $dataDefault;
 }
 
-// ─── Determinar clave de caché para esta visita ──────────────────────────────
-// productoIP tiene prioridad (páginas de cursos individuales lo setean)
-// Si no hay producto ni curso, usamos '_global' para cachear igual
+// ─── Determinar clave de caché ────────────────────────────────────────────────
 $forceRefresh = isset($_GET['resetip']) || isset($_GET['dev']);
 
 if (isset($productoIP) && $productoIP != null) {
@@ -136,7 +126,7 @@ if (isset($productoIP) && $productoIP != null) {
 $dataIP = $forceRefresh ? null : getIP($ip, $cacheKey);
 
 if ($dataIP == null) {
-    $data = detectarPais($ip, $keyApi, $currencyByCountry, $dataDefault);
+    $data = detectarPais($ip, $currencyByCountry, $dataDefault);
     insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
 } else {
     $data = json_decode($dataIP['data'], true);
@@ -144,13 +134,12 @@ if ($dataIP == null) {
     updateIP($ip, $cacheKey, $dataIP['visitas'] + 1, json_encode($_COOKIE));
 }
 
-// ─── Redirección de dominios alternativos ────────────────────────────────────
+// ─── Redirección de dominios alternativos ─────────────────────────────────────
 if (!isset($_GET['dev'])) {
     $dominio = str_replace('www.', '', $_SERVER['HTTP_HOST']);
     if (in_array($dominio, ['aprendiendo-excel.online', 'aprendiendo-excel.com', 'excel-facil.online'])) {
         $sanitizedUri = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
-        $actual_link  = 'https://excel-facil.com' . $sanitizedUri . '?4';
-        header('Location: ' . $actual_link);
+        header('Location: https://excel-facil.com' . $sanitizedUri . '?4');
         die();
     }
 }
@@ -165,13 +154,13 @@ $curso          = isset($_GET['curso']) ? $_GET['curso'] : $idCursoDefault;
 
 // ─── DEBUG: barra de diagnóstico con ?dev o ?resetip ─────────────────────────
 if (isset($_GET['dev']) || isset($_GET['resetip'])) {
+    $cfRaw = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? 'N/A'));
     echo '<div style="position:fixed;top:0;left:0;right:0;background:#1a1a2e;color:#00ff88;font-family:monospace;font-size:13px;padding:10px 16px;z-index:99999;border-bottom:2px solid #00ff88">';
     echo '<strong>GEO DEBUG</strong> &nbsp;|&nbsp; ';
     echo 'IP: <strong>' . htmlspecialchars($ip) . '</strong> &nbsp;|&nbsp; ';
+    echo 'CF-Country: <strong>' . htmlspecialchars($cfRaw) . '</strong> &nbsp;|&nbsp; ';
     echo 'Pais: <strong>' . htmlspecialchars($country) . '</strong> &nbsp;|&nbsp; ';
     echo 'Moneda: <strong>' . htmlspecialchars($moneda) . '</strong> &nbsp;|&nbsp; ';
-    echo 'Simbolo: <strong>' . htmlspecialchars($simbolo) . '</strong> &nbsp;|&nbsp; ';
-    echo 'Cache key: <strong>' . htmlspecialchars($cacheKey) . '</strong> &nbsp;|&nbsp; ';
-    echo 'Lookup: <strong>' . ($forceRefresh ? 'FRESH (cache ignorado)' : 'desde DB') . '</strong>';
+    echo 'Cache: <strong>' . ($forceRefresh ? 'FRESH' : 'DB') . '</strong>';
     echo '</div><div style="height:40px"></div>';
 }
