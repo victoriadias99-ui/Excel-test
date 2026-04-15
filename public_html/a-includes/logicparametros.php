@@ -6,6 +6,10 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
+// La página es dinámica (precios por país) — Cloudflare no debe cachearla
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Pragma: no-cache');
+
 // ─── Obtener IP real del visitante ───────────────────────────────────────────
 if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
     $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
