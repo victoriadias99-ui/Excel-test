@@ -123,15 +123,20 @@ if (isset($productoIP) && $productoIP != null) {
 }
 
 // ─── Leer de caché o hacer lookup ────────────────────────────────────────────
-$dataIP = $forceRefresh ? null : getIP($ip, $cacheKey);
+$existingIP = getIP($ip, $cacheKey);
 
-if ($dataIP == null) {
+if ($forceRefresh || $existingIP == null) {
     $data = detectarPais($ip, $currencyByCountry, $dataDefault);
-    insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    if ($existingIP === null) {
+        insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    } else {
+        // Actualiza país/moneda en DB (no re-inserta para evitar error de clave duplicada)
+        refreshIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    }
 } else {
-    $data = json_decode($dataIP['data'], true);
+    $data = json_decode($existingIP['data'], true);
     $data = normalizarDataIP($data, $currencyByCountry, $dataDefault);
-    updateIP($ip, $cacheKey, $dataIP['visitas'] + 1, json_encode($_COOKIE));
+    updateIP($ip, $cacheKey, $existingIP['visitas'] + 1, json_encode($_COOKIE));
 }
 
 // ─── Redirección de dominios alternativos ─────────────────────────────────────

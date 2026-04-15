@@ -78,6 +78,18 @@ function updateIP($_ip, $idCurso, $count, $cache = null) {
     ]);
 }
 
+function refreshIP($_ip, $idCurso, $data = null, $cache = null) {
+    $cnx = OpenCon();
+    $consulta = "UPDATE `ip_visita` SET `data` = ?, `cache` = ?, `visitas` = `visitas` + 1 WHERE `ip` = ? AND `id_producto` = ?";
+    $stmt = $cnx->prepare($consulta);
+    $stmt->execute([
+        $data == null ? '' : $data,
+        $cache == null ? '' : $cache,
+        $_ip,
+        $idCurso
+    ]);
+}
+
 function insertIP($_ip, $idCurso, $data = null, $cache = null) {
     $cnx = OpenCon();
     $consulta = "INSERT INTO `ip_visita`(`ip`, `id_producto`, `data`, `cache`) VALUES (?, ?, ?, ?)";

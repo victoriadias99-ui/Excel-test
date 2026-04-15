@@ -112,15 +112,19 @@ $cacheKey = isset($productoIP) && $productoIP != null
     ? $productoIP
     : (isset($idcurso) ? $idcurso : (isset($_GET['curso']) ? $_GET['curso'] : '_global'));
 
-$dataIP = $forceRefresh ? null : getIP($ip, $cacheKey);
+$existingIP = getIP($ip, $cacheKey);
 
-if ($dataIP == null) {
+if ($forceRefresh || $existingIP == null) {
     $data = n_detectarPais($ip, $currencyByCountry, $dataDefault);
-    insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    if ($existingIP === null) {
+        insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    } else {
+        refreshIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    }
 } else {
-    $data = json_decode($dataIP['data'], true);
+    $data = json_decode($existingIP['data'], true);
     $data = n_normalizarDataIP($data, $currencyByCountry, $dataDefault);
-    updateIP($ip, $cacheKey, $dataIP['visitas'] + 1, json_encode($_COOKIE));
+    updateIP($ip, $cacheKey, $existingIP['visitas'] + 1, json_encode($_COOKIE));
 }
 
 // ─── Redirección dominios alternativos ───────────────────────────────────────
