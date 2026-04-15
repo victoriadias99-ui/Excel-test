@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs head:*)",
+      "Bash(xargs cat:*)",
+      "Bash(grep -r \"Stripe\\\\\\\\\\\\\\\\Checkout\\\\\\\\\\\\\\\\Session\" /c/Users/vicki/Documents/GitHub/Excel-test/public_html --include=\"*.php\" -A 10)",
+      "Bash(powershell -Command \"Remove-Item 'C:\\\\Users\\\\vicki\\\\Documents\\\\GitHub\\\\Excel-test\\\\.git\\\\index.lock' -Force -ErrorAction SilentlyContinue; Write-Host 'done'\")",
+      "Bash(powershell -Command \"Remove-Item -Path 'C:\\\\Users\\\\vicki\\\\Documents\\\\GitHub\\\\Excel-test\\\\.git\\\\index.lock' -Force; Write-Host 'Eliminado'\")",
+      "Bash(powershell -Command \"Get-ChildItem 'C:\\\\Users\\\\vicki\\\\Documents\\\\GitHub\\\\Excel-test\\\\.git\\\\' -Filter '*.lock' -Recurse | Select-Object FullName\")",
+      "Bash(powershell -Command \"Get-ChildItem 'C:\\\\Users\\\\vicki\\\\Documents\\\\GitHub\\\\Excel-test\\\\.git\\\\' | Select-Object Name, LastWriteTime\")",
+      "Bash(xargs -0 grep -n \"https\\\\?://\")",
+      "Bash(xargs -0 grep -l \"https://\")",
+      "Bash(node fix-prices.js)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)"
+    ]
+  }
+}
