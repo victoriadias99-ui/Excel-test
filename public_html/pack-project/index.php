@@ -13,9 +13,9 @@ $precioJunto = $curso1['PRECIO_UNITARIO'] +$curso2['PRECIO_UNITARIO'] + $curso3[
 
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO'];
-$precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
 $precioCursoOficialVal = intval(($value / $curso['PORCENTAJE_DES']) * 100);
-$precioCurso = '$' . $value . ' ARS';
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
 
 ?>
 <!DOCTYPE html>

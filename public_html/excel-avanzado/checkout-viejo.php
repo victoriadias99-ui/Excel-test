@@ -15,9 +15,9 @@ $curso = $data['producto']; // Se obtiene los datos del producto
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO']; // Precio que pagará el cliente 
 $precioDescuento = $value;
-$precioCursoDescuento = '$' . $value . ' ARS'; // Formato precio que pagará el cliente 
-$precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS'; // Precio que se visualizará como el precio original sin descuento
-$diferencia = '$' . (intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value) . ' ARS'; // Diferencia entre el precio original y el descuento
+$precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda; // Formato precio que pagará el cliente 
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda); // Precio que se visualizará como el precio original sin descuento
+$diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda; // Diferencia entre el precio original y el descuento
 ?>
 <!DOCTYPE html>
 <html>
@@ -80,7 +80,7 @@ $diferencia = '$' . (intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value)
                                     <input type="number" id="<?= $item['ID_ABRE_PACK'] ?>_item_price" value="<?= $precioItem ?>" hidden>
                                     <div>
                                         <h6 class="my-0 text-success font-weight-bold text-dark"><b><?= $item['TITULO_1'] ?></b></h6> <small class="text-muted">De por vida</small>
-                                    </div> <span class="text-muted text-dark"><?= '$' . $precioItem . ' ARS' ?></span>
+                                    </div> <span class="text-muted text-dark"><?= $simbolo . ' ' . convertirPrecio($precioItem, $moneda) . ' ' . $moneda ?></span>
                                 </li>
                                 <?php
                             }

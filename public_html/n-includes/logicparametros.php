@@ -135,6 +135,9 @@ if (!isset($_GET['dev'])) {
     }
 }
 
+// ─── Conversión de precios por moneda ────────────────────────────────────────
+require_once dirname(__DIR__) . '/a-includes/logicprecios.php';
+
 // ─── Variables globales del visitante ────────────────────────────────────────
 $urlRoot        = "index.php";
 $idCursoDefault = 'excel';

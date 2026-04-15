@@ -14,8 +14,8 @@ $titulo = 'Plan Empresa';
 
   $value = $curso['PRECIO_UNITARIO'];
   $porcentaje = $curso['PORCENTAJE_DES'];
-  $precioCursoOficial = '$' . ($value + intval(($value / $porcentaje) * 100));
-  $precioCurso = '$' . $value;
+  $precioCursoOficial = $simbolo . ' ' . convertirPrecio($value + intval(($value / $porcentaje) * 100), $moneda);
+  $precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
   $urlCheckout = './checkout_cert.php';
  */
 

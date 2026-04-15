@@ -8,8 +8,8 @@ $curso = getCursoDetalle($idcurso);
 
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO'];
-$precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
-$precioCurso = '$' . $value . ' ARS';
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
 
 // SEO
 $seo_title = 'Curso de Visual Studio Online con Certificado | Desarrollo de Software';

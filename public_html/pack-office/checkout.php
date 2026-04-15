@@ -16,11 +16,11 @@ if (isset($_GET['test'])) {
 
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO'];
-$precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
 $precioDescuento = $value;
-$precioCursoDescuento = '$' . $value . ' ARS';
-$precioCurso = '$' . $value . ' ARS';
-$diferencia = '$' . (intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value) . ' ARS';
+$precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda;
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
+$diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda;
 $urlCheckout = 'checkout.php';
 $titulo = 'Carrito';
 ?>
@@ -170,10 +170,10 @@ $titulo = 'Carrito';
                                             <h4 class="titulo h4 text-black text-md-left text-center" style="">
                                                 <input class="check-producto-paquete" type="checkbox" id="up_<?= $item['ID_ABRE_PACK'] ?>" value="<?= $item['ID_ABRE_PACK'] ?>"/>
                                                 <input id="id_up_<?= $item['ID_ABRE_PACK'] ?>" value="<?= $item['ID_UPSELL'] ?? '' ?>" hidden=""/>
-                                                <?= str_replace('{#MONTO}', ('$' . $precioItem . ' ARS'), $item['TITULO_2']) ?>
+                                                <?= str_replace('{#MONTO}', ($simbolo . ' ' . convertirPrecio($precioItem, $moneda) . ' ' . $moneda), $item['TITULO_2']) ?>
                                             </h4>
                                             <p class="subtitulo p-0 m-0 text-md-left text-center">
-                                                <?= str_replace('{#MONTO}', ('$' . $precioItem . ' ARS'), $item['DESCRIPCION']) ?>
+                                                <?= str_replace('{#MONTO}', ($simbolo . ' ' . convertirPrecio($precioItem, $moneda) . ' ' . $moneda), $item['DESCRIPCION']) ?>
                                             </p>
                                         </div>
                                     </div>
@@ -211,7 +211,7 @@ $titulo = 'Carrito';
                                         <input type="number" id="<?= $item['ID_ABRE_PACK'] ?>_item_price" value="<?= $precioItem ?>" hidden>
                                         <div>
                                             <h6 class="my-0 text-success font-weight-bold text-dark"><b><?= $item['TITULO_1'] ?></b></h6> <small class="text-muted">De por vida</small>
-                                        </div> <span class="text-muted text-dark"><?= '$' . $precioItem . ' ARS' ?></span>
+                                        </div> <span class="text-muted text-dark"><?= $simbolo . ' ' . convertirPrecio($precioItem, $moneda) . ' ' . $moneda ?></span>
                                     </li>
                                     <?php
                                 }

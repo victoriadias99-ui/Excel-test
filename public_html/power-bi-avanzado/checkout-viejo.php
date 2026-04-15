@@ -9,11 +9,11 @@ $curso = $data['producto'];
 
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO'];
-$precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
 $precioDescuento = $value;
-$precioCursoDescuento = '$' . $value . ' ARS';
-$precioCurso = '$' . $value . ' ARS';
-$diferencia = '$' . (intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value) . ' ARS';
+$precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda;
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
+$diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda;
 $urlCheckout = 'checkout.php';
 
 ?>
@@ -77,7 +77,7 @@ $urlCheckout = 'checkout.php';
                                     <input type="number" id="<?= $item['ID_ABRE_PACK'] ?>_item_price" value="<?= $precioItem ?>" hidden>
                                     <div>
                                         <h6 class="my-0 text-success font-weight-bold text-dark"><b><?= $item['TITULO_1'] ?></b></h6> <small class="text-muted">De por vida</small>
-                                    </div> <span class="text-muted text-dark"><?= '$' . $precioItem . ' ARS' ?></span>
+                                    </div> <span class="text-muted text-dark"><?= $simbolo . ' ' . convertirPrecio($precioItem, $moneda) . ' ' . $moneda ?></span>
                                 </li>
                                 <?php
                             }

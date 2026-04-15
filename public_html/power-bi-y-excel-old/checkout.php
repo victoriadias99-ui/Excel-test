@@ -9,11 +9,11 @@ $curso = $data['producto'];
 
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO'];
-$precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
 $precioDescuento = $value;
-$precioCursoDescuento = '$' . $value . ' ARS';
-$precioCurso = '$' . $value . ' ARS';
-$diferencia = '$' . (intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value) . ' ARS';
+$precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda;
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
+$diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda;
 $urlCheckout = 'checkout.php';
 
 ?>

@@ -14,8 +14,8 @@ $curso = getCursoDetalle($idcurso);
 
 $value = $curso['PRECIO_UNITARIO'];
 $porcentaje = $curso['PORCENTAJE_DES'];
-$precioCursoOficial = '$' . ($value + intval(($value / $porcentaje) * 100));
-$precioCurso = '$' . $value;
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio($value + intval(($value / $porcentaje) * 100), $moneda);
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
 $urlCheckout = './checkout_cert.php';
 */
 
@@ -52,8 +52,8 @@ $urlCheckout = 'ddd';
                         <h5 style="color: #00173B;font-family: 'Raleway SemiBold';">
                             <i class="fa fa-certificate" style="color: #F7AC3B;"></i>&nbsp;CURSO CON CERTIFICACIÓN INTERNACIONAL
                         </h5>
-                        <p class="d-flex align-items-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #008B69;">ARS<br></span></p>
-                        <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> ARS</strike></p>
+                        <p class="d-flex align-items-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #008B69;"><?=$moneda?><br></span></p>
+                        <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> <?=$moneda?></strike></p>
 
                         
                         <p class="mt-4" style="color: rgb(85,85,85);font-family: 'Raleway Regular';">¿Tus empleados pasan demasiado tiempo para hacer un reporte, un balance o trabajo administrativo?.&nbsp;</p>
@@ -81,8 +81,8 @@ $urlCheckout = 'ddd';
                     <img class="d-block d-md-none img-fluid" src="assets/img/banner-2-movil.png" width="100%">
                     <div class="d-xl-flex align-items-xl-center p-3" style="border-radius: 10px;background: #ffffff;border: 1px solid #bcbcbc ;">
                         <div class="col m-0">
-                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #008B69;">ARS<br></span></p>
-                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> ARS</strike></p>
+                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #008B69;"><?=$moneda?><br></span></p>
+                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> <?=$moneda?></strike></p>
                         </div>
                     </div>
                     <div class="d-xl-flex align-items-xl-center p-3" style="border-bottom-style: solid;border-bottom-color: rgb(225,225,225);">
@@ -161,8 +161,8 @@ $urlCheckout = 'ddd';
                     <div class="card-madre px-3 py-4 mr-5" style="position: fixed; border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div class="col">
                             <h5 style="color: #00173B;font-family: 'Raleway SemiBold';"><img src="assets/img/imagen-porcentaje.png" style="width: 50px;">&nbsp;Oferta limitada</h5>
-                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?= $precioCurso ?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #008B69;">ARS<br></span></p>
-                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?= $precioCursoOficial ?> ARS</strike></p>
+                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?= $precioCurso ?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #008B69;"><?=$moneda?><br></span></p>
+                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?= $precioCursoOficial ?> <?=$moneda?></strike></p>
                             <p class="text-center">
                                 <a href="<?= $urlCheckout ?>" class="btn btn-primary px-5" style="background: #007A6A;width: 80%;">Quiero este plan de empresa</a>
                             </p>
@@ -287,7 +287,7 @@ $urlCheckout = 'ddd';
                         <p style="color: rgb(255,255,255);">Domina Microsoft Excel y certificate como Experto<br></p>
                         <h1 style="font-family: 'Raleway Black';color: rgb(255,255,255);">Plan empresa</h1>
                         <p class="mt-5" style="color: rgb(255,255,255);">Somos unica empresa que brinda certificación internacional<br></p>
-                        <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: normal;color: #ffffff;"><?= $precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Black';font-weight: bold;color: #ffffff;">ARS<br></span></p>
+                        <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: normal;color: #ffffff;"><?= $precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Black';font-weight: bold;color: #ffffff;"><?=$moneda?><br></span></p>
                         <a href="<?= $urlCheckout ?>" class="btn btn-primary px-5 ml-0" style="background: #ffffff;color: #008b69;font-family: 'Raleway Bold';">Solicita ya una cotización</a>
                     </div>
                 </div>

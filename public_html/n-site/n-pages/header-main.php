@@ -1,42 +1,42 @@
 <?php
 $curso = getCursoDetalle('excel');
-$precioCursoOficialExcelInicial = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoExcelInicial = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialExcelInicial = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoExcelInicial = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutExcelInicial = './n-excel-inicial/';
 
 $curso = getCursoDetalle('excel_intermedio');
-$precioCursoOficialExcelIntermedio = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoExcelIntermedio = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialExcelIntermedio = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoExcelIntermedio = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutExcelIntermedio = './n-excel-intermedio/';
 
 $curso = getCursoDetalle('excel_avanzado');
-$precioCursoOficialExcelAvanzado = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoExcelAvanzado = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialExcelAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoExcelAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutExcelAvanzado = './n-excel-avanzado/';
 
 $curso = getCursoDetalle('excel_promo');
-$precioCursoOficialExcelPromo = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoExcelPromo = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialExcelPromo = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoExcelPromo = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutExcelPromo = './n-excel-promo/';
 
 $curso = getCursoDetalle('office');
-$precioCursoOficialPackOffice = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoPackOffice = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialPackOffice = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoPackOffice = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutPackOffice = './n-pack-office/';
 
 $curso = getCursoDetalle('powerbi');
-$precioCursoOficialPowerBi = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoPowerBi = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialPowerBi = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoPowerBi = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutPowerBi = './n-powerb/';
 
 $curso = getCursoDetalle('sql');
-$precioCursoOficialSqlServer = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoSqlServer = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialSqlServer = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoSqlServer = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutSqlServer = './n-sql-server/';
 
 $curso = getCursoDetalle('pbi_avanzado');
-$precioCursoOficialPowerBiAvanzado = '$' . ($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100)) . ' <small>ARS</small>';
-$precioCursoPowerBiAvanzado = '$' . $curso['PRECIO_UNITARIO'] . ' <small>ARS</small>';
+$precioCursoOficialPowerBiAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+$precioCursoPowerBiAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
 $urlCheckoutPowerBiAvanzado = './n-powerb-avanzado/';
 ?>
 <header class="position-relative">

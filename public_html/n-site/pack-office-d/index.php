@@ -10,8 +10,8 @@ $curso = getCursoDetalle($idcurso);
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO'];
 $porcentaje = $curso['PORCENTAJE_DES'];
-$precioCursoOficial = '$' . ($value + intval(($value / $porcentaje) * 100));
-$precioCurso = '$' . $value;
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio($value + intval(($value / $porcentaje) * 100), $moneda);
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
 $urlCheckout = './checkout.php';
 /*
 $value = 'ddd';
@@ -45,8 +45,8 @@ $urlCheckout = 'ddd';
                         <h5 style="color: #00173B;font-family: 'Raleway SemiBold';">
                             <img src="../n-assets/img/imagen-porcentaje.png" style="width: 30px;">&nbsp;Oferta limitada
                         </h5>
-                        <p class="d-flex align-items-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #007DD6;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #007DD6;">ARS<br></span></p>
-                        <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> ARS</strike></p>
+                        <p class="d-flex align-items-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #007DD6;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #007DD6;"><?=$moneda?><br></span></p>
+                        <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> <?=$moneda?></strike></p>
                         <p class="text-center">
                             <a href="<?= $urlCheckout ?>" class="btn btn-primary px-5" style="background: #6C3BF3;width: 100%; color:#fff"><b>Lo quiero</b></a>
                         </p>
@@ -96,8 +96,8 @@ $urlCheckout = 'ddd';
 pero puede ser tuyo con esta oferta limitada por sólo: </p>
                     <div class="d-xl-flex align-items-xl-center p-3" style="border-radius: 10px;background: #ffffff;border: 1px solid #bcbcbc ;">
                         <div class="col m-0">
-                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #007DD6;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #007DD6;">ARS<br></span></p>
-                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> ARS</strike></p>
+                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #007DD6;"><?=$precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #007DD6;"><?=$moneda?><br></span></p>
+                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?=$precioCursoOficial?> <?=$moneda?></strike></p>
                         </div>
                     </div>
                     <div class="d-xl-flex align-items-xl-center p-3" style="border-bottom-style: solid;border-bottom-color: rgb(225,225,225);">
@@ -194,8 +194,8 @@ Haz que tu currículum aumente su valor y consigue las mejores oportunidades de 
                     <div class="card-madre px-3 py-4 mr-5" style="position: fixed; border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div class="col">
                             <h5 style="color: #00173B;font-family: 'Raleway SemiBold';"><img src="../n-assets/img/imagen-porcentaje.png" style="width: 50px;">&nbsp;Oferta limitada</h5>
-                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #007DD6;"><?= $precioCurso ?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #007DD6;">ARS<br></span></p>
-                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?= $precioCursoOficial ?> ARS</strike></p>
+                            <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #007DD6;"><?= $precioCurso ?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Light';font-weight: bold;color: #007DD6;"><?=$moneda?><br></span></p>
+                            <p style="color: #FF0000;font-family: 'Raleway SemiBold';"><strike><?= $precioCursoOficial ?> <?=$moneda?></strike></p>
                             <p class="text-center">
                                 <a href="<?= $urlCheckout ?>" class="btn btn-primary px-5" style="background: #6C3BF3;width: 80%; color:#fff;"><b>Lo quiero</b></a>
                             </p>
@@ -554,7 +554,7 @@ Haz que tu currículum aumente su valor y consigue las mejores oportunidades de 
                         <p class="mt-5" style="color: rgb(255,255,255);">Accede hoy y obtén los 3 cursos de por vida. Pago por única vez (sin suscripciones ni pagos mensuales).<br></p>
                         <p style="color: rgb(255,255,255);">Garantía de devolución de 7 días<br></p>
                         <p class="d-xl-flex align-items-xl-center m-0">
-                            <span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: normal;color: #fff;"><?= $precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Black';font-weight: bold;color: #fff;">ARS<br></span></p>
+                            <span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: normal;color: #fff;"><?= $precioCurso?><br></span><span class="texto-moneda-head" style="font-family: 'Raleway Black';font-weight: bold;color: #fff;"><?=$moneda?><br></span></p>
                         <a href="<?= $urlCheckout ?>" class="btn btn-primary px-5 ml-0" style="background: #ffffff;color: #6C3BF3;font-family: 'Raleway Bold';"><b>Quiero estos cursos</b></a>
                     </div>
                 </div>
