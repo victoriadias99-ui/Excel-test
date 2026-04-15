@@ -5,6 +5,7 @@ require_once  dirname(__DIR__) . '/a-libraries/vendor/autoload.php';
  * Librerias necesarias para el funcionamiento de la geolocalización
  * **/
 use Ipdata\ApiClient\Ipdata;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
@@ -45,7 +46,7 @@ if(isset($productoIP) && $productoIP != null){
     $dataIP = getIP($ip, $productoIP);
     if ($dataIP == null) {
         try {
-            $httpClient = new Psr18Client();
+            $httpClient = new Psr18Client(HttpClient::create(['timeout' => 3]));
             $psr17Factory = new Psr17Factory();
             $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
             $data = $ipdata->lookup($ip);
@@ -63,7 +64,7 @@ if(isset($productoIP) && $productoIP != null){
     $dataC = isset($idcurso) ? $idcurso : (isset($_GET['curso']) ? $_GET['curso'] : null);
     if($dataC == null){
         try {
-            $httpClient = new Psr18Client();
+            $httpClient = new Psr18Client(HttpClient::create(['timeout' => 3]));
             $psr17Factory = new Psr17Factory();
             $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
             $data = $ipdata->lookup($ip);
@@ -75,7 +76,7 @@ if(isset($productoIP) && $productoIP != null){
         $dataIP = getIP($ip, $dataC);
         if ($dataIP == null) {
             try {
-                $httpClient = new Psr18Client();
+                $httpClient = new Psr18Client(HttpClient::create(['timeout' => 3]));
                 $psr17Factory = new Psr17Factory();
                 $ipdata = new Ipdata($keyApi, $httpClient, $psr17Factory);
                 $data = $ipdata->lookup($ip);
