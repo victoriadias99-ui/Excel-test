@@ -177,7 +177,7 @@ $(document).ready(function () {
         }
         $("#pack").val(inputs.sort().join("|"));
         $("#amount").val(getFloatValue(amount));
-        $("#total_price").html('$' + getFloatValue(amount) + ' ARG');
+        $("#total_price").html('$' + getFloatValue(amount) + ' ARG + IVA');
 
     });
 

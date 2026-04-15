@@ -13,7 +13,7 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
 $precioDescuento = $value;
 $precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda;
-$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda);
+$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda) . $textoIVA;
 $diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda;
 $urlCheckout = 'checkout.php';
 ?>

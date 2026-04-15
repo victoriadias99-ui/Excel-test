@@ -239,7 +239,7 @@ foreach ($data['pack'] as $c => $item) {
                     $('#' + idButton).attr('style', 'display: block!important');
                     
                     $("#amount").val(getFloatValue(amount));
-                    $("#total_price").html('$' + getFloatValue(amount) + ' ARG');
+                    $("#total_price").html('$' + getFloatValue(amount) + ' ARG + IVA');
 
                 });
 

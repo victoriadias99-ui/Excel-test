@@ -17,7 +17,7 @@ $value = $curso['PRECIO_UNITARIO'];
 $precioCursoOficial = '$' . intval(($value / $curso['PORCENTAJE_DES']) * 100) . ' ARS';
 $precioDescuento = $value;
 $precioCursoDescuento = '$' . $value . ' ARS';
-$precioCurso = '$' . $value . ' ARS';
+$precioCurso = '$' . $value . ' ARS' . $textoIVA;
 $diferencia = '$' . (intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value) . ' ARS';
 $urlCheckout = 'checkout.php';
 

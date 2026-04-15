@@ -158,6 +158,7 @@ $idCursoDefault = 'excel';
 $moneda         = $data['currency']['code'];
 $simbolo        = $data['currency']['symbol'];
 $country        = $data['country_code'];
+$textoIVA       = ($country === 'AR') ? ' + IVA' : '';
 $curso          = isset($_GET['curso']) ? $_GET['curso'] : $idCursoDefault;
 
 // ─── DEBUG: barra de diagnóstico con ?dev o ?resetip ─────────────────────────

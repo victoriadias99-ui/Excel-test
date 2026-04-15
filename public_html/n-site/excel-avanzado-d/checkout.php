@@ -16,7 +16,7 @@ $curso = $data['producto']; // Se obtiene los datos del producto
 //PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO']; // Precio que pagará el cliente 
 $precioDescuento = $value;
-$precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda; // Formato precio que pagará el cliente 
+$precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda . $textoIVA; // Formato precio que pagará el cliente
 $precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda); // Precio que se visualizará como el precio original sin descuento
 $diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda; // Diferencia entre el precio original y el descuento
 ?>

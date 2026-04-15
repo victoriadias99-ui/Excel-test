@@ -5,12 +5,16 @@
  */
 $dirpage = '../';
 
+// Detectar si el visitante es de Argentina (vía Cloudflare)
+$cfCountry = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
+$textoIVA  = ($cfCountry === 'AR') ? ' + IVA' : '';
+
 $urlCheckoutPro     = 'https://buy.stripe.com/14k5nib7pdEL1zyfYY';
 $urlCheckoutInicial = 'https://buy.stripe.com/5kAg1W8ZhbwDgus145';
 
-$precioProMes     = 'USD $2.90';
-$precioProRef     = 'USD $3.90';
-$precioInicialMes = 'USD $3.90';
+$precioProMes     = 'USD $2.90' . $textoIVA;
+$precioProRef     = 'USD $3.90' . $textoIVA;
+$precioInicialMes = 'USD $3.90' . $textoIVA;
 $alumnosMes       = '527';
 ?>
 <!DOCTYPE html>

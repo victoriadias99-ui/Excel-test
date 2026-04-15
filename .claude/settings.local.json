@@ -13,7 +13,16 @@
       "Bash(node fix-prices.js)",
       "Bash(git add:*)",
       "Bash(git commit -m ':*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(grep -r \"USD\\\\|pesos\\\\|precio.*:\\\\|\\\\\\\\$.*[0-9]\\\\|buy\\\\|purchase\\\\|Add to cart\" /c/Users/vicki/Documents/GitHub/Excel-test/public_html -l --include=\"*.html\" --include=\"*.ejs\")",
+      "Bash(grep -rl '$precioCurso = $simbolo \\\\. '\\\\'' '\\\\'' \\\\. convertirPrecio\\($value, $moneda\\);' --include=checkout.php)",
+      "Bash(xargs sed:*)",
+      "Bash(grep -rl '\\\\$precioCurso = '\\\\''\\\\$'\\\\'' \\\\. \\\\$value \\\\. '\\\\'' ARS'\\\\''' --include=checkout.php argentina/)",
+      "Bash(grep -rl 'precioCurso = '\\\\''\\\\$'\\\\'' \\\\. $value \\\\. '\\\\'' ARS'\\\\''' argentina/ --include=checkout.php)",
+      "Bash(python3 -c ':*)",
+      "Bash(python -c ':*)",
+      "Bash(grep -rl \"total_price\" argentina/a-*/checkout.php n-site/*/checkout.php)",
+      "Bash(grep \"total_price.*html\" argentina/a-*/checkout.php n-site/*/checkout.php)"
     ]
   }
 }
