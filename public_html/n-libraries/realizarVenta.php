@@ -205,6 +205,8 @@ try {
     $stmt1->execute();
 
     // --- Crear Stripe Checkout Session ---
+    // IVA solo aplica a visitantes argentinos
+    $sufijoIVA = ($countryIn === 'AR') ? ' (Precio + IVA)' : '';
     $lineItems = [
         [
             'price_data' => [
@@ -212,7 +214,7 @@ try {
                 'unit_amount'  => $unitAmount,
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
-                    'description' => $rows[0]['DESCRIPCION'] . ' (Precio + IVA)',
+                    'description' => $rows[0]['DESCRIPCION'] . $sufijoIVA,
                     'images'      => [$urlRoot . 'n-img/logo/android-chrome-512x512.png'],
                 ],
             ],

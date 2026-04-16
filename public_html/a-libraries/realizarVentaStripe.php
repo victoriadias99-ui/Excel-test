@@ -160,6 +160,8 @@ try {
     }
 
     // 5. Crear Stripe Checkout Session
+    // IVA solo aplica a visitantes argentinos
+    $sufijoIVA = ($countryIn === 'AR') ? ' (Precio + IVA)' : '';
     $sessionParams = [
         'payment_method_types' => ['card'],
         'line_items' => [[
@@ -168,7 +170,7 @@ try {
                 'unit_amount'  => $unitAmount,
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
-                    'description' => $rows[0]['DESCRIPCION'] . ' (Precio + IVA)',
+                    'description' => $rows[0]['DESCRIPCION'] . $sufijoIVA,
                 ],
             ],
             'quantity' => 1,

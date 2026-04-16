@@ -144,7 +144,9 @@ $idCursoDefault = 'excel';
 $moneda         = $data['currency']['code'];
 $simbolo        = $data['currency']['symbol'];
 $country        = $data['country_code'];
-$textoIVA       = ' + IVA';
+// IVA solo aplica a visitantes argentinos (el IVA de RG 4626 es fiscal de AR).
+// Para el resto del mundo el precio mostrado ya es el total.
+$textoIVA       = ($country === 'AR') ? ' + IVA' : '';
 $curso          = isset($_GET['curso']) ? $_GET['curso'] : $idCursoDefault;
 
 // ─── DEBUG ───────────────────────────────────────────────────────────────────
