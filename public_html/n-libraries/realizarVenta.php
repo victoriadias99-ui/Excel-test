@@ -52,8 +52,10 @@ $urlcurso = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $dir . '/';
 $urlRoot  = 'https://' . $_SERVER['HTTP_HOST'] . '/';
 
 if (isset($_GET['test'])) {
-    echo '$urlcurso = ' . $urlcurso . '<br>';
-    echo '$urlRoot = '  . $urlRoot  . '<br>';
+    echo '$urlcurso = '  . $urlcurso  . '<br>';
+    echo '$urlRoot = '   . $urlRoot   . '<br>';
+    echo '$monedaIn = '  . $monedaIn  . '<br>';
+    echo '$countryIn = ' . $countryIn . '<br>';
 }
 
 // IP del visitante (compatible con Cloudflare)
@@ -131,6 +133,13 @@ try {
     $factorStripe  = $isZeroDecimal ? 1 : 100;
     $unitAmount    = intval(round($precioMonedaStripe * $factorStripe));
     $monedaStripeLower = strtolower($monedaStripe);
+
+    if (isset($_GET['test'])) {
+        echo '$precioBase (ARS) = '     . $precioBase          . '<br>';
+        echo '$monedaStripe = '         . $monedaStripe        . '<br>';
+        echo '$precioMonedaStripe = '   . $precioMonedaStripe  . '<br>';
+        echo '$unitAmount (Stripe) = '  . $unitAmount          . '<br>';
+    }
 
     // --- Clave Stripe ---
     $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';

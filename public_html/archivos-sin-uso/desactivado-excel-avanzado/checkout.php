@@ -243,6 +243,6 @@ $diferencia = '$' . (intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value)
             }
             ?>
             </script>
-            <script src="../a-libraries/js/checkoutv3.js?t=2"></script>
+            <script src="../a-libraries/js/checkoutv3.js?t=5"></script>
     </body>
 </html>

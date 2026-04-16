@@ -248,6 +248,6 @@ foreach ($data['pack'] as $c => $item) {
 }
 ?>
             </script>
-            <script src="../a-libraries/js/checkoutv3.js?t=2"></script>
+            <script src="../a-libraries/js/checkoutv3.js?t=5"></script>
     </body>
 </html>
