@@ -164,7 +164,7 @@ try {
                 'unit_amount'  => $precioBase * 100,
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
-                    'description' => $rows[0]['DESCRIPCION'],
+                    'description' => $rows[0]['DESCRIPCION'] . ' (Precio + IVA)',
                     'images'      => [$urlRoot . 'n-img/logo/android-chrome-512x512.png'],
                 ],
             ],

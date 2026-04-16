@@ -130,7 +130,7 @@ try {
                 'unit_amount'  => intval($precioBase * 100),
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
-                    'description' => $rows[0]['DESCRIPCION'],
+                    'description' => $rows[0]['DESCRIPCION'] . ' (Precio + IVA)',
                 ],
             ],
             'quantity' => 1,

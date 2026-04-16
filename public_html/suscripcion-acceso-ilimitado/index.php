@@ -5,9 +5,7 @@
  */
 $dirpage = '../';
 
-// Detectar si el visitante es de Argentina (vía Cloudflare)
-$cfCountry = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
-$textoIVA  = ($cfCountry === 'AR') ? ' + IVA' : '';
+$textoIVA  = ' + IVA';
 
 $urlCheckoutPro     = 'https://buy.stripe.com/14k5nib7pdEL1zyfYY';
 $urlCheckoutInicial = 'https://buy.stripe.com/5kAg1W8ZhbwDgus145';
