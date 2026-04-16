@@ -27,6 +27,9 @@ include("ApiFacebookEvents.php");
 include("../n-includes/conexion.php");
 include("../n-includes/class.autonum.php");
 
+// Conversión de precios multi-moneda
+require_once dirname(__DIR__) . '/a-includes/logicprecios.php';
+
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 $curso  = $_GET['curso'];
@@ -40,6 +43,10 @@ $apellido = $_GET['apellido'];
 $celular  = $_GET['celular'];
 $email    = $_GET['email'];
 $descuento = $_GET['descuento'];
+
+// Moneda y país del visitante (enviados desde el form) — fallback a ARS/AR
+$monedaIn  = isset($_GET['moneda'])  ? strtoupper(trim($_GET['moneda']))  : 'ARS';
+$countryIn = isset($_GET['country']) ? strtoupper(trim($_GET['country'])) : 'AR';
 
 $urlcurso = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $dir . '/';
 $urlRoot  = 'https://' . $_SERVER['HTTP_HOST'] . '/';
@@ -97,6 +104,34 @@ try {
     $precioBase = ($academiaPrecio !== null) ? $academiaPrecio : $rows[0]['PRECIO_UNITARIO'];
     $pagoTotal  = $precioBase;
 
+    // ─── Multi-moneda Stripe ──────────────────────────────────────────────
+    // Monedas soportadas por Stripe para cobros en cuentas internacionales.
+    // Cualquier otra → fallback a USD.
+    $stripeSupported = [
+        'ARS','BOB','BRL','CLP','COP','CRC','DOP','EUR',
+        'GTQ','HNL','MXN','NIO','PAB','PEN','PYG','USD','UYU',
+    ];
+
+    // Monedas "zero-decimal" de Stripe: el amount va en unidades enteras, no centavos
+    $stripeZeroDecimal = [
+        'BIF','CLP','DJF','GNF','ISK','JPY','KMF','KRW','MGA',
+        'PYG','RWF','UGX','VND','VUV','XAF','XOF','XPF',
+    ];
+
+    if (in_array($monedaIn, $stripeSupported, true)) {
+        $monedaStripe  = $monedaIn;
+        $precioMonedaStripe = convertirPrecioNumerico($precioBase, $monedaStripe);
+    } else {
+        // Moneda no soportada (p.ej. VES, CUP) → cobrar en USD
+        $monedaStripe  = 'USD';
+        $precioMonedaStripe = convertirPrecioNumerico($precioBase, 'USD');
+    }
+
+    $isZeroDecimal = in_array($monedaStripe, $stripeZeroDecimal, true);
+    $factorStripe  = $isZeroDecimal ? 1 : 100;
+    $unitAmount    = intval(round($precioMonedaStripe * $factorStripe));
+    $monedaStripeLower = strtolower($monedaStripe);
+
     // --- Clave Stripe ---
     $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';
     $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
@@ -132,9 +167,13 @@ try {
         $montoDesc      = intval($precioBase * ($porcentajeDesc / 100));
         $pagoTotal      = $precioBase - $montoDesc;
 
+        // Convertir descuento a la misma moneda que la checkout session
+        $montoDescMoneda = convertirPrecioNumerico($montoDesc, $monedaStripe);
+        $amountOff       = intval(round($montoDescMoneda * $factorStripe));
+
         $coupon = \Stripe\Coupon::create([
-            'amount_off' => $montoDesc * 100,
-            'currency'   => 'ars',
+            'amount_off' => $amountOff,
+            'currency'   => $monedaStripeLower,
             'duration'   => 'once',
             'name'       => $rows_descuento[0]['DESCRIPCION'],
         ]);
@@ -160,8 +199,8 @@ try {
     $lineItems = [
         [
             'price_data' => [
-                'currency'     => 'ars',
-                'unit_amount'  => $precioBase * 100,
+                'currency'     => $monedaStripeLower,
+                'unit_amount'  => $unitAmount,
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
                     'description' => $rows[0]['DESCRIPCION'] . ' (Precio + IVA)',
@@ -179,13 +218,16 @@ try {
         'customer_email'       => $email,
         'client_reference_id'  => $curso . '-' . $id_venta,
         'metadata'             => [
-            'curso'    => $curso,
-            'id_venta' => $id_venta,
-            'nombre'   => $nombre,
-            'apellido' => $apellido,
-            'celular'  => $celular,
-            'email'    => $email,
-            'dominio'  => $__url,
+            'curso'         => $curso,
+            'id_venta'      => $id_venta,
+            'nombre'        => $nombre,
+            'apellido'      => $apellido,
+            'celular'       => $celular,
+            'email'         => $email,
+            'dominio'       => $__url,
+            'country'       => $countryIn,
+            'moneda'        => $monedaStripe,
+            'precio_ars'    => $precioBase,
         ],
         'success_url' => $urlRoot . 'pago_exitoso.php?idVenta=' . $id_venta,
         'cancel_url'  => $urlcurso . 'checkout.php',
@@ -200,7 +242,9 @@ try {
     $cnx->prepare("UPDATE ventas SET PREFERENCIA_ID_MP=? WHERE CURSO=? AND ID=?")
         ->execute([$session->id, $curso, $id_venta]);
 
-    ApiFacebookEventsFunciones::initPaymentSendDataInitPaymentFacebook($email, $pagoTotal, 'ARS', $urlcurso);
+    // Reportar a Facebook el monto real cobrado (en la moneda Stripe)
+    $pagoTotalMoneda = convertirPrecioNumerico($pagoTotal, $monedaStripe);
+    ApiFacebookEventsFunciones::initPaymentSendDataInitPaymentFacebook($email, $pagoTotalMoneda, $monedaStripe, $urlcurso);
 
     echo $session->url;
 

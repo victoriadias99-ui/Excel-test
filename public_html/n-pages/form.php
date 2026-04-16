@@ -5,6 +5,8 @@
     <input type="text" id="curso" name="curso" value="<?= $idcurso ?>" <?= (isset($_GET['test']) && $_GET['test'] == 1 ? 'style="width: 100%;"' : 'hidden')?>>
     <input type="text" id="amount" name="amount" value="<?= $precioDescuento ?>" <?= (isset($_GET['test']) && $_GET['test'] == 1 ? 'style="width: 100%;"' : 'hidden')?>>
     <input type="text" id="pack" value="<?= $idcurso ?>" <?= (isset($_GET['test']) && $_GET['test'] == 1 ? 'style="width: 100%;"' : 'hidden')?>>
+    <input type="text" id="moneda" name="moneda" value="<?= isset($moneda) ? $moneda : 'ARS' ?>" <?= (isset($_GET['test']) && $_GET['test'] == 1 ? 'style="width: 100%;"' : 'hidden')?>>
+    <input type="text" id="country" name="country" value="<?= isset($country) ? $country : 'AR' ?>" <?= (isset($_GET['test']) && $_GET['test'] == 1 ? 'style="width: 100%;"' : 'hidden')?>>
     <div class="form">
         <div class="form-group "> <input type="text" class="form-control-lg col border" placeholder="Tu nombre*" id="nombre" name="nombre" required=""> </div>
         <div class="form-group "> <input type="text" class="form-control-lg col border" id="apellido" placeholder="Apellido*" name="apellido" required=""> </div>

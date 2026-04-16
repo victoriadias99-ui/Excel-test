@@ -87,6 +87,25 @@ function convertirPrecio($precioARS, $moneda) {
 }
 endif;
 
+/**
+ * Devuelve el precio convertido como número (float, sin formatear).
+ * Útil para integraciones de pago (Stripe, PayPal) donde se necesita
+ * el monto en unidades/centavos.
+ */
+if (!function_exists('convertirPrecioNumerico')):
+function convertirPrecioNumerico($precioARS, $moneda) {
+    global $tasasDesdeUSD;
+
+    if (!isset($precioARS) || $precioARS === '' || !is_numeric($precioARS)) {
+        return 0.0;
+    }
+
+    $precioUSD = floatval($precioARS) / TASA_ARS_USD;
+    $tasaLocal = isset($tasasDesdeUSD[$moneda]) ? $tasasDesdeUSD[$moneda] : 1;
+    return $precioUSD * $tasaLocal;
+}
+endif;
+
 // ─────────────────────────────────────────────
 // 4. FORMATEO DE NÚMEROS SEGÚN MONEDA
 // ─────────────────────────────────────────────

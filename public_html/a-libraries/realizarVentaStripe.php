@@ -21,6 +21,7 @@ require_once dirname(__DIR__) . '/a-libraries/vendor/autoload.php';
 
 include("../a-includes/conexion.php");
 include("../a-includes/class.autonum.php");
+require_once dirname(__DIR__) . '/a-includes/logicprecios.php';
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
@@ -32,6 +33,10 @@ $celular   = isset($_GET['celular'])   ? trim($_GET['celular'])   : '';
 $email     = isset($_GET['email'])     ? trim($_GET['email'])     : '';
 $descuento = isset($_GET['descuento']) ? trim($_GET['descuento']) : '';
 $dir       = isset($_GET['dir'])       ? trim($_GET['dir'])       : '';
+
+// Moneda y país del visitante (enviados desde el form) — fallback ARS/AR
+$monedaIn  = isset($_GET['moneda'])  ? strtoupper(trim($_GET['moneda']))  : 'ARS';
+$countryIn = isset($_GET['country']) ? strtoupper(trim($_GET['country'])) : 'AR';
 
 if ($pack !== $curso) {
     $curso = $pack;
@@ -64,6 +69,28 @@ try {
 
     $precioBase = $rows[0]['PRECIO_UNITARIO'];
 
+    // ─── Multi-moneda Stripe ──────────────────────────────────────────────
+    $stripeSupported = [
+        'ARS','BOB','BRL','CLP','COP','CRC','DOP','EUR',
+        'GTQ','HNL','MXN','NIO','PAB','PEN','PYG','USD','UYU',
+    ];
+    $stripeZeroDecimal = [
+        'BIF','CLP','DJF','GNF','ISK','JPY','KMF','KRW','MGA',
+        'PYG','RWF','UGX','VND','VUV','XAF','XOF','XPF',
+    ];
+
+    if (in_array($monedaIn, $stripeSupported, true)) {
+        $monedaStripe       = $monedaIn;
+        $precioMonedaStripe = convertirPrecioNumerico($precioBase, $monedaStripe);
+    } else {
+        $monedaStripe       = 'USD';
+        $precioMonedaStripe = convertirPrecioNumerico($precioBase, 'USD');
+    }
+    $isZeroDecimal     = in_array($monedaStripe, $stripeZeroDecimal, true);
+    $factorStripe      = $isZeroDecimal ? 1 : 100;
+    $unitAmount        = intval(round($precioMonedaStripe * $factorStripe));
+    $monedaStripeLower = strtolower($monedaStripe);
+
     // 2. Clave Stripe
     $stripeSecretRaw = $rows[0]['STRIPE_SECRET_KEY'] ?? '';
     if (empty($stripeSecretRaw)) {
@@ -92,10 +119,13 @@ try {
         $stmt2->execute([$curso, $descuento]);
         $rows_desc = $stmt2->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($rows_desc)) {
-            $montoDesc = intval($precioBase * ($rows_desc[0]['PORCENTAJE'] / 100));
+            $montoDesc       = intval($precioBase * ($rows_desc[0]['PORCENTAJE'] / 100));
+            $montoDescMoneda = convertirPrecioNumerico($montoDesc, $monedaStripe);
+            $amountOff       = intval(round($montoDescMoneda * $factorStripe));
+
             $coupon = \Stripe\Coupon::create([
-                'amount_off' => $montoDesc * 100,
-                'currency'   => 'ars',
+                'amount_off' => $amountOff,
+                'currency'   => $monedaStripeLower,
                 'duration'   => 'once',
                 'name'       => $rows_desc[0]['DESCRIPCION'],
             ]);
@@ -134,8 +164,8 @@ try {
         'payment_method_types' => ['card'],
         'line_items' => [[
             'price_data' => [
-                'currency'     => 'ars',
-                'unit_amount'  => intval($precioBase * 100),
+                'currency'     => $monedaStripeLower,
+                'unit_amount'  => $unitAmount,
                 'product_data' => [
                     'name'        => $rows[0]['TITULO'],
                     'description' => $rows[0]['DESCRIPCION'] . ' (Precio + IVA)',
@@ -147,13 +177,16 @@ try {
         'customer_email'      => $email,
         'client_reference_id' => $curso . '-' . $id_venta,
         'metadata'            => [
-            'curso'    => $curso,
-            'id_venta' => $id_venta,
-            'nombre'   => $nombre,
-            'apellido' => $apellido,
-            'celular'  => $celular,
-            'email'    => $email,
-            'dominio'  => $dominio,
+            'curso'      => $curso,
+            'id_venta'   => $id_venta,
+            'nombre'     => $nombre,
+            'apellido'   => $apellido,
+            'celular'    => $celular,
+            'email'      => $email,
+            'dominio'    => $dominio,
+            'country'    => $countryIn,
+            'moneda'     => $monedaStripe,
+            'precio_ars' => $precioBase,
         ],
         'success_url' => $urlRoot . '?pago=exitoso&idVenta=' . $id_venta,
         'cancel_url'  => $urlcurso . 'checkout.php',

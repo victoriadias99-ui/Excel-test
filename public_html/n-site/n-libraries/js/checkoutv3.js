@@ -111,7 +111,9 @@ $(document).ready(function () {
                             curso: $('#curso').val(),
                             dir: $('#dir').val(),
                             pack: $('#pack').val(),
-                            descuento: $('#descuento').val()
+                            descuento: $('#descuento').val(),
+                            moneda: $('#moneda').val() || 'ARS',
+                            country: $('#country').val() || 'AR'
                         },
                         success: function (response) {
                             window.location.href = response;
