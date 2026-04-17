@@ -258,8 +258,10 @@ try {
         $ipData = json_decode($rowsIP[0]['data']   . '');
     }
 
+    // Reportar al CAPI de Meta con la moneda real de Stripe (no hardcodeada).
+    $monedaCapi = isset($session->currency) ? strtoupper($session->currency) : 'ARS';
     ApiFacebookEventsFunciones::initPaymentSendDataDonePaymentFacebook(
-        $cache, $ipData, $mail, $monto_acreditado, 'ARS',
+        $cache, $ipData, $mail, $monto_acreditado, $monedaCapi,
         'https://' . $_SERVER['HTTP_HOST'] . '/n-libraries/IPN_stripe.php'
     );
 

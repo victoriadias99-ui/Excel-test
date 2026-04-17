@@ -42,7 +42,9 @@
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/a-includes/logicparametros.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-includes/logicparametros.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/argentina/a-libraries/realizarVentaStripe.php\")",
-      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/suscripcion-acceso-ilimitado/index.php\")"
+      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/suscripcion-acceso-ilimitado/index.php\")",
+      "Read(//c/Users/vicki/AppData/Local/Temp/claude/C--Users-vicki-Documents-GitHub-Excel-test/43012c44-d96b-4d06-8cdf-4c71be866237/tasks/**)",
+      "Read(//c/Users/vicki/AppData/Local/Temp/claude/C--Users-vicki-Documents-GitHub-Excel-test/43012c44-d96b-4d06-8cdf-4c71be866237/tasks//**)"
     ]
   }
 }
