@@ -1,54 +1,41 @@
 <?php
-$curso = getCursoDetalle('excel');
-$precioCursoOficialExcelInicial = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoExcelInicial = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutExcelInicial = 'excel-inicial/';
+// Precarga de los 10 cursos del navbar en UNA sola query (antes: 10 queries).
+$__idsNav = [
+    'excel', 'excel_intermedio', 'excel_avanzado', 'excel_promo',
+    'office', 'powerbi', 'sql', 'pbi_avanzado',
+    'prom_pbi_excel', 'pantilla_finanzas',
+];
+$__navBatch = getCursosDetalleBatch($__idsNav);
 
-$curso = getCursoDetalle('excel_intermedio');
-$precioCursoOficialExcelIntermedio = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoExcelIntermedio = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutExcelIntermedio = 'excel-intermedio/';
+$__fmtPrecios = function ($c) use ($simbolo, $moneda) {
+    if (!$c) return ['', ''];
+    $pu  = $c['PRECIO_UNITARIO'];
+    $des = $c['PORCENTAJE_DES'] ?: 100;
+    $oficial = $simbolo . ' ' . convertirPrecio($pu + intval(($pu / $des) * 100), $moneda) . ' <small>' . $moneda . '</small>';
+    $normal  = $simbolo . ' ' . convertirPrecio($pu, $moneda) . ' <small>' . $moneda . '</small>';
+    return [$oficial, $normal];
+};
 
-$curso = getCursoDetalle('excel_avanzado');
-$precioCursoOficialExcelAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoExcelAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutExcelAvanzado = 'excel-avanzado/';
-
-$curso = getCursoDetalle('excel_promo');
-$precioCursoOficialExcelPromo = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoExcelPromo = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutExcelPromo = 'excel-promo/';
-
-$curso = getCursoDetalle('office');
-$precioCursoOficialPackOffice = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoPackOffice = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutPackOffice = 'pack-office/';
-
-$curso = getCursoDetalle('powerbi');
-$precioCursoOficialPowerBi = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoPowerBi = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutPowerBi = 'power-bi/';
-
-$curso = getCursoDetalle('sql');
-$precioCursoOficialSqlServer = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoSqlServer = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutSqlServer = 'microsoft-sql-server/';
-
-$curso = getCursoDetalle('pbi_avanzado');
-$precioCursoOficialPowerBiAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoPowerBiAvanzado = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutPowerBiAvanzado = 'power-bi-avanzado/';
-
-
-$curso = getCursoDetalle('prom_pbi_excel');
-$precioCursoOficialExcelPromoPowerBI = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoExcelPromoPowerBI = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutExcelPromoPowerBI = 'power-bi-y-excel/';
-
-$curso = getCursoDetalle('pantilla_finanzas');
-$precioCursoOficialPlantillas = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'] + intval(($curso['PRECIO_UNITARIO'] / $curso['PORCENTAJE_DES']) * 100), $moneda) . ' <small>' . $moneda . '</small>';
-$precioCursoPlantillas = $simbolo . ' ' . convertirPrecio($curso['PRECIO_UNITARIO'], $moneda) . ' <small>' . $moneda . '</small>';
-$urlCheckoutPlantillas = 'plantillas/finanzas/';
+[$precioCursoOficialExcelInicial,        $precioCursoExcelInicial]        = $__fmtPrecios($__navBatch['excel']             ?? null);
+$urlCheckoutExcelInicial        = 'excel-inicial/';
+[$precioCursoOficialExcelIntermedio,     $precioCursoExcelIntermedio]     = $__fmtPrecios($__navBatch['excel_intermedio']  ?? null);
+$urlCheckoutExcelIntermedio     = 'excel-intermedio/';
+[$precioCursoOficialExcelAvanzado,       $precioCursoExcelAvanzado]       = $__fmtPrecios($__navBatch['excel_avanzado']    ?? null);
+$urlCheckoutExcelAvanzado       = 'excel-avanzado/';
+[$precioCursoOficialExcelPromo,          $precioCursoExcelPromo]          = $__fmtPrecios($__navBatch['excel_promo']       ?? null);
+$urlCheckoutExcelPromo          = 'excel-promo/';
+[$precioCursoOficialPackOffice,          $precioCursoPackOffice]          = $__fmtPrecios($__navBatch['office']            ?? null);
+$urlCheckoutPackOffice          = 'pack-office/';
+[$precioCursoOficialPowerBi,             $precioCursoPowerBi]             = $__fmtPrecios($__navBatch['powerbi']           ?? null);
+$urlCheckoutPowerBi             = 'power-bi/';
+[$precioCursoOficialSqlServer,           $precioCursoSqlServer]           = $__fmtPrecios($__navBatch['sql']               ?? null);
+$urlCheckoutSqlServer           = 'microsoft-sql-server/';
+[$precioCursoOficialPowerBiAvanzado,     $precioCursoPowerBiAvanzado]     = $__fmtPrecios($__navBatch['pbi_avanzado']      ?? null);
+$urlCheckoutPowerBiAvanzado     = 'power-bi-avanzado/';
+[$precioCursoOficialExcelPromoPowerBI,   $precioCursoExcelPromoPowerBI]   = $__fmtPrecios($__navBatch['prom_pbi_excel']    ?? null);
+$urlCheckoutExcelPromoPowerBI   = 'power-bi-y-excel/';
+[$precioCursoOficialPlantillas,          $precioCursoPlantillas]          = $__fmtPrecios($__navBatch['pantilla_finanzas'] ?? null);
+$urlCheckoutPlantillas          = 'plantillas/finanzas/';
 ?>
 <header class="position-relative">
     <nav class="navbar px-md-5 px-3 navbar-expand-lg navbar-dark bg-light">
