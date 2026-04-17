@@ -293,19 +293,20 @@ if (isset($_GET['test'])) {
         </script>
         <script> sendinblue.track('order_completed');</script>
 		<!-- GA4 Enhanced Ecommerce - purchase event (vía GTM GTM-PR68WN3 → G-D1GWD9J906) -->
+		<!-- Usa $monto/$moneda/$eventId — mismos valores que Meta Pixel para consistencia -->
 		<script>
 		window.dataLayer = window.dataLayer || [];
 		window.dataLayer.push({ ecommerce: null });
 		window.dataLayer.push({
 			event: 'purchase',
 			ecommerce: {
-				transaction_id: <?= json_encode((string)($venta['PAGO_ID_MP'] ?? $venta['ID'] ?? '')) ?>,
-				value: <?= floatval($venta['IMP_RECIBIDO_NETO_MP'] ?? $monto ?? 0) ?>,
-				currency: <?= json_encode(strtoupper($venta['MONEDA'] ?? 'ARS')) ?>,
+				transaction_id: <?= json_encode((string)$eventId) ?>,
+				value: <?= json_encode((float)$monto) ?>,
+				currency: <?= json_encode($moneda) ?>,
 				items: [{
-					item_id: <?= json_encode((string)($venta['CURSO'] ?? '')) ?>,
+					item_id: <?= json_encode((string)($producto['CURSO'] ?? '')) ?>,
 					item_name: <?= json_encode((string)($producto['TITULO'] ?? '')) ?>,
-					price: <?= floatval($venta['IMP_RECIBIDO_NETO_MP'] ?? $monto ?? 0) ?>,
+					price: <?= json_encode((float)$monto) ?>,
 					quantity: 1
 				}]
 			}
