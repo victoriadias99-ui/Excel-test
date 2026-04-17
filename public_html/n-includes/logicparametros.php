@@ -83,9 +83,12 @@ function n_detectarPais($ip, $currencyByCountry, $dataDefault) {
         return ['country_code' => $cfCountry, 'currency' => $currency];
     }
 
-    // 2° ip-api.com (gratis, sin key)
+    // 2° ip-api.com (gratis, sin key) — timeout corto para no bloquear el render
+    // Nota: el plan free de ip-api.com es HTTP-only, HTTPS requiere plan pro.
     try {
-        $ctx = stream_context_create(['http' => ['timeout' => 4]]);
+        $ctx = stream_context_create([
+            'http'  => ['timeout' => 1, 'ignore_errors' => true],
+        ]);
         $raw = @file_get_contents(
             'http://ip-api.com/json/' . urlencode($ip) . '?fields=countryCode,status',
             false, $ctx

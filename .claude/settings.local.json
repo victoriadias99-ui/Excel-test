@@ -37,7 +37,12 @@
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-libraries/realizarVenta.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/a-libraries/realizarVentaStripe.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form.php\")",
-      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form-b.php\")"
+      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form-b.php\")",
+      "Bash(xargs -0 sed -i -E 's|\\(checkoutv[34]\\\\.js\\)\\\\?t=[0-9]+|\\\\1?t=5|g')",
+      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/a-includes/logicparametros.php\")",
+      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-includes/logicparametros.php\")",
+      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/argentina/a-libraries/realizarVentaStripe.php\")",
+      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/suscripcion-acceso-ilimitado/index.php\")"
     ]
   }
 }

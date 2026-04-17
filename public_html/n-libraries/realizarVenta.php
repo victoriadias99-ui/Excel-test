@@ -93,15 +93,36 @@ try {
         exit;
     }
 
-    // Intentar obtener precio actualizado desde la Academia (Railway)
+    // Intentar obtener precio actualizado desde la Academia (Railway).
+    // Cacheamos la respuesta en disco 5 min para evitar pegarle a Railway en cada checkout
+    // (Railway tiene cold starts de 10-30s que bloquean el redirect a Stripe).
+    // Timeout agresivo: si no responde en 2s, usamos el precio de la BD local.
     $academiaApiUrl  = getenv('ACADEMIA_API_URL') ?: 'https://academia-production-c4cc.up.railway.app';
     $academiaPrecio  = null;
-    $apiRaw = @file_get_contents($academiaApiUrl . '/api/precios');
-    if ($apiRaw !== false) {
-        $apiData = json_decode($apiRaw, true);
-        if (isset($apiData['precios'][$curso]['precio_ars']) && $apiData['precios'][$curso]['precio_ars'] > 0) {
-            $academiaPrecio = intval($apiData['precios'][$curso]['precio_ars']);
+    $cachePrecios    = sys_get_temp_dir() . '/academia_precios_cache.json';
+    $cacheTTL        = 300; // 5 minutos
+
+    $apiData = null;
+    if (is_file($cachePrecios) && (time() - filemtime($cachePrecios)) < $cacheTTL) {
+        $apiData = json_decode(@file_get_contents($cachePrecios), true);
+    }
+
+    if ($apiData === null) {
+        $ctxApi = stream_context_create([
+            'http'  => ['timeout' => 2, 'ignore_errors' => true],
+            'https' => ['timeout' => 2, 'ignore_errors' => true],
+        ]);
+        $apiRaw = @file_get_contents($academiaApiUrl . '/api/precios', false, $ctxApi);
+        if ($apiRaw !== false) {
+            $apiData = json_decode($apiRaw, true);
+            if (is_array($apiData)) {
+                @file_put_contents($cachePrecios, $apiRaw, LOCK_EX);
+            }
         }
+    }
+
+    if (isset($apiData['precios'][$curso]['precio_ars']) && $apiData['precios'][$curso]['precio_ars'] > 0) {
+        $academiaPrecio = intval($apiData['precios'][$curso]['precio_ars']);
     }
     $precioBase = ($academiaPrecio !== null) ? $academiaPrecio : $rows[0]['PRECIO_UNITARIO'];
     $pagoTotal  = $precioBase;
