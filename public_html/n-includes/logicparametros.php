@@ -2,9 +2,13 @@
 $haveWhatsapp    = false;
 $numberWhatsapp  = "5491125621394";
 
-// La página es dinámica (precios por país) — Cloudflare no debe cachearla
+// La página es dinámica (precios por país) — Cloudflare no debe cachearla,
+// pero sí permitimos el bfcache del browser y caché privada corta para que
+// navegar con atrás/adelante (y entre cursos) sea instantáneo.
+// Nota: checkout.php incluye su propio header con no-store (necesario para
+// evitar que bfcache restaure estado JS corrupto al volver desde Stripe).
 if (!headers_sent()) {
-    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Cache-Control: private, no-cache, must-revalidate');
     header('Pragma: no-cache');
 }
 
@@ -127,7 +131,11 @@ if ($forceRefresh || $existingIP == null) {
 } else {
     $data = json_decode($existingIP['data'], true);
     $data = n_normalizarDataIP($data, $currencyByCountry, $dataDefault);
-    updateIP($ip, $cacheKey, $existingIP['visitas'] + 1, json_encode($_COOKIE));
+    // Sampleamos el contador de visitas: solo 1 de cada 20 page views hace el UPDATE.
+    // Es solo analítica, no vale la pena hacer un write en cada navegación.
+    if (mt_rand(1, 20) === 1) {
+        updateIP($ip, $cacheKey, $existingIP['visitas'] + 20, json_encode($_COOKIE));
+    }
 }
 
 // ─── Redirección dominios alternativos ───────────────────────────────────────
