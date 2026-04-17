@@ -69,7 +69,6 @@ $(document).ready(function () {
     $('#spinnerloading').hide();
     $('#proceder_pago').click(function (event) {
         event.preventDefault();
-        //fbq('track', 'InitiateCheckout');
 
         var error = false;
         var errorEmail = false;
@@ -148,6 +147,21 @@ $(document).ready(function () {
                 moneda: $('#moneda').val() || 'ARS',
                 country: $('#country').val() || 'AR'
             };
+
+            // Meta Pixel: InitiateCheckout con valor y moneda dinámicos
+            // (leídos del form, reflejan el país/moneda del visitante).
+            if (typeof fbq !== 'undefined') {
+                try {
+                    fbq('track', 'InitiateCheckout', {
+                        value: parseFloat($('#amount').val()) || 0,
+                        currency: $('#moneda').val() || 'ARS',
+                        content_ids: [$('#curso').val()],
+                        content_name: $('#curso').val(),
+                        content_type: 'product',
+                        num_items: 1
+                    });
+                } catch (e) {}
+            }
             $.ajax(
                     {
                         url: "/n-libraries/realizarVenta.php",

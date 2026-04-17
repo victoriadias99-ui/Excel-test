@@ -124,6 +124,18 @@ try {
         $id_venta,                  // WHERE ID
     ]);
 
+    // 2b. Cancelar la secuencia de recuperación de carrito abandonado.
+    try {
+        require_once __DIR__ . '/carritos_abandonados/helpers.php';
+        ca_marcar_recuperado($cnx, [
+            'curso'             => $curso,
+            'id_venta'          => $id_venta,
+            'stripe_session_id' => $session->id ?? null,
+        ]);
+    } catch (\Throwable $e) {
+        error_log('IPN_stripe ca_marcar_recuperado: ' . $e->getMessage());
+    }
+
     // 3. Disparar webhook externo (igual que en IPN_mp.php)
     $stmt = $cnx->prepare("SELECT WEBHOOK_URL FROM webhooks_config WHERE CURSO=? AND ESTADO_MP=?");
     $stmt->execute([$curso, 'approved']);
@@ -258,8 +270,10 @@ try {
         $ipData = json_decode($rowsIP[0]['data']   . '');
     }
 
+    // Reportar al CAPI de Meta con la moneda real de Stripe (no hardcodeada).
+    $monedaCapi = isset($session->currency) ? strtoupper($session->currency) : 'ARS';
     ApiFacebookEventsFunciones::initPaymentSendDataDonePaymentFacebook(
-        $cache, $ipData, $mail, $monto_acreditado, 'ARS',
+        $cache, $ipData, $mail, $monto_acreditado, $monedaCapi,
         'https://' . $_SERVER['HTTP_HOST'] . '/n-libraries/IPN_stripe.php'
     );
 

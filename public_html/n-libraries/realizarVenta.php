@@ -93,15 +93,36 @@ try {
         exit;
     }
 
-    // Intentar obtener precio actualizado desde la Academia (Railway)
+    // Intentar obtener precio actualizado desde la Academia (Railway).
+    // Cacheamos la respuesta en disco 5 min para evitar pegarle a Railway en cada checkout
+    // (Railway tiene cold starts de 10-30s que bloquean el redirect a Stripe).
+    // Timeout agresivo: si no responde en 2s, usamos el precio de la BD local.
     $academiaApiUrl  = getenv('ACADEMIA_API_URL') ?: 'https://academia-production-c4cc.up.railway.app';
     $academiaPrecio  = null;
-    $apiRaw = @file_get_contents($academiaApiUrl . '/api/precios');
-    if ($apiRaw !== false) {
-        $apiData = json_decode($apiRaw, true);
-        if (isset($apiData['precios'][$curso]['precio_ars']) && $apiData['precios'][$curso]['precio_ars'] > 0) {
-            $academiaPrecio = intval($apiData['precios'][$curso]['precio_ars']);
+    $cachePrecios    = sys_get_temp_dir() . '/academia_precios_cache.json';
+    $cacheTTL        = 300; // 5 minutos
+
+    $apiData = null;
+    if (is_file($cachePrecios) && (time() - filemtime($cachePrecios)) < $cacheTTL) {
+        $apiData = json_decode(@file_get_contents($cachePrecios), true);
+    }
+
+    if ($apiData === null) {
+        $ctxApi = stream_context_create([
+            'http'  => ['timeout' => 2, 'ignore_errors' => true],
+            'https' => ['timeout' => 2, 'ignore_errors' => true],
+        ]);
+        $apiRaw = @file_get_contents($academiaApiUrl . '/api/precios', false, $ctxApi);
+        if ($apiRaw !== false) {
+            $apiData = json_decode($apiRaw, true);
+            if (is_array($apiData)) {
+                @file_put_contents($cachePrecios, $apiRaw, LOCK_EX);
+            }
         }
+    }
+
+    if (isset($apiData['precios'][$curso]['precio_ars']) && $apiData['precios'][$curso]['precio_ars'] > 0) {
+        $academiaPrecio = intval($apiData['precios'][$curso]['precio_ars']);
     }
     $precioBase = ($academiaPrecio !== null) ? $academiaPrecio : $rows[0]['PRECIO_UNITARIO'];
     $pagoTotal  = $precioBase;
@@ -252,6 +273,34 @@ try {
 
     $cnx->prepare("UPDATE ventas SET PREFERENCIA_ID_MP=? WHERE CURSO=? AND ID=?")
         ->execute([$session->id, $curso, $id_venta]);
+
+    // ─── Registrar carrito abandonado (secuencia de recuperación) ───────
+    // El registro queda pending; el webhook lo marca 'recovered' al pagar
+    // y el cron de procesar.php dispara los emails en 20m / 1h / 24h / 48h.
+    try {
+        require_once __DIR__ . '/carritos_abandonados/helpers.php';
+        ca_registrar_carrito($cnx, [
+            'curso'              => $curso,
+            'id_venta'           => $id_venta,
+            'stripe_session_id'  => $session->id,
+            'stripe_session_url' => $session->url ?? '',
+            'nombre'             => $nombre,
+            'apellido'           => $apellido,
+            'celular'            => $celular,
+            'email'              => $email,
+            'dir'                => $dir,
+            'dominio'            => $__url,
+            'pack'               => $pack,
+            'descuento'          => $descuento,
+            'monto_ars'          => $pagoTotal,
+            'monto_stripe'       => $precioMonedaStripe,
+            'moneda'             => $monedaStripe,
+            'country'            => $countryIn,
+        ]);
+    } catch (\Throwable $e) {
+        // No bloquear el checkout si el registro falla
+        logCheckout('CARRITO_REG_WARN', $e->getMessage(), ['curso' => $curso, 'email' => $email]);
+    }
 
     // Reportar a Facebook el monto real cobrado (en la moneda Stripe)
     $pagoTotalMoneda = convertirPrecioNumerico($pagoTotal, $monedaStripe);

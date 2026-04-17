@@ -164,6 +164,25 @@ function getCursoDetalleCheckout($idCurso){
     ];
 }
 
+/**
+ * Trae varios cursos en UNA sola query (en lugar de N queries individuales).
+ * Usado por el home para precargar precios/URLs de 10+ cursos de una vez.
+ * Devuelve un array asociativo keyed por CURSO.
+ */
+function getCursosDetalleBatch(array $idCursos) {
+    if (empty($idCursos)) return [];
+    $cnx = OpenCon();
+    $placeholders = implode(',', array_fill(0, count($idCursos), '?'));
+    $stmt = $cnx->prepare("SELECT * FROM cursos_detalle WHERE CURSO IN ($placeholders)");
+    $stmt->execute(array_values($idCursos));
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $out = [];
+    foreach ($rows as $row) {
+        $out[$row['CURSO']] = $row;
+    }
+    return $out;
+}
+
 function getCursoDetalleDown($idCurso){
     $cnx = OpenCon();
     $consulta = "SELECT * FROM cursos_pack_down where ID_ABRE=?;";

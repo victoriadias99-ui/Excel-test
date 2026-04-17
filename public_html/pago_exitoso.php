@@ -10,7 +10,44 @@ $_idVenta = $_GET['idVenta'];
 include("a-includes/funcionsDB.php");
 $venta = getVenta($_idVenta);
 $producto = getCursoDetalle($venta['CURSO']);
-$monto = $producto['PRECIO_UNITARIO'];//$venta['IMP_RECIBIDO_NETO_MP'] + $venta['FEE_MP'];
+
+// ─── Valor real de la compra para Meta Pixel (Purchase event) ────────────────
+// La fuente de verdad es la sesión de Stripe: amount_total ya refleja
+// descuentos y la moneda real con la que cobró (USD/MXN/COP/etc.).
+// Fallback al precio de lista en ARS si no se pudo recuperar la sesión.
+$monto    = $producto['PRECIO_UNITARIO'];
+$moneda   = 'ARS';
+$eventId  = $venta['CURSO'] . '_' . $_idVenta;  // para deduplicación Pixel + CAPI
+
+try {
+    require_once __DIR__ . '/n-libraries/vendor/autoload.php';
+
+    $stripeSecretRaw = $producto['STRIPE_SECRET_KEY'] ?? '';
+    $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+    if ($stripeSecretRaw !== '') {
+        $stripeSecret = (strpos($stripeSecretRaw, '{') === false)
+            ? $stripeSecretRaw
+            : (get_object_vars(json_decode($stripeSecretRaw))[$__url] ?? '');
+
+        if ($stripeSecret && !empty($venta['PREFERENCIA_ID_MP']) && strpos($venta['PREFERENCIA_ID_MP'], 'cs_') === 0) {
+            \Stripe\Stripe::setApiKey($stripeSecret);
+            $session = \Stripe\Checkout\Session::retrieve($venta['PREFERENCIA_ID_MP']);
+
+            // Stripe entrega amount_total en la unidad mínima; para zero-decimal
+            // (CLP, PYG, JPY, etc.) el valor ya está en unidades enteras.
+            $stripeZeroDecimal = [
+                'bif','clp','djf','gnf','isk','jpy','kmf','krw','mga',
+                'pyg','rwf','ugx','vnd','vuv','xaf','xof','xpf',
+            ];
+            $divisor = in_array(strtolower($session->currency), $stripeZeroDecimal, true) ? 1 : 100;
+            $monto   = $session->amount_total / $divisor;
+            $moneda  = strtoupper($session->currency);
+        }
+    }
+} catch (\Exception $e) {
+    // Silencioso: si falla, usamos el fallback con PRECIO_UNITARIO + ARS
+    error_log('pago_exitoso stripe retrieve error: ' . $e->getMessage());
+}
 if (isset($_GET['test'])) {
     echo "<pre>";
     print_r($venta);
@@ -210,9 +247,12 @@ if (isset($_GET['test'])) {
 
         <script>
             fbq('track', 'Purchase', {
-                value: <?= $monto ?>,
-                currency: 'ARS'
-            });
+                value: <?= json_encode((float) $monto) ?>,
+                currency: <?= json_encode($moneda) ?>,
+                content_ids: [<?= json_encode($producto['CURSO']) ?>],
+                content_name: <?= json_encode($producto['TITULO']) ?>,
+                content_type: 'product'
+            }, { eventID: <?= json_encode($eventId) ?> });
         </script>
         <script type="text/javascript">
             window.__lo_site_id = 187119;
