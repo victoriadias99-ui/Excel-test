@@ -169,7 +169,7 @@ $titulo = 'Carrito';
                                         <div class="row p-4">
                                             <h4 class="titulo h4 text-black text-md-left text-center" style="">
                                                 <input class="check-producto-paquete" type="checkbox" id="up_<?= $item['ID_ABRE_PACK'] ?>" value="<?= $item['ID_ABRE_PACK'] ?>"/>
-                                                <input id="id_up_<?= $item['ID_ABRE_PACK'] ?>" value="<?= $item['ID_UPSELL'] ?>" hidden=""/>
+                                                <input id="id_up_<?= $item['ID_ABRE_PACK'] ?>" value="<?= $item['ID_UPSELL'] ?? '' ?>" hidden=""/>
                                                 <?= str_replace('{#MONTO}', ($simbolo . ' ' . convertirPrecio($precioItem, $moneda) . ' ' . $moneda), $item['TITULO_2']) ?>
                                             </h4>
                                             <p class="subtitulo p-0 m-0 text-md-left text-center">
