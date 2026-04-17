@@ -251,21 +251,24 @@ if (isset($_GET['test'])) {
             })();
         </script>
         <script> sendinblue.track('order_completed');</script>
-				<script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-165632923-1', 'auto');
-        ga('send','event', 'cursos', 'comprar', '<?= $producto['CURSO'] ?>', <?= $monto ?>);
-    </script>
+				<!-- GA4 Enhanced Ecommerce - purchase event (vía GTM GTM-PR68WN3 → G-D1GWD9J906) -->
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		window.dataLayer.push({ ecommerce: null });
+		window.dataLayer.push({
+			event: 'purchase',
+			ecommerce: {
+				transaction_id: <?= json_encode((string)($_GET['idVenta'] ?? ($_GET['CURSO'] ?? '') . '-' . time())) ?>,
+				value: <?= floatval($monto ?? 0) ?>,
+				currency: 'ARS',
+				items: [{
+					item_id: <?= json_encode((string)($producto['CURSO'] ?? '')) ?>,
+					item_name: <?= json_encode((string)($producto['TITULO'] ?? '')) ?>,
+					price: <?= floatval($monto ?? 0) ?>,
+					quantity: 1
+				}]
+			}
+		});
+		</script>
     </body>
 </html>

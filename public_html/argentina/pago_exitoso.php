@@ -106,5 +106,24 @@ if (isset($_GET['test'])) {
                 s.parentNode.insertBefore(wa, s);
             })();
         </script>
+        <!-- GA4 Enhanced Ecommerce - purchase event (vía GTM GTM-PR68WN3 → G-D1GWD9J906) -->
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ ecommerce: null });
+        window.dataLayer.push({
+            event: 'purchase',
+            ecommerce: {
+                transaction_id: <?= json_encode((string)($venta['PAGO_ID_MP'] ?? $venta['ID'] ?? '')) ?>,
+                value: <?= floatval($venta['IMP_RECIBIDO_NETO_MP'] ?? $monto ?? 0) ?>,
+                currency: <?= json_encode(strtoupper($venta['MONEDA'] ?? 'ARS')) ?>,
+                items: [{
+                    item_id: <?= json_encode((string)($venta['CURSO'] ?? '')) ?>,
+                    item_name: <?= json_encode((string)($venta['CURSO'] ?? '')) ?>,
+                    price: <?= floatval($venta['IMP_RECIBIDO_NETO_MP'] ?? $monto ?? 0) ?>,
+                    quantity: 1
+                }]
+            }
+        });
+        </script>
     </body>
 </html>

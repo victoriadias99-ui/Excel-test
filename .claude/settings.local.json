@@ -37,7 +37,10 @@
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-libraries/realizarVenta.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/a-libraries/realizarVentaStripe.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form.php\")",
-      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form-b.php\")"
+      "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form-b.php\")",
+      "WebFetch(domain:aprende-excel.com)",
+      "Bash(python3 /tmp/clean_ga_tags.py --dry-run)",
+      "Bash(python3 /tmp/clean_ga_tags.py)"
     ]
   }
 }

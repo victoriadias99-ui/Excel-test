@@ -126,6 +126,7 @@ $buyer_email    = strtolower(trim($session['customer_details']['email'] ?? ''));
 $buyer_name     = $session['customer_details']['name']  ?? '';
 $client_ref     = $session['client_reference_id'] ?? '';
 $amount_total   = $session['amount_total']   ?? 0;
+$currency       = strtoupper($session['currency'] ?? 'ARS'); // ISO 4217 (USD, ARS, MXN, COP, CLP, etc.) — para GA4 purchase event
 $payment_intent = $session['payment_intent'] ?? '';
 
 if (empty($buyer_email)) {
@@ -161,8 +162,8 @@ try {
 
 if ($cnx && !empty($curso_raw) && !empty($id_venta)) {
     try {
-        $stmt = $cnx->prepare("UPDATE ventas SET ESTADO_MP='approved', PAGO_ID_MP=?, PAGADOR_EMAIL_MP=?, PAGADOR_NOMBRE_MP=?, FECHA_COMPRA_MP=NOW(), IMP_RECIBIDO_NETO_MP=? WHERE CURSO=? AND ID=?");
-        $stmt->execute([$payment_intent, $buyer_email, $buyer_name, $amount_total / 100, $curso_raw, $id_venta]);
+        $stmt = $cnx->prepare("UPDATE ventas SET ESTADO_MP='approved', PAGO_ID_MP=?, PAGADOR_EMAIL_MP=?, PAGADOR_NOMBRE_MP=?, FECHA_COMPRA_MP=NOW(), IMP_RECIBIDO_NETO_MP=?, MONEDA=? WHERE CURSO=? AND ID=?");
+        $stmt->execute([$payment_intent, $buyer_email, $buyer_name, $amount_total / 100, $currency, $curso_raw, $id_venta]);
     } catch (PDOException $e) {
         error_log('stripe_webhook ventas error: ' . $e->getMessage());
     }

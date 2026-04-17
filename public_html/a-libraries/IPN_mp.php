@@ -99,7 +99,7 @@ if ($topic == 'payment') {
     $stmt1->bindValue(5, $payment->status_detail, PDO::PARAM_STR);
     $stmt1->execute();
 
-    $stmt1 = $cnx->prepare("UPDATE ventas SET PAGO_ID_MP=?,ESTADO_MP=?,ESTADO_DETALLE_MP=?,FECHA_COMPRA_MP=?,FECHA_ACREDITACION_MP=?,PAGO_TIPO_MP=?,PAGO_DESCR_MP=?,PAGADOR_EMAIL_MP=?,PAGADOR_NOMBRE_MP=?,PAGADOR_APELLIDO_MP=?,PAGADOR_TIPO_MP=?,PAGADOR_ID_MP=?,METODO_PAGO_MP=?,FEE_MP=?,IMP_RECIBIDO_NETO_MP=?,DOMINIO_F=?,ACCESS_TOKEN_F=?  WHERE CURSO=? AND ID=?");
+    $stmt1 = $cnx->prepare("UPDATE ventas SET PAGO_ID_MP=?,ESTADO_MP=?,ESTADO_DETALLE_MP=?,FECHA_COMPRA_MP=?,FECHA_ACREDITACION_MP=?,PAGO_TIPO_MP=?,PAGO_DESCR_MP=?,PAGADOR_EMAIL_MP=?,PAGADOR_NOMBRE_MP=?,PAGADOR_APELLIDO_MP=?,PAGADOR_TIPO_MP=?,PAGADOR_ID_MP=?,METODO_PAGO_MP=?,FEE_MP=?,IMP_RECIBIDO_NETO_MP=?,DOMINIO_F=?,ACCESS_TOKEN_F=?,MONEDA=?  WHERE CURSO=? AND ID=?");
     $stmt1->bindValue(1, $id, PDO::PARAM_STR);
     $stmt1->bindValue(2, $payment->status, PDO::PARAM_STR);
     $stmt1->bindValue(3, $payment->status_detail, PDO::PARAM_STR);
@@ -117,8 +117,9 @@ if ($topic == 'payment') {
     $stmt1->bindValue(15, $net_received_amt, PDO::PARAM_STR);
     $stmt1->bindValue(16, $__url, PDO::PARAM_STR);
     $stmt1->bindValue(17, $ACCESS_TOKEN_MP, PDO::PARAM_STR);
-    $stmt1->bindValue(18, $curso, PDO::PARAM_STR);
-    $stmt1->bindValue(19, $extenal_reference, PDO::PARAM_STR);
+    $stmt1->bindValue(18, 'ARS', PDO::PARAM_STR); // MercadoPago solo procesa ARS en este setup
+    $stmt1->bindValue(19, $curso, PDO::PARAM_STR);
+    $stmt1->bindValue(20, $extenal_reference, PDO::PARAM_STR);
     $stmt1->execute();
 
     // Crear/actualizar usuario en la Academia si el pago fue aprobado
