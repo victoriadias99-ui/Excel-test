@@ -44,7 +44,13 @@
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/argentina/a-libraries/realizarVentaStripe.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/suscripcion-acceso-ilimitado/index.php\")",
       "Read(//c/Users/vicki/AppData/Local/Temp/claude/C--Users-vicki-Documents-GitHub-Excel-test/43012c44-d96b-4d06-8cdf-4c71be866237/tasks/**)",
-      "Read(//c/Users/vicki/AppData/Local/Temp/claude/C--Users-vicki-Documents-GitHub-Excel-test/43012c44-d96b-4d06-8cdf-4c71be866237/tasks//**)"
+      "Read(//c/Users/vicki/AppData/Local/Temp/claude/C--Users-vicki-Documents-GitHub-Excel-test/43012c44-d96b-4d06-8cdf-4c71be866237/tasks//**)",
+      "Bash(php -l public_html/n-libraries/carritos_abandonados/helpers.php)",
+      "Bash(php -l public_html/n-libraries/carritos_abandonados/procesar.php)",
+      "Bash(php -l public_html/n-libraries/carritos_abandonados/instalar.php)",
+      "Bash(php -l public_html/recuperar_carrito.php)",
+      "Bash(php -l public_html/n-libraries/IPN_stripe.php)",
+      "PowerShell($files = @\\('public_html\\\\n-libraries\\\\carritos_abandonados\\\\helpers.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\procesar.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\instalar.php','public_html\\\\recuperar_carrito.php','public_html\\\\n-libraries\\\\realizarVenta.php','public_html\\\\n-libraries\\\\IPN_stripe.php'\\); foreach \\($f in $files\\) { Write-Output \"--- $f ---\"; & php -l $f })"
     ]
   }
 }

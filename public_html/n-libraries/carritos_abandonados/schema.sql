@@ -1,0 +1,36 @@
+-- Tabla de carritos abandonados para el sistema de recuperación.
+-- Ejecutar una única vez (también se aplica automáticamente desde instalar.php).
+CREATE TABLE IF NOT EXISTS carritos_abandonados (
+    id                  INT AUTO_INCREMENT PRIMARY KEY,
+    token               VARCHAR(64)  NOT NULL,
+    curso               VARCHAR(100) NOT NULL,
+    id_venta            VARCHAR(50)  NOT NULL,
+    stripe_session_id   VARCHAR(255) NOT NULL,
+    stripe_session_url  TEXT,
+    nombre              VARCHAR(120),
+    apellido            VARCHAR(120),
+    celular             VARCHAR(60),
+    email               VARCHAR(255) NOT NULL,
+    dir                 VARCHAR(150),
+    dominio             VARCHAR(150),
+    pack                VARCHAR(255),
+    descuento           VARCHAR(80),
+    monto_ars           DECIMAL(12,2),
+    monto_stripe        DECIMAL(12,2),
+    moneda              VARCHAR(10),
+    country             VARCHAR(5),
+    estado              ENUM('pending','recovered','expired','failed','unsubscribed')
+                            NOT NULL DEFAULT 'pending',
+    email_1_sent_at     DATETIME NULL,
+    email_2_sent_at     DATETIME NULL,
+    email_3_sent_at     DATETIME NULL,
+    email_4_sent_at     DATETIME NULL,
+    last_error          TEXT,
+    fecha_creacion      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    recovered_at        DATETIME NULL,
+    UNIQUE KEY uniq_token (token),
+    UNIQUE KEY uniq_venta (curso, id_venta),
+    INDEX idx_estado_fecha (estado, fecha_creacion),
+    INDEX idx_email (email),
+    INDEX idx_session (stripe_session_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

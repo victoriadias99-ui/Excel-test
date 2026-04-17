@@ -274,6 +274,34 @@ try {
     $cnx->prepare("UPDATE ventas SET PREFERENCIA_ID_MP=? WHERE CURSO=? AND ID=?")
         ->execute([$session->id, $curso, $id_venta]);
 
+    // ─── Registrar carrito abandonado (secuencia de recuperación) ───────
+    // El registro queda pending; el webhook lo marca 'recovered' al pagar
+    // y el cron de procesar.php dispara los emails en 20m / 1h / 24h / 48h.
+    try {
+        require_once __DIR__ . '/carritos_abandonados/helpers.php';
+        ca_registrar_carrito($cnx, [
+            'curso'              => $curso,
+            'id_venta'           => $id_venta,
+            'stripe_session_id'  => $session->id,
+            'stripe_session_url' => $session->url ?? '',
+            'nombre'             => $nombre,
+            'apellido'           => $apellido,
+            'celular'            => $celular,
+            'email'              => $email,
+            'dir'                => $dir,
+            'dominio'            => $__url,
+            'pack'               => $pack,
+            'descuento'          => $descuento,
+            'monto_ars'          => $pagoTotal,
+            'monto_stripe'       => $precioMonedaStripe,
+            'moneda'             => $monedaStripe,
+            'country'            => $countryIn,
+        ]);
+    } catch (\Throwable $e) {
+        // No bloquear el checkout si el registro falla
+        logCheckout('CARRITO_REG_WARN', $e->getMessage(), ['curso' => $curso, 'email' => $email]);
+    }
+
     // Reportar a Facebook el monto real cobrado (en la moneda Stripe)
     $pagoTotalMoneda = convertirPrecioNumerico($pagoTotal, $monedaStripe);
     ApiFacebookEventsFunciones::initPaymentSendDataInitPaymentFacebook($email, $pagoTotalMoneda, $monedaStripe, $urlcurso);
