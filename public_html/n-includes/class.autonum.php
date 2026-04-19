@@ -13,23 +13,19 @@ class auto_num {
     }
 
     private function update_ultimo_num($numero) {
-
-        $stmt = ($this->con)->prepare(" UPDATE `auto_num` SET `ULTIMO_NUM`='$numero' WHERE `ID`='" . $this->id . "'");
-        $stmt->execute();
-        //return $respuesta;
+        // Prepared statement real — evita SQLi si $this->id llegara contaminado
+        $stmt = ($this->con)->prepare("UPDATE `auto_num` SET `ULTIMO_NUM` = ? WHERE `ID` = ?");
+        $stmt->execute([$numero, $this->id]);
     }
 
     private function get_next_num() {
 
-        $consulta = "SELECT  `PREFIJO`,
-						   `ULTIMO_NUM`,
-		                   `MAX_LEN` 
-		 		    FROM `auto_num`
-					WHERE `ID`='" . $this->id . "'";
+        $consulta = "SELECT `PREFIJO`, `ULTIMO_NUM`, `MAX_LEN`
+                     FROM `auto_num`
+                     WHERE `ID` = ?";
 
         $stmt = ($this->con)->prepare($consulta);
-
-        $stmt->execute();
+        $stmt->execute([$this->id]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $this->update_ultimo_num($rows[0]['ULTIMO_NUM'] + 1);

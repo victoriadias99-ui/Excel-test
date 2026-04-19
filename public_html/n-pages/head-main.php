@@ -20,6 +20,82 @@
 <meta name="twitter:description" content="<?= isset($seo_description) ? $seo_description : 'Líderes en cursos online de Excel, Power BI e IA. Certificado oficial, acceso de por vida y garantía de 7 días.' ?>">
 <meta name="twitter:image" content="<?= isset($seo_image) ? $seo_image : 'https://aprende-excel.com/n-assets/img/logo-excel.png' ?>">
 
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     JSON-LD Structured Data (schema.org) — para Rich Results en Google
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- Organization / EducationalOrganization (site-wide) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Aprende Excel",
+    "alternateName": "Academia Aprende Excel",
+    "url": "https://aprende-excel.com",
+    "logo": "https://aprende-excel.com/n-assets/img/logo-excel.png",
+    "description": "Academia online de Excel, Power BI, Inteligencia Artificial y capacitaciones laborales. Certificado oficial con cooperación académica de UTN, UBA y UNLP.",
+    "founder": {
+        "@type": "Organization",
+        "name": "Aprende Excel"
+    },
+    "areaServed": [
+        { "@type": "Country", "name": "Argentina" },
+        { "@type": "Country", "name": "Mexico" },
+        { "@type": "Country", "name": "Colombia" },
+        { "@type": "Country", "name": "Chile" },
+        { "@type": "Country", "name": "Peru" },
+        { "@type": "Country", "name": "Uruguay" },
+        { "@type": "Country", "name": "Paraguay" },
+        { "@type": "Country", "name": "Bolivia" },
+        { "@type": "Country", "name": "Ecuador" },
+        { "@type": "Country", "name": "Venezuela" },
+        { "@type": "Country", "name": "Costa Rica" },
+        { "@type": "Country", "name": "Panama" },
+        { "@type": "Country", "name": "Spain" }
+    ],
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "soporte@aprende-excel.com",
+        "contactType": "Customer Support",
+        "availableLanguage": ["Spanish"]
+    }
+}
+</script>
+
+<!-- WebSite schema con sitelinks search box (opcional, mejora navegación en SERP) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Aprende Excel",
+    "url": "https://aprende-excel.com",
+    "inLanguage": "es",
+    "publisher": {
+        "@type": "EducationalOrganization",
+        "name": "Aprende Excel"
+    }
+}
+</script>
+
+<?php if (!empty($seo_course_schema)): ?>
+<!-- Course schema específico de esta página (opcional, se llena desde la landing individual) -->
+<script type="application/ld+json">
+<?= $seo_course_schema ?>
+</script>
+<?php endif; ?>
+<?php if (!empty($seo_breadcrumb_schema)): ?>
+<!-- Breadcrumb schema específico (opcional) -->
+<script type="application/ld+json">
+<?= $seo_breadcrumb_schema ?>
+</script>
+<?php endif; ?>
+<?php if (!empty($seo_faq_schema)): ?>
+<!-- FAQPage schema específico (opcional) -->
+<script type="application/ld+json">
+<?= $seo_faq_schema ?>
+</script>
+<?php endif; ?>
+
 <!-- DNS prefetch para CDNs externos -->
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://fonts.googleapis.com">

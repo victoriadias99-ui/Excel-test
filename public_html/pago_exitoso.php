@@ -1,15 +1,31 @@
 <?php
-if (isset($_GET['test'])) {
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-}
+// `?test` anteriormente activaba display_errors + print_r($venta/$producto), lo que
+// filtraba PII (email, nombre, apellido, telefono) y keys de Stripe a cualquiera
+// que tuviera un idVenta válido. Eliminado por completo.
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
 
 $dirpage = '';
-$_idVenta = $_GET['idVenta'];
+
+// Sanitizar idVenta — esperamos alfanumérico + guiones/underscore
+$_idVenta = isset($_GET['idVenta']) ? trim($_GET['idVenta']) : '';
+if ($_idVenta === '' || !preg_match('/^[A-Za-z0-9_\-]+$/', $_idVenta)) {
+    http_response_code(400);
+    exit('Bad request');
+}
+
 include("a-includes/funcionsDB.php");
 $venta = getVenta($_idVenta);
+if (!$venta) {
+    http_response_code(404);
+    exit('Not found');
+}
 $producto = getCursoDetalle($venta['CURSO']);
+if (!$producto) {
+    http_response_code(404);
+    exit('Not found');
+}
 
 // ─── Valor real de la compra para Meta Pixel (Purchase event) ────────────────
 // La fuente de verdad es la sesión de Stripe: amount_total ya refleja
@@ -19,11 +35,23 @@ $monto    = $producto['PRECIO_UNITARIO'];
 $moneda   = 'ARS';
 $eventId  = $venta['CURSO'] . '_' . $_idVenta;  // para deduplicación Pixel + CAPI
 
+// Validamos que el pago esté efectivamente completado en Stripe antes de mostrar
+// la página de éxito. Antes, cualquiera con un idVenta válido accedía a esta vista
+// y veía los datos del comprador (IDOR) incluso si el pago no se había procesado.
+$pagoVerificado = false;
+
 try {
     require_once __DIR__ . '/n-libraries/vendor/autoload.php';
 
     $stripeSecretRaw = $producto['STRIPE_SECRET_KEY'] ?? '';
-    $__url = str_replace('www.', '', $_SERVER['HTTP_HOST']);
+    // Whitelist de hosts válidos para evitar Host Header Injection al resolver
+    // claves Stripe por dominio.
+    $hostsPermitidos = [
+        'aprende-excel.com', 'excel-facil.com', 'aprende-ia.com',
+    ];
+    $__host = strtolower(str_replace('www.', '', $_SERVER['HTTP_HOST'] ?? ''));
+    $__url  = in_array($__host, $hostsPermitidos, true) ? $__host : $hostsPermitidos[0];
+
     if ($stripeSecretRaw !== '') {
         $stripeSecret = (strpos($stripeSecretRaw, '{') === false)
             ? $stripeSecretRaw
@@ -33,41 +61,42 @@ try {
             \Stripe\Stripe::setApiKey($stripeSecret);
             $session = \Stripe\Checkout\Session::retrieve($venta['PREFERENCIA_ID_MP']);
 
-            // Stripe entrega amount_total en la unidad mínima; para zero-decimal
-            // (CLP, PYG, JPY, etc.) el valor ya está en unidades enteras.
-            $stripeZeroDecimal = [
-                'bif','clp','djf','gnf','isk','jpy','kmf','krw','mga',
-                'pyg','rwf','ugx','vnd','vuv','xaf','xof','xpf',
-            ];
-            $divisor = in_array(strtolower($session->currency), $stripeZeroDecimal, true) ? 1 : 100;
-            $monto   = $session->amount_total / $divisor;
-            $moneda  = strtoupper($session->currency);
+            // CRÍTICO: sólo consideramos el pago válido si Stripe lo confirmó.
+            $pagoVerificado = isset($session->payment_status)
+                && $session->payment_status === 'paid';
+
+            if ($pagoVerificado) {
+                // Stripe entrega amount_total en la unidad mínima; para zero-decimal
+                // (CLP, PYG, JPY, etc.) el valor ya está en unidades enteras.
+                $stripeZeroDecimal = [
+                    'bif','clp','djf','gnf','isk','jpy','kmf','krw','mga',
+                    'pyg','rwf','ugx','vnd','vuv','xaf','xof','xpf',
+                ];
+                $divisor = in_array(strtolower($session->currency), $stripeZeroDecimal, true) ? 1 : 100;
+                $monto   = $session->amount_total / $divisor;
+                $moneda  = strtoupper($session->currency);
+            }
         }
     }
+
+    // Fallback: si el webhook ya marcó la venta como aprobada en DB, también aceptamos.
+    if (!$pagoVerificado && !empty($venta['ESTADO_MP']) && $venta['ESTADO_MP'] === 'approved') {
+        $pagoVerificado = true;
+    }
 } catch (\Exception $e) {
-    // Silencioso: si falla, usamos el fallback con PRECIO_UNITARIO + ARS
+    // Silencioso: no exponer detalles al cliente
     error_log('pago_exitoso stripe retrieve error: ' . $e->getMessage());
 }
-if (isset($_GET['test'])) {
-    echo "<pre>";
-    print_r($venta);
-    echo "</pre>";
-    echo "<pre>";
-    print_r($producto);
-    echo "</pre>";
+
+if (!$pagoVerificado) {
+    http_response_code(402);
+    exit('Pago pendiente de confirmación. Si ya pagaste, esperá unos segundos y recargá.');
 }
 
 $data = getCursoDetalleDown($venta['CURSO'] . '_down');
 $dataDownsell = [];
-if(count($data) > 0)
+if (count($data) > 0) {
     $dataDownsell = getCursoDetalle($data[0]['ID_ABRE_PACK']);
-if (isset($_GET['test'])) {
-    echo "<pre>";
-    print_r($data);
-    echo "</pre>";
-    echo "<pre>";
-    print_r($dataDownsell);
-    echo "</pre>";
 }
 
 ?>
@@ -156,28 +185,28 @@ if (isset($_GET['test'])) {
                 <div class="offset-md-3 col-md-6 mt-5">
                     <div class="card card-producto mb-5">
                         <div class="card-body text-center m-4 p-4">
-                            <img style="width: 100%" class="mx-auto text-center " src="<?= $data[0]['URL_IMAGEN'] ?>" alt="<?= $data[0]['TITULO_1'] ?>">
-                            <p class="card-title  text-center mt-3"><?= $data[0]['TITULO_1'] ?>
+                            <img style="width: 100%" class="mx-auto text-center " src="<?= htmlspecialchars($data[0]['URL_IMAGEN'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($data[0]['TITULO_1'], ENT_QUOTES, 'UTF-8') ?>">
+                            <p class="card-title  text-center mt-3"><?= htmlspecialchars($data[0]['TITULO_1'], ENT_QUOTES, 'UTF-8') ?>
                             </p>
                             <p class="text-center p-0 m-0"><span style="color:#ffd200"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span></p>
-                            <p class="text-center text-danger p-0 m-0"><b><strike>$<?= (($dataDownsell['PRECIO_UNITARIO'] / $dataDownsell['PORCENTAJE_DES']) * 100) ?> ARS</strike></b></p>
-                            <p class="card-precio">$<?= $data[0]['PRECIO'] ?> ARS</p>
+                            <p class="text-center text-danger p-0 m-0"><b><strike>$<?= htmlspecialchars((string)(($dataDownsell['PRECIO_UNITARIO'] / max(1, (int)$dataDownsell['PORCENTAJE_DES'])) * 100), ENT_QUOTES, 'UTF-8') ?> ARS</strike></b></p>
+                            <p class="card-precio">$<?= htmlspecialchars((string)$data[0]['PRECIO'], ENT_QUOTES, 'UTF-8') ?> ARS</p>
                             <p class="card-text card-descripcion"></p>
 
                             <form  id="procederPagoForm">
-                                <input type="text" id="curso" maxlength="64" name="curso" value="<?= $venta['CURSO'] . '_down' ?>" hidden>
-                                <input type="text" id="pack" value="<?= $dataDownsell['CURSO'] . '|' . $venta['CURSO'] . '_down' ?>" hidden>
+                                <input type="text" id="curso" maxlength="64" name="curso" value="<?= htmlspecialchars($venta['CURSO'] . '_down', ENT_QUOTES, 'UTF-8') ?>" hidden>
+                                <input type="text" id="pack" value="<?= htmlspecialchars($dataDownsell['CURSO'] . '|' . $venta['CURSO'] . '_down', ENT_QUOTES, 'UTF-8') ?>" hidden>
                                 <input type="text" id="celular" name="celular" hidden>
                                 <input type="text" id="amount" name="amount" value="0" hidden>
-                                <input type="text" name="nombre" id="nombre" value="<?= $venta['NOMBRE'] ?>" hidden>
-                                <input type="text" name="apellido" id="apellido" value="<?= $venta['APELLIDO'] ?>" hidden>
-                                <input type="text" name="email" id="email" value="<?= $venta['EMAIL'] ?>" hidden>
+                                <input type="text" name="nombre" id="nombre" value="<?= htmlspecialchars($venta['NOMBRE'], ENT_QUOTES, 'UTF-8') ?>" hidden>
+                                <input type="text" name="apellido" id="apellido" value="<?= htmlspecialchars($venta['APELLIDO'], ENT_QUOTES, 'UTF-8') ?>" hidden>
+                                <input type="text" name="email" id="email" value="<?= htmlspecialchars($venta['EMAIL'], ENT_QUOTES, 'UTF-8') ?>" hidden>
                                 <input type="text" name="codigo" id="codigo" hidden>
                                 <p class="text-center">
                                     <button id="proceder_pago"  type="button" class="py-3 col-12 h2  bg-success text-white " >👉 Aprovechar oferta</button>
                                 </p>
                                 <p class="text-center">
-                                    <a href="unirse.php?idVenta=<?= $_idVenta ?>" class="py-3 pt-4" style="background-color: transparent;">No, gracias. No deseo aprovechar la situación</a>
+                                    <a href="unirse.php?idVenta=<?= htmlspecialchars($_idVenta, ENT_QUOTES, 'UTF-8') ?>" class="py-3 pt-4" style="background-color: transparent;">No, gracias. No deseo aprovechar la situación</a>
                                 </p>
                             </form>
                         </div>
@@ -202,9 +231,9 @@ if (isset($_GET['test'])) {
                         <div class="section-heading">
                             <h1 class="mt-5 text-dark pt-5"><b>¡Listo!&nbsp;&nbsp;</b>🙌
                                 <hr>
-                                <p class="lead">Tu pago se acreditó correctamente. ¡Te damos la bienvenida a <?= $producto['TITULO'] ?>! Hacé click para acceder a la Academia.</p>
+                                <p class="lead">Tu pago se acreditó correctamente. ¡Te damos la bienvenida a <?= htmlspecialchars($producto['TITULO'], ENT_QUOTES, 'UTF-8') ?>! Hacé click para acceder a la Academia.</p>
                             </h1>
-                            <a class="btn btn-block btn-lg py-4 btn-outline-light" style="background-color:#e6007e;" href="unirse.php?idVenta=<?= $_idVenta ?>"><b>Clickeame&nbsp;</b>👉</a>
+                            <a class="btn btn-block btn-lg py-4 btn-outline-light" style="background-color:#e6007e;" href="unirse.php?idVenta=<?= htmlspecialchars($_idVenta, ENT_QUOTES, 'UTF-8') ?>"><b>Clickeame&nbsp;</b>👉</a>
                         </div>
                     </div>
                 </div>

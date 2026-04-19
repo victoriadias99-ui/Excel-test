@@ -4,42 +4,39 @@ include("class.autonum.php");
 
 function updateCountContact($_num, $_lista) {
     $cnx = OpenCon();
-    $consulta = 'UPDATE `v2_contacto_contador` SET `ultimo` = '.$_num.' WHERE lista = "'.$_lista.'"';
-    $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt = $cnx->prepare("UPDATE `v2_contacto_contador` SET `ultimo` = ? WHERE `lista` = ?");
+    $stmt->execute([$_num, $_lista]);
 }
 
 function getCountContact($_lista) {
     $cnx = OpenCon();
-    $consulta = "SELECT * FROM `v2_contacto_contador` WHERE `lista` ='" . $_lista ."'";
-    $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt = $cnx->prepare("SELECT * FROM `v2_contacto_contador` WHERE `lista` = ?");
+    $stmt->execute([$_lista]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     return count($rows) == 0 ? null : $rows[0]['ultimo'];
 }
 
 function insertContact($_email, $_fecha, $_nombre, $_pais, $_sms, $_lista) {
     $cnx = OpenCon();
-    $consulta = 'INSERT INTO `v2_contacto`(`email`, `fecha_registro`, `nombre`, `pais`, `sms`, `lista`) '
-    . 'VALUES ("'.$_email.'","'.$_fecha.'","'.$_nombre.'","'.$_pais.'","'.$_sms.'","'.$_lista.'")';
-    $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt = $cnx->prepare(
+        'INSERT INTO `v2_contacto`(`email`, `fecha_registro`, `nombre`, `pais`, `sms`, `lista`) '
+        . 'VALUES (?, ?, ?, ?, ?, ?)'
+    );
+    $stmt->execute([$_email, $_fecha, $_nombre, $_pais, $_sms, $_lista]);
 }
 
 function getContact($_email, $_lista) {
     $cnx = OpenCon();
-    $consulta = "SELECT * FROM `v2_contacto` WHERE `email` = '$_email' and `lista` ='" . $_lista ."'";
-    $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt = $cnx->prepare("SELECT * FROM `v2_contacto` WHERE `email` = ? AND `lista` = ?");
+    $stmt->execute([$_email, $_lista]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     return count($rows) == 0 ? null : $rows[0];
 }
 
 function deleteContact($_email, $_lista) {
     $cnx = OpenCon();
-    $consulta = "DELETE FROM `v2_contacto` WHERE `email` = '$_email' and `lista` ='" . $_lista ."'";
-    $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt = $cnx->prepare("DELETE FROM `v2_contacto` WHERE `email` = ? AND `lista` = ?");
+    $stmt->execute([$_email, $_lista]);
 }
 
 function getTimer($_ip, $idCurso, $timezone) {
@@ -92,23 +89,20 @@ function insertIP($_ip, $idCurso, $data = null, $cache = null) {
 }
 
 function getIP($_ip, $idCurso) {
-    $consulta = "SELECT * FROM `ip_visita` WHERE `ip` = '$_ip' and `id_producto` ='" . $idCurso ."'";
-
     $cnx = OpenCon();
-    $stmt = $cnx->prepare($consulta);
-    $stmt->execute();
+    $stmt = $cnx->prepare("SELECT * FROM `ip_visita` WHERE `ip` = ? AND `id_producto` = ?");
+    $stmt->execute([$_ip, $idCurso]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return count($rows) == 0 ? null : $rows[0];
 }
 
 function getVenta($idVenta) {
-    $consulta = "SELECT * FROM `ventas` WHERE `ID` = '$idVenta'";
-    //echo $consulta;
+    // Antes: query concatenaba $idVenta Y llamaba bindValue(1,...) sobre un prepare sin
+    // placeholder → el bind fallaba silencioso y el concat quedaba vulnerable.
     $cnx = OpenCon();
-    $stmt = $cnx->prepare($consulta);
-    $stmt->bindValue(1, $idVenta, PDO::PARAM_STR);
-    $stmt->execute();
+    $stmt = $cnx->prepare("SELECT * FROM `ventas` WHERE `ID` = ?");
+    $stmt->execute([$idVenta]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return count($rows) == 0 ? null : $rows[0];

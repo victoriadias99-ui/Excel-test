@@ -1,0 +1,10 @@
+# Defensa en profundidad: si la regla global falla, este .htaccess local
+# bloquea el acceso a phpmyadmin desde cualquier cliente externo.
+# phpMyAdmin NO debería vivir dentro del webroot público — se deja bloqueado
+# hasta que se lo elimine o se lo mueva a un host interno con VPN/túnel SSH.
+Require all denied
+
+# Si en el futuro se quiere habilitar acceso desde IPs administrativas,
+# reemplazar por:
+#   Require all denied
+#   Require ip 1.2.3.4

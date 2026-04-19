@@ -2,7 +2,36 @@
 RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
-Header always set Content-Security-Policy "upgrade-insecure-requests;"
+
+# ─── SECURITY HEADERS ───
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "upgrade-insecure-requests;"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(self)"
+  # Ocultar banner del servidor
+  Header unset X-Powered-By
+  Header unset Server
+</IfModule>
+
+# ─── BLOQUEO DE ARCHIVOS SENSIBLES / LEGACY / BACKUPS ───
+# Estos patrones cubren backups viejos, copias manuales y checkouts legacy que
+# se descubrieron en el pentest y que ampliaban la superficie de ataque.
+<FilesMatch "(?i)(^|/)(\.env|\.git.*|composer\.(json|lock)|package(-lock)?\.json|Dockerfile|nixpacks\.toml|entrypoint\.sh|.*\.(sql|bak|old|backup|swp|log|ini)|.*-ORIGINAL-.*\.php|.*-viejo\.php|.*_viejo\.php|.* copia\.php|.*-copia\.php|.*_copia\.php|test\.php|desactivado-.*\.php|checkout_1\.php|checkout_n\.php|checkout_n_c\.php)$">
+  Require all denied
+</FilesMatch>
+
+# Bloquear acceso directo a panel phpmyadmin si quedara servido vía Apache.
+# (Idealmente debería borrarse por completo del webroot — ver phpmyadmin/.htaccess)
+RedirectMatch 403 (?i)^/phpmyadmin(/.*)?$
+
+# Bloquear acceso al directorio Basura y archivos descartados
+RedirectMatch 403 (?i)^/(Basura|archivos-sin-uso|railway-fixes)(/.*)?$
+
+# Evitar listado de directorios
+Options -Indexes
 
 # ─── GZIP COMPRESSION ───
 <IfModule mod_deflate.c>

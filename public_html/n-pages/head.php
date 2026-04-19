@@ -29,10 +29,73 @@ if(isset($titulo) && $titulo == 'Carrito'){
 <meta name="twitter:description" content="<?= isset($seo_description) ? $seo_description : 'Curso online de ' . $titulo . ' con certificado oficial. Líderes en educación online.' ?>">
 <meta name="twitter:image" content="<?= isset($seo_image) ? $seo_image : 'https://aprende-excel.com/n-assets/img/logo-excel.png' ?>">
 
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     JSON-LD Structured Data (schema.org) — para Rich Results en Google
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- Organization / EducationalOrganization (site-wide) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Aprende Excel",
+    "alternateName": "Academia Aprende Excel",
+    "url": "https://aprende-excel.com",
+    "logo": "https://aprende-excel.com/n-assets/img/logo-excel.png",
+    "description": "Academia online de Excel, Power BI, Inteligencia Artificial y capacitaciones laborales. Certificado oficial con cooperación académica de UTN, UBA y UNLP.",
+    "areaServed": [
+        { "@type": "Country", "name": "Argentina" },
+        { "@type": "Country", "name": "Mexico" },
+        { "@type": "Country", "name": "Colombia" },
+        { "@type": "Country", "name": "Chile" },
+        { "@type": "Country", "name": "Peru" },
+        { "@type": "Country", "name": "Uruguay" },
+        { "@type": "Country", "name": "Paraguay" },
+        { "@type": "Country", "name": "Bolivia" },
+        { "@type": "Country", "name": "Ecuador" },
+        { "@type": "Country", "name": "Venezuela" },
+        { "@type": "Country", "name": "Spain" }
+    ],
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "soporte@aprende-excel.com",
+        "contactType": "Customer Support",
+        "availableLanguage": ["Spanish"]
+    }
+}
+</script>
+
+<!-- WebSite schema -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Aprende Excel",
+    "url": "https://aprende-excel.com",
+    "inLanguage": "es",
+    "publisher": {
+        "@type": "EducationalOrganization",
+        "name": "Aprende Excel"
+    }
+}
+</script>
+
 <?php if (isset($seo_structured_data)): ?>
-<!-- Structured Data - Course Schema -->
+<!-- Structured Data - Course Schema (específico de esta página) -->
 <script type="application/ld+json">
 <?= $seo_structured_data ?>
+</script>
+<?php endif; ?>
+<?php if (!empty($seo_breadcrumb_schema)): ?>
+<!-- Breadcrumb schema específico -->
+<script type="application/ld+json">
+<?= $seo_breadcrumb_schema ?>
+</script>
+<?php endif; ?>
+<?php if (!empty($seo_faq_schema)): ?>
+<!-- FAQPage schema específico -->
+<script type="application/ld+json">
+<?= $seo_faq_schema ?>
 </script>
 <?php endif; ?>
 
