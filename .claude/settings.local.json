@@ -38,11 +38,6 @@
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/a-libraries/realizarVentaStripe.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-pages/form-b.php\")",
-<<<<<<< HEAD
-      "WebFetch(domain:aprende-excel.com)",
-      "Bash(python3 /tmp/clean_ga_tags.py --dry-run)",
-      "Bash(python3 /tmp/clean_ga_tags.py)"
-=======
       "Bash(xargs -0 sed -i -E 's|\\(checkoutv[34]\\\\.js\\)\\\\?t=[0-9]+|\\\\1?t=5|g')",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/a-includes/logicparametros.php\")",
       "Bash(/c/xampp/php/php.exe -l \"C:/Users/vicki/Documents/GitHub/Excel-test/public_html/n-includes/logicparametros.php\")",
@@ -55,8 +50,9 @@
       "Bash(php -l public_html/n-libraries/carritos_abandonados/instalar.php)",
       "Bash(php -l public_html/recuperar_carrito.php)",
       "Bash(php -l public_html/n-libraries/IPN_stripe.php)",
-      "PowerShell($files = @\\('public_html\\\\n-libraries\\\\carritos_abandonados\\\\helpers.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\procesar.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\instalar.php','public_html\\\\recuperar_carrito.php','public_html\\\\n-libraries\\\\realizarVenta.php','public_html\\\\n-libraries\\\\IPN_stripe.php'\\); foreach \\($f in $files\\) { Write-Output \"--- $f ---\"; & php -l $f })"
->>>>>>> 7cc0b8196e60be08650fb674b41d2be800834438
+      "PowerShell($files = @\\('public_html\\\\n-libraries\\\\carritos_abandonados\\\\helpers.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\procesar.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\instalar.php','public_html\\\\recuperar_carrito.php','public_html\\\\n-libraries\\\\realizarVenta.php','public_html\\\\n-libraries\\\\IPN_stripe.php'\\); foreach \\($f in $files\\) { Write-Output \"--- $f ---\"; & php -l $f })",
+      "Bash(git pull *)",
+      "Bash(git stash *)"
     ]
   }
 }
