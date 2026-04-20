@@ -521,22 +521,6 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                     </div>
                 </div>
 
-                <div class="col-md-3 mb-3 mb-md-0">
-                    <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
-                        <div>
-                            <img loading="lazy" class="img-fluid" src="a-img/logo-gemini.png" style="width:100%">
-                            <div class="p-3">
-                                <p style="font-family: 'Raleway Bold'; color:#00173B">Curso de Gemini desde Cero</p>
-                                <p style="font-size: 0.7em;text-align: left;">Aprendé a usar Google Gemini para potenciar tu productividad con Inteligencia Artificial. Curso paso a paso, sin requisitos previos.</p>
-                                <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?= $simbolo ?> <?= convertirPrecio(12999, $moneda) ?><br></span></p>
-                                <p style="color: #FF0000;font-family: 'Raleway SemiBold';">&nbsp;</p>
-                                <p>
-                                    <a href="/gemini-mockup/" class="btn btn-primary px-5" style="background: #007A6A; width:100%">Ver curso</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
