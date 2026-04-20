@@ -417,9 +417,7 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row p-3 p-md-5">
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
