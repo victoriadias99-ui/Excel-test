@@ -1,37 +1,34 @@
 <?php
-include('../n-includes/checkout-headers.php');
-$dirpage = '../';
+// Headers para no cachear (importante para checkout)
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
+// Configuración rápida del curso (sin llamadas a BD para no bloquear)
 $idcurso = 'gemini';
-include("../n-includes/funcionsDB.php");
-include("../n-includes/logicparametros.php");
+$simbolo = '$';
+$moneda = 'ARS';
+$textoIVA = '';
 
-try {
-    $data = getCursoDetalleCheckout($idcurso);
-    $curso = $data['producto'];
+// Datos del curso (valores fijos)
+$curso = [
+    'TITULO' => 'Curso de Gemini desde Cero',
+    'DIR' => '../gemini-mockup/',
+    'PRECIO_UNITARIO' => 12999,
+    'PORCENTAJE_DES' => 23,
+];
 
-    if (!$curso) {
-        throw new Exception("Curso no encontrado en la base de datos");
-    }
-} catch (Exception $e) {
-    die("Error al cargar el curso: " . htmlspecialchars($e->getMessage()));
-}
-
-if (isset($_GET['test'])) {
-    echo "<pre>";
-    print_r($curso);
-    echo "</pre>";
-}
-
-//PRECIO_UNITARIO
 $value = $curso['PRECIO_UNITARIO'];
-$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
+$precioCursoOficial = $simbolo . ' ' . number_format(intval(($value / $curso['PORCENTAJE_DES']) * 100), 0, ',', '.');
 $precioDescuento = $value;
-$precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda;
-$precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda) . $textoIVA;
-$diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda;
+$precioCursoDescuento = $simbolo . ' ' . number_format($value, 0, ',', '.') . ' ' . $moneda;
+$precioCurso = $simbolo . ' ' . number_format($value, 0, ',', '.') . $textoIVA;
+$diferencia = $simbolo . ' ' . number_format(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, 0, ',', '.') . ' ' . $moneda;
 $urlCheckout = 'checkout.php';
 $titulo = 'Carrito';
+
+// Variable para form
+$data = ['pack' => []];
 ?>
 <!DOCTYPE html>
 <html>
@@ -94,10 +91,12 @@ $titulo = 'Carrito';
     </head>
 
     <body style="font-family: 'Raleway Regular';">
-        <?php
-        $headerImagen = "";
-        include('../n-pages/header.php')
-        ?>
+        <nav class="navbar navbar-light bg-white" style="border-bottom: 1px solid #eee;">
+            <div class="container">
+                <a class="navbar-brand" href="index.html"><img src="../n-assets/img/logo-excel.png" alt="Aprende Excel" style="height:40px"></a>
+                <a href="index.html" class="btn btn-sm btn-outline-primary">← Volver</a>
+            </div>
+        </nav>
         <section>
             <div class="container">
                 <div class="row p-4 p-md-0">
@@ -192,7 +191,16 @@ $titulo = 'Carrito';
                         <div class="formulario p-4">
                             <p class="p-0 m-0 mt-4"><b>Tus datos de contacto están seguros</b></p>
                             <h3 class="mb-4"><b>¿Dónde querés recibir el curso?</b></h3>
-                            <?php include('../n-pages/form.php') ?>
+                            <form class="text-left" id="procederPagoForm">
+                                <input type="hidden" id="curso" name="curso" value="<?= $idcurso ?>">
+                                <input type="hidden" id="amount" name="amount" value="<?= $precioDescuento ?>">
+                                <input type="hidden" id="moneda" name="moneda" value="<?= $moneda ?>">
+                                <div class="form-group"> <input type="text" class="form-control-lg col border" placeholder="Tu nombre*" id="nombre" name="nombre" required=""> </div>
+                                <div class="form-group"> <input type="text" class="form-control-lg col border" id="apellido" placeholder="Apellido*" name="apellido" required=""> </div>
+                                <div class="form-group"> <input type="email" class="form-control-lg col border" id="email" placeholder="E-mail*" name="email" required=""> </div>
+                                <div class="form-group"> <input type="text" class="form-control-lg col border" id="celular" placeholder="Whatsapp (opcional)" maxlength="12" name="celular" > </div>
+                                <button type="button" id="proceder_pago" style="cursor:pointer" class="w-100 py-3 border bg-success text-white btn">👉 Proceder con el pago</button>
+                            </form>
                         </div>
                         <div class="row mt-5">
                             <div class="col-4 p-1">
@@ -227,18 +235,25 @@ $titulo = 'Carrito';
                 </div>
             </div>
         </section>
-        <?php include('../n-pages/footer-cursos.php') ?>
-        <script src="../n-libraries/js/mailcheck.js"></script>
-        <script src="../n-libraries/js/jquery.validate.min.js"></script>
+        <footer style="background: #1A1046; color: white; padding: 40px 20px; margin-top: 40px;">
+            <div class="text-center">
+                <p class="m-0">© 2026 Aprende·IA · Curso de Gemini desde Cero</p>
+                <p class="small mt-2"><a href="#" style="color: white; opacity: 0.8;">Términos</a> · <a href="#" style="color: white; opacity: 0.8;">Privacidad</a> · <a href="#" style="color: white; opacity: 0.8;">Soporte</a></p>
+            </div>
+        </footer>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-<?php
-foreach ($data['pack'] as $c => $item) {
-    if ($item['PRECIO'] > 0) {
-        echo '$("#item_' . $item['ID_ABRE_PACK'] . '").attr("style", "display: none!important");';
+document.getElementById('proceder_pago').addEventListener('click', function() {
+    const form = document.getElementById('procederPagoForm');
+    if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+    } else {
+        alert('Gracias por tu interés. Este es un mockup. En producción, aquí se redireciría a la pasarela de pago Stripe.');
     }
-}
-?>
+    form.classList.add('was-validated');
+});
         </script>
-        <script src="../n-libraries/js/checkoutv4.js?t=6"></script>
     </body>
 </html>
