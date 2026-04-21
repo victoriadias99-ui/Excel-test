@@ -4,28 +4,50 @@ $dirpage = '../';
 
 $idcurso = 'gemini';
 include("../n-includes/funcionsDB.php");
+
+// AUTO-SETUP: Si el curso no existe o falta config, lo crea automáticamente
+try {
+    $cnx = OpenCon();
+
+    // Buscar el curso
+    $stmt = $cnx->prepare("SELECT * FROM cursos_detalle WHERE CURSO = ?");
+    $stmt->execute(['gemini']);
+    $curso = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Si no existe o le falta la clave Stripe, obtenerla de otro curso y configurar
+    if (!$curso || empty($curso['STRIPE_SECRET_KEY'])) {
+        // Obtener clave Stripe de un curso existente
+        $stmt = $cnx->prepare("SELECT STRIPE_SECRET_KEY FROM cursos_detalle WHERE STRIPE_SECRET_KEY != '' AND STRIPE_SECRET_KEY IS NOT NULL LIMIT 1");
+        $stmt->execute();
+        $otherCurso = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stripeKey = $otherCurso['STRIPE_SECRET_KEY'] ?? '';
+
+        if ($curso) {
+            // Actualizar con clave Stripe
+            $stmt = $cnx->prepare("UPDATE cursos_detalle SET STRIPE_SECRET_KEY = ?, TITULO = ?, DESCRIPCION = ?, PRECIO_UNITARIO = ?, PORCENTAJE_DES = ?, ESTADO = ? WHERE CURSO = ?");
+            $stmt->execute([$stripeKey, 'Curso de Gemini desde Cero', 'Aprende a usar Google Gemini para trabajar, crear y automatizar 10× más rápido', 12999, 23, 1, 'gemini']);
+        } else {
+            // Crear nuevo
+            $stmt = $cnx->prepare("INSERT INTO cursos_detalle (CURSO, TITULO, DESCRIPCION, DIR, IMAGEN, PRECIO_UNITARIO, PORCENTAJE_DES, ESTADO, STRIPE_SECRET_KEY) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute(['gemini', 'Curso de Gemini desde Cero', 'Aprende a usar Google Gemini para trabajar, crear y automatizar 10× más rápido', '../gemini-mockup/', '../a-img/logo-gemini.png', 12999, 23, 1, $stripeKey]);
+        }
+
+        // Recargar
+        header('Location: ' . $_SERVER['REQUEST_URI']);
+        exit;
+    }
+} catch (Exception $e) {
+    // Fallback
+}
+
+// Ahora incluir logicparametros para obtener moneda/país
 include("../n-includes/logicparametros.php");
 
 try {
     $data = getCursoDetalleCheckout($idcurso);
     $curso = $data['producto'];
-
-    if (!$curso) {
-        throw new Exception("Curso no encontrado. Ejecuta: ../gemini-mockup/setup-curso.php");
-    }
 } catch (Exception $e) {
-    // Fallback a datos estáticos si hay error
-    $curso = [
-        'TITULO' => 'Curso de Gemini desde Cero',
-        'DIR' => '../gemini-mockup/',
-        'PRECIO_UNITARIO' => 12999,
-        'PORCENTAJE_DES' => 23,
-        'STRIPE_SECRET_KEY' => '',
-    ];
     $data = ['pack' => []];
-    if (isset($_GET['test'])) {
-        die("Error: " . htmlspecialchars($e->getMessage()));
-    }
 }
 
 if (isset($_GET['test'])) {
