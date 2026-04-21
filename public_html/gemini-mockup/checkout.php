@@ -93,7 +93,7 @@ $data = ['pack' => []];
     <body style="font-family: 'Raleway Regular';">
         <nav class="navbar navbar-light bg-white" style="border-bottom: 1px solid #eee;">
             <div class="container">
-                <a class="navbar-brand" href="index.html"><img src="../n-assets/img/logo-excel.png" alt="Aprende Excel" style="height:40px"></a>
+                <a class="navbar-brand" href="../"><img src="../n-assets/img/logo-excel.png" alt="Aprende Excel" style="height:40px"></a>
                 <a href="index.html" class="btn btn-sm btn-outline-primary">← Volver</a>
             </div>
         </nav>
