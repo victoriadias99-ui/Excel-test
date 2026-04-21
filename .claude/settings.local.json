@@ -53,7 +53,8 @@
       "PowerShell($files = @\\('public_html\\\\n-libraries\\\\carritos_abandonados\\\\helpers.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\procesar.php','public_html\\\\n-libraries\\\\carritos_abandonados\\\\instalar.php','public_html\\\\recuperar_carrito.php','public_html\\\\n-libraries\\\\realizarVenta.php','public_html\\\\n-libraries\\\\IPN_stripe.php'\\); foreach \\($f in $files\\) { Write-Output \"--- $f ---\"; & php -l $f })",
       "Bash(git pull *)",
       "Bash(git stash *)",
-      "Bash(python -m http.server 8000 --directory public_html)"
+      "Bash(python -m http.server 8000 --directory public_html)",
+      "Bash(xargs wc *)"
     ]
   }
 }
