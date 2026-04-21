@@ -55,7 +55,8 @@
       "Bash(git stash *)",
       "Bash(python -m http.server 8000 --directory public_html)",
       "Bash(xargs wc *)",
-      "Bash(find . -name \"checkout.php\" -type f ! -path \"./archivos-sin-uso/*\" ! -path \"./latam/*\" ! -path \"./n-site/*\" -exec grep -l 'navbar-brand.*href=\"#\"' {} \\\\;)"
+      "Bash(find . -name \"checkout.php\" -type f ! -path \"./archivos-sin-uso/*\" ! -path \"./latam/*\" ! -path \"./n-site/*\" -exec grep -l 'navbar-brand.*href=\"#\"' {} \\\\;)",
+      "Bash(python3)"
     ]
   }
 }
