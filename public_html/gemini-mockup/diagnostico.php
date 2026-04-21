@@ -2,9 +2,15 @@
 /**
  * Script de diagnóstico para verificar la configuración de Stripe
  * http://localhost/gemini-mockup/diagnostico.php
+ * NOTA: No incluye logicparametros.php para evitar redirects
  */
 
 header('Content-Type: text/html; charset=utf-8');
+
+// Evitar redirects
+if (!isset($_GET['dev'])) {
+    $_GET['dev'] = 1; // Simular dev mode para evitar redirects
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,6 +31,8 @@ header('Content-Type: text/html; charset=utf-8');
 
     <?php
     try {
+        // Conexión directa sin logicparametros
+        require_once dirname(__DIR__) . '/n-libraries/vendor/autoload.php';
         include("../n-includes/conexion.php");
         $cnx = OpenCon();
 
