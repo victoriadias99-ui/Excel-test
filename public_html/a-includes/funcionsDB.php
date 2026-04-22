@@ -165,7 +165,6 @@ function getCursoDetalleCheckout($idCurso){
 }
 
 /**
-<<<<<<< HEAD
  * Trae varios cursos en UNA sola query (en lugar de N queries individuales).
  * Usado por el home para precargar precios/URLs de 10+ cursos de una vez.
  * Devuelve un array asociativo keyed por CURSO.
@@ -182,72 +181,6 @@ function getCursosDetalleBatch(array $idCursos) {
         $out[$row['CURSO']] = $row;
     }
     return $out;
-=======
- * Obtiene en batch los detalles de checkout para múltiples cursos.
- * Reduce drásticamente la cantidad de queries al usar IN (...) en lugar de
- * consultar curso por curso.
- *
- * @param array $idsCurso Lista de IDs de curso (ej: ['excel-promo', 'excel-inicial'])
- * @return array Mapa asociativo: [idCurso => ['producto' => ..., 'pack' => [...]]]
- */
-function getCursosDetalleCheckoutBatch($idsCurso) {
-    if (!is_array($idsCurso) || count($idsCurso) === 0) {
-        return [];
-    }
-
-    $idsCurso = array_values(array_unique(array_filter($idsCurso, function($v) {
-        return is_string($v) && $v !== '';
-    })));
-
-    if (count($idsCurso) === 0) {
-        return [];
-    }
-
-    $cnx = OpenCon();
-
-    $placeholders = implode(',', array_fill(0, count($idsCurso), '?'));
-
-    // 1) Traer todos los productos en una sola query
-    $consultaProductos = "SELECT * FROM cursos_detalle WHERE CURSO IN ($placeholders)";
-    $stmtProductos = $cnx->prepare($consultaProductos);
-    foreach ($idsCurso as $i => $id) {
-        $stmtProductos->bindValue($i + 1, $id, PDO::PARAM_STR);
-    }
-    $stmtProductos->execute();
-    $rowsProductos = $stmtProductos->fetchAll(PDO::FETCH_ASSOC);
-
-    // 2) Traer todos los packs en una sola query
-    $consultaPacks = "SELECT * FROM cursos_pack WHERE ID_ABRE IN ($placeholders)";
-    $stmtPacks = $cnx->prepare($consultaPacks);
-    foreach ($idsCurso as $i => $id) {
-        $stmtPacks->bindValue($i + 1, $id, PDO::PARAM_STR);
-    }
-    $stmtPacks->execute();
-    $rowsPacks = $stmtPacks->fetchAll(PDO::FETCH_ASSOC);
-
-    // Inicializar respuesta para mantener consistencia de estructura
-    $resultado = [];
-    foreach ($idsCurso as $id) {
-        $resultado[$id] = [
-            'producto' => null,
-            'pack' => [],
-        ];
-    }
-
-    foreach ($rowsProductos as $row) {
-        if (isset($row['CURSO']) && isset($resultado[$row['CURSO']])) {
-            $resultado[$row['CURSO']]['producto'] = $row;
-        }
-    }
-
-    foreach ($rowsPacks as $row) {
-        if (isset($row['ID_ABRE']) && isset($resultado[$row['ID_ABRE']])) {
-            $resultado[$row['ID_ABRE']]['pack'][] = $row;
-        }
-    }
-
-    return $resultado;
->>>>>>> 6c822f1c (Optimiza carga inicial: consultas batch en home y scripts defer)
 }
 
 function getCursoDetalleDown($idCurso){

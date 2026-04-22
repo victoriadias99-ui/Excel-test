@@ -21,7 +21,6 @@ include("a-includes/logicprecios.php");
 $numberWhatsapp = getenv('WHATSAPP_NUMBER') ?: '';
 $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hola!%20Te%20escribo%20por%20el%20curso%20de%20Excel';
 
-<<<<<<< HEAD
 // Precargar TODOS los cursos del home en una sola query (en lugar de 10+ individuales).
 // Antes: ~20 queries SQL por render del home. Ahora: 1 query.
 $__idsCursosHome = [
@@ -35,13 +34,7 @@ $__cursosBatch = getCursosDetalleBatch($__idsCursosHome);
 function extraerDatosCurso($idCurso, $simbolo, $moneda) {
     global $__cursosBatch;
     $producto = $__cursosBatch[$idCurso] ?? null;
-=======
-// Medición de performance (solo para debug/local)
-$renderStart = microtime(true);
->>>>>>> 6c822f1c (Optimiza carga inicial: consultas batch en home y scripts defer)
 
-// Helper: arma precio, precio oficial y URL de checkout desde producto ya cargado en batch.
-function extraerDatosCursoDesdeProducto($producto, $simbolo, $moneda) {
     if ($producto === null) {
         return [
             'precio'         => '',
@@ -64,7 +57,6 @@ function extraerDatosCursoDesdeProducto($producto, $simbolo, $moneda) {
     ];
 }
 
-<<<<<<< HEAD
 $datosCursoExcelPromo        = extraerDatosCurso('excel-promo',          $simbolo, $moneda);
 $datosCursoExcelInicial      = extraerDatosCurso('excel-inicial',        $simbolo, $moneda);
 $datosCursoExcelIntermedio   = extraerDatosCurso('excel-intermedio',     $simbolo, $moneda);
@@ -75,35 +67,6 @@ $datosCursoPowerBi           = extraerDatosCurso('power-bi',             $simbol
 $datosCursoPowerBiAvanzado   = extraerDatosCurso('power-bi-avanzado',    $simbolo, $moneda);
 $datosCursoExcelPromoPowerBI = extraerDatosCurso('excel-promo-power-bi', $simbolo, $moneda);
 $datosCursoPlantillas        = extraerDatosCurso('plantillas',           $simbolo, $moneda);
-=======
-// IDs de cursos mostrados en home
-$idsCursosHome = [
-    'excel-promo',
-    'excel-inicial',
-    'excel-intermedio',
-    'excel-avanzado',
-    'sql-server',
-    'pack-office',
-    'power-bi',
-    'power-bi-avanzado',
-    'excel-promo-power-bi',
-    'plantillas',
-];
-
-// Una sola carga batch (reduce ~20 queries a 2)
-$detallesCursosHome = getCursosDetalleCheckoutBatch($idsCursosHome);
-
-$datosCursoExcelPromo        = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['excel-promo']['producto']) ? $detallesCursosHome['excel-promo']['producto'] : null, $simbolo, $moneda);
-$datosCursoExcelInicial      = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['excel-inicial']['producto']) ? $detallesCursosHome['excel-inicial']['producto'] : null, $simbolo, $moneda);
-$datosCursoExcelIntermedio   = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['excel-intermedio']['producto']) ? $detallesCursosHome['excel-intermedio']['producto'] : null, $simbolo, $moneda);
-$datosCursoExcelAvanzado     = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['excel-avanzado']['producto']) ? $detallesCursosHome['excel-avanzado']['producto'] : null, $simbolo, $moneda);
-$datosCursoSqlServer         = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['sql-server']['producto']) ? $detallesCursosHome['sql-server']['producto'] : null, $simbolo, $moneda);
-$datosCursoPackOffice        = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['pack-office']['producto']) ? $detallesCursosHome['pack-office']['producto'] : null, $simbolo, $moneda);
-$datosCursoPowerBi           = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['power-bi']['producto']) ? $detallesCursosHome['power-bi']['producto'] : null, $simbolo, $moneda);
-$datosCursoPowerBiAvanzado   = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['power-bi-avanzado']['producto']) ? $detallesCursosHome['power-bi-avanzado']['producto'] : null, $simbolo, $moneda);
-$datosCursoExcelPromoPowerBI = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['excel-promo-power-bi']['producto']) ? $detallesCursosHome['excel-promo-power-bi']['producto'] : null, $simbolo, $moneda);
-$datosCursoPlantillas        = extraerDatosCursoDesdeProducto(isset($detallesCursosHome['plantillas']['producto']) ? $detallesCursosHome['plantillas']['producto'] : null, $simbolo, $moneda);
->>>>>>> 6c822f1c (Optimiza carga inicial: consultas batch en home y scripts defer)
 
 // Variables de precio y URL para cada curso
 $precioCursoExcelPromo              = $datosCursoExcelPromo['precio'];
@@ -724,14 +687,8 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
         </section>
         <?php include('n-pages/footer-main.php') ?>
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <?php if ($isDebugEnv || $isLocalIP): ?>
-            <?php $renderMs = round((microtime(true) - $renderStart) * 1000, 2); ?>
-            <!-- Debug performance: tiempo de armado de respuesta en servidor -->
-            <script>console.log("Server render time (ms): <?= $renderMs ?>");</script>
-        <?php endif; ?>
-
-        <script defer src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-        <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
     </body>
 </html>
