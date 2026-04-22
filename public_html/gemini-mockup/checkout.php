@@ -233,10 +233,49 @@ $titulo = 'Carrito';
                                     </ul>
                                 </div>
                             </div>
+                            <div class="col-12 mt-4">
+                                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                    <ol class="carousel-indicators p-0 m-0">
+                                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                    </ol>
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active p-2">
+                                            <div class="comentarios">
+                                                <p>"Muy satisfecha. Todos los puntos explicados en detalle. Entendi muy bien cada uno de los temas, animo a la gente a que realice este curso"</p>
+                                                <div class="rating-user d-inline">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                                <div class="blockquote-footer">
+                                                    <b>Laura Miller</b>, Junín, Buenos Aires</div>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item p-2">
+                                            <div class="comentarios">
+                                                <p>"Muy buena elección. Didáctico y fácil de entender. Los profes me ayudaron cada vez que tuve dudas."</p>
+                                                <div class="rating-user d-inline">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                                <div class="blockquote-footer">
+                                                    <b>Felipe Salcedo</b>, San Rafael, Mendoza</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-5 pl-0 pl-md-5 pr-0 mt-4 mt-md-0">
                         <div class="formulario p-4">
+                            <img width="100%" alt="Mercado Pago - Medios de pago" title="Mercado Pago - Medios de pago" src="https://imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg">
                             <p class="p-0 m-0 mt-4"><b>Tus datos de contacto están seguros</b></p>
                             <h3 class="mb-4"><b>¿Dónde querés recibir el curso?</b></h3>
                             <?php include('../n-pages/form.php') ?>
