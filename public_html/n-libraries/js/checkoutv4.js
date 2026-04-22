@@ -164,7 +164,7 @@ $(document).ready(function () {
             }
             $.ajax(
                     {
-                        url: "/n-libraries/realizarVenta.php",
+                        url: "/a-libraries/realizarVentaStripe.php",
                         type: "get",
                         data: checkoutData,
                         success: function (response) {
