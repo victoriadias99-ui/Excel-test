@@ -57,12 +57,26 @@ if (isset($_GET['test'])) {
 }
 
 //PRECIO_UNITARIO
+if (!$curso || empty($curso['PRECIO_UNITARIO']) || empty($curso['PORCENTAJE_DES'])) {
+    // Fallback a valores por defecto si la BD no responde correctamente
+    $curso = [
+        'TITULO' => 'Curso de Gemini desde Cero',
+        'DIR' => '../gemini-mockup/',
+        'PRECIO_UNITARIO' => 12999,
+        'PORCENTAJE_DES' => 23,
+        'STRIPE_SECRET_KEY' => '',
+    ];
+    $data = ['pack' => []];
+}
+
 $value = $curso['PRECIO_UNITARIO'];
-$precioCursoOficial = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100), $moneda);
+$descuento = $curso['PORCENTAJE_DES'];
+$precioOriginal = intval(($value / $descuento) * 100);
+$precioCursoOficial = $simbolo . ' ' . convertirPrecio($precioOriginal, $moneda);
 $precioDescuento = $value;
 $precioCursoDescuento = $simbolo . ' ' . convertirPrecio($value, $moneda) . ' ' . $moneda;
 $precioCurso = $simbolo . ' ' . convertirPrecio($value, $moneda) . $textoIVA;
-$diferencia = $simbolo . ' ' . convertirPrecio(intval(($value / $curso['PORCENTAJE_DES']) * 100) - $value, $moneda) . ' ' . $moneda;
+$diferencia = $simbolo . ' ' . convertirPrecio($precioOriginal - $value, $moneda) . ' ' . $moneda;
 $urlCheckout = 'checkout.php';
 $titulo = 'Carrito';
 ?>
