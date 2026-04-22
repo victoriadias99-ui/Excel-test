@@ -91,7 +91,7 @@ $urlCheckoutPlantillas          = 'plantillas/finanzas/';
             </ul>
         </div>
     </nav>
-    <img id="image-header-min" src="n-img/image-header-min.png" alt="Cursos online de Excel, Power BI e Inteligencia Artificial con certificado oficial" class="d-none d-md-block">
+    <img id="image-header-min" src="n-img/image-header-min.png" alt="Cursos online de Excel, Power BI e Inteligencia Artificial con certificado oficial" class="d-none d-md-block" fetchpriority="high">
     <div class="row"  style="height: 100%;">
         <div class="col-12 d-block d-md-none mb-5">
             <img class="img-fluid" src="n-img/image-header-min.png" alt="Academia Aprende Excel - Líderes en educación online y capacitaciones laborales" style="position: absolute; margin-right:-10px;">

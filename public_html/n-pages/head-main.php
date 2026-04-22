@@ -115,7 +115,7 @@
 <link rel="preload" href="/n-assets/fonts/Raleway-Bold.woff" as="font" type="font/woff" crossorigin="anonymous">
 
 <?php if (!empty($seo_canonical) && $seo_canonical === 'https://aprende-excel.com/'): ?>
-<link rel="preload" as="image" href="/n-img/imagen-laptop-web-min.png" fetchpriority="high">
+<link rel="preload" as="image" href="/n-img/image-header-min.png" fetchpriority="high">
 <?php endif; ?>
 
 <!-- Raleway: solo 6 variantes usadas, font-display:swap -->

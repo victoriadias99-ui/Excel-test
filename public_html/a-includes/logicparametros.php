@@ -1,5 +1,12 @@
 <?php
+// Instrumentación temporal de performance (visible solo con ?dev o ?resetip)
+$__perf = ['start' => microtime(true), 'marks' => []];
+$__perfMark = function ($label) use (&$__perf) {
+    $__perf['marks'][$label] = round((microtime(true) - $__perf['start']) * 1000, 1);
+};
+
 require_once  dirname(__DIR__) . '/a-libraries/vendor/autoload.php';
+$__perfMark('autoload');
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
@@ -128,14 +135,18 @@ if (isset($productoIP) && $productoIP != null) {
 
 // ─── Leer de caché o hacer lookup ────────────────────────────────────────────
 $existingIP = getIP($ip, $cacheKey);
+$__perfMark('getIP');
 
 if ($forceRefresh || $existingIP == null) {
     $data = detectarPais($ip, $currencyByCountry, $dataDefault);
+    $__perfMark('detectarPais');
     if ($existingIP === null) {
         insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+        $__perfMark('insertIP');
     } else {
         // Actualiza país/moneda en DB (no re-inserta para evitar error de clave duplicada)
         refreshIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+        $__perfMark('refreshIP');
     }
 } else {
     $data = json_decode($existingIP['data'], true);
@@ -144,6 +155,7 @@ if ($forceRefresh || $existingIP == null) {
     // Es solo analítica, no vale la pena un write en cada navegación.
     if (mt_rand(1, 20) === 1) {
         updateIP($ip, $cacheKey, $existingIP['visitas'] + 20, json_encode($_COOKIE));
+        $__perfMark('updateIP');
     }
 }
 
@@ -173,6 +185,7 @@ $curso          = isset($_GET['curso']) ? $_GET['curso'] : $idCursoDefault;
 
 // ─── DEBUG: barra de diagnóstico con ?dev o ?resetip ─────────────────────────
 if (isset($_GET['dev']) || isset($_GET['resetip'])) {
+    $__perfMark('end');
     $cfRaw = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? 'N/A'));
     echo '<div style="position:fixed;top:0;left:0;right:0;background:#1a1a2e;color:#00ff88;font-family:monospace;font-size:13px;padding:10px 16px;z-index:99999;border-bottom:2px solid #00ff88">';
     echo '<strong>GEO DEBUG</strong> &nbsp;|&nbsp; ';
@@ -180,6 +193,10 @@ if (isset($_GET['dev']) || isset($_GET['resetip'])) {
     echo 'CF-Country: <strong>' . htmlspecialchars($cfRaw) . '</strong> &nbsp;|&nbsp; ';
     echo 'Pais: <strong>' . htmlspecialchars($country) . '</strong> &nbsp;|&nbsp; ';
     echo 'Moneda: <strong>' . htmlspecialchars($moneda) . '</strong> &nbsp;|&nbsp; ';
-    echo 'Cache: <strong>' . ($forceRefresh ? 'FRESH' : 'DB') . '</strong>';
-    echo '</div><div style="height:40px"></div>';
+    echo 'Cache: <strong>' . ($forceRefresh ? 'FRESH' : 'DB') . '</strong><br>';
+    echo '<strong>PERF (ms desde start):</strong> ';
+    foreach ($__perf['marks'] as $label => $ms) {
+        echo htmlspecialchars($label) . '=<strong>' . $ms . '</strong> &nbsp; ';
+    }
+    echo '</div><div style="height:60px"></div>';
 }
