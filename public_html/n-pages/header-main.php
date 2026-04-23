@@ -76,6 +76,9 @@ $urlCheckoutPlantillas          = 'plantillas/finanzas/';
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $urlCheckoutSqlServer ?>">Sql Server</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/gemini-mockup/">Gemini</a>
+                </li>
 				<!--<li class="nav-item">
                     <a class="nav-link" href="https://aprende-excel.com/clases-en-vivo/">Clases en vivo</a>
                 </li>-->
