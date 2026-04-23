@@ -12,7 +12,24 @@
  *   $val = cacheGet('geo:1.2.3.4');          // null si miss o Redis no disponible
  *   cacheSet('geo:1.2.3.4', $json, 86400);   // TTL en segundos (86400 = 24 h)
  *   cacheDel('courses:batch');
+ *
+ * Debug:
+ *   Set REDIS_DEBUG=1 to write detailed logs to /tmp/redis-debug.log
  */
+
+/**
+ * Writes a timestamped line to /tmp/redis-debug.log when REDIS_DEBUG=1.
+ *
+ * @param  string  $message  Log message
+ * @return void
+ */
+function debugLog(string $message): void {
+    if (getenv('REDIS_DEBUG') !== '1') {
+        return;
+    }
+    $line = '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
+    file_put_contents('/tmp/redis-debug.log', $line, FILE_APPEND | LOCK_EX);
+}
 
 /**
  * Devuelve la instancia singleton de Redis, o null si no está disponible.
@@ -36,12 +53,14 @@ function getRedis(): ?Redis {
 
     $redisUrl = getenv('REDIS_URL');
     if (empty($redisUrl)) {
+        debugLog('getRedis() - REDIS_URL is not set; Redis disabled');
         $disabled = true;
         return null;
     }
 
     if (!class_exists('Redis')) {
         // Extensión phpredis no instalada
+        debugLog('getRedis() - phpredis extension not available; Redis disabled');
         $disabled = true;
         return null;
     }
@@ -52,6 +71,8 @@ function getRedis(): ?Redis {
         $port   = $parsed['port'] ?? 6379;
         $pass   = isset($parsed['pass']) && $parsed['pass'] !== '' ? $parsed['pass'] : null;
         $dbNum  = isset($parsed['path']) ? (int) ltrim($parsed['path'], '/') : 0;
+
+        debugLog("getRedis() - Attempting connection to {$host}:{$port} db={$dbNum}");
 
         $r = new Redis();
         // Timeout de conexión corto para no bloquear el render si Redis está caído
@@ -64,9 +85,11 @@ function getRedis(): ?Redis {
             $r->select($dbNum);
         }
 
+        debugLog('getRedis() - Connection successful');
         $redis = $r;
     } catch (Exception $e) {
         // Redis no disponible — continuar sin caché
+        debugLog('getRedis() - Connection failed: ' . $e->getMessage());
         $redis    = null;
         $disabled = true;
     }
@@ -81,14 +104,22 @@ function getRedis(): ?Redis {
  * @return string|null       Valor almacenado, o null si no existe / Redis no disponible
  */
 function cacheGet(string $key): ?string {
+    debugLog("cacheGet() - Fetching key={$key}");
     $r = getRedis();
     if ($r === null) {
+        debugLog("cacheGet() - Redis unavailable; returning null for key={$key}");
         return null;
     }
     try {
         $val = $r->get($key);
-        return ($val === false) ? null : $val;
+        if ($val === false) {
+            debugLog("cacheGet() - Miss for key={$key}");
+            return null;
+        }
+        debugLog("cacheGet() - Hit for key={$key}");
+        return $val;
     } catch (Exception $e) {
+        debugLog("cacheGet() - Exception for key={$key}: " . $e->getMessage());
         return null;
     }
 }
@@ -102,16 +133,22 @@ function cacheGet(string $key): ?string {
  * @return bool            true si se guardó, false si Redis no disponible
  */
 function cacheSet(string $key, string $value, int $ttl = 0): bool {
+    debugLog("cacheSet() - Storing key={$key}, ttl={$ttl}");
     $r = getRedis();
     if ($r === null) {
+        debugLog("cacheSet() - Redis unavailable; skipping key={$key}");
         return false;
     }
     try {
         if ($ttl > 0) {
-            return (bool) $r->setex($key, $ttl, $value);
+            $result = (bool) $r->setex($key, $ttl, $value);
+        } else {
+            $result = (bool) $r->set($key, $value);
         }
-        return (bool) $r->set($key, $value);
+        debugLog('cacheSet() - Result: ' . ($result ? 'true' : 'false') . " for key={$key}");
+        return $result;
     } catch (Exception $e) {
+        debugLog("cacheSet() - Exception for key={$key}: " . $e->getMessage());
         return false;
     }
 }
@@ -123,13 +160,18 @@ function cacheSet(string $key, string $value, int $ttl = 0): bool {
  * @return bool          true si se eliminó, false si Redis no disponible
  */
 function cacheDel(string $key): bool {
+    debugLog("cacheDel() - Deleting key={$key}");
     $r = getRedis();
     if ($r === null) {
+        debugLog("cacheDel() - Redis unavailable; skipping key={$key}");
         return false;
     }
     try {
-        return (bool) $r->del($key);
+        $result = (bool) $r->del($key);
+        debugLog('cacheDel() - Result: ' . ($result ? 'true' : 'false') . " for key={$key}");
+        return $result;
     } catch (Exception $e) {
+        debugLog("cacheDel() - Exception for key={$key}: " . $e->getMessage());
         return false;
     }
 }
