@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
         pdo \
         pdo_mysql \
         zip \
+        redis \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
