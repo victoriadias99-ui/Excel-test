@@ -324,8 +324,15 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
             <img class="background-verde-min" src="n-img/background-verde-min.jpg">
             <div class="row py-5">
                 <div class="col-md-6 ">
-                    <img class="img-fluid" src="n-img/imagen-laptop-web-min.png" fetchpriority="high" alt="Cursos online Aprende Excel">
+                    <img class="img-fluid" 
+                         src="n-img/imagen-laptop-web-min.png" 
+                         fetchpriority="high" 
+                         alt="Cursos online Aprende Excel"
+                         width="600" 
+                         height="400"
+                         decoding="async">
                 </div>
+
                 <div class="col-md-6 d-flex align-items-center m-5 m-md-0" style="color:#fff;">
                     <div>
                         <h2 style="font-family: 'Raleway Black';">Cursos cortos con amplia salida laboral</h2>
@@ -346,7 +353,13 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                       <div>
-                           <img loading="lazy" class="img-fluid" src="a-img/logo-gemini.png" style="width:100%">
+                           <img loading="lazy" class="img-fluid" 
+                                src="a-img/logo-gemini.png" 
+                                style="width:100%"
+                                width="300" 
+                                height="200"
+                                alt="Logo Gemini">
+
                            <div class="p-3">
                                <p style="font-family: 'Raleway Bold'; color:#00173B">Curso de Gemini desde Cero</p>
                                <p style="font-size: 0.7em;text-align: left;">Aprendé a usar Google Gemini para potenciar tu productividad con Inteligencia Artificial. Curso paso a paso, sin requisitos previos.</p>
@@ -362,7 +375,13 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/excel-inicial-nueva-2024_11zon.webp" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/excel-inicial-nueva-2024_11zon.webp" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Excel 3 niveles pack experto">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">3 Niveles - Pack Experto</p>
                                 <p style="font-size: 0.7em;text-align: left;">Convertite en un Experto en Excel con este pack de 3 cursos. ¡Sé el experto que las empresas están buscando!</p>
@@ -378,7 +397,13 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-excelinicial.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-excelinicial.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso Excel Inicial">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Inicial</p>
                                 <p style="font-size: 0.7em;text-align: left;">Sin requisitos previos, éste curso te va a enseñar a usar Microsoft Excel: la herramienta laboral más solicitada por las empresas.</p>
@@ -395,7 +420,13 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-excelintermedio.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-excelintermedio.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso Excel Intermedio">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Intermedio</p>
                                 <p style="font-size: 0.7em;text-align: left;">Entrenamiento para usuarios que ya tienen los conocimientos básicos de Microsoft Excel, para aprender en profundidad la mayoría de sus funcionalidades.</p>
@@ -412,7 +443,13 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-excelavanzado.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-excelavanzado.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso Excel Avanzado">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Avanzado</p>
                                 <p style="font-size: 0.7em;text-align: left;">Curso para terminar de conocer Excel y dominar sus funcionalidades más avanzadas. Ser Experto en Excel otorga una gran ventaja y abre las puertas a empleos muy bien pagos.</p>
@@ -429,7 +466,13 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="" src="n-img/c-sql.jpeg" style="width:100%">
+                            <img loading="lazy" class="" 
+                                 src="n-img/c-sql.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso SQL Server">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft SQL Server</p>
                                 <p style="font-size: 0.7em;text-align: left;">Aprendé a programar en base de datos desde cero. Recomendable para principiantes</p>
@@ -446,7 +489,13 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-office2.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-office2.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Pack Office Completo">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Pack Office</p>
                                 <p style="font-size: 0.7em;text-align: left;">Pack de conocimientos clave e infaltables en un Currículum. Dominá las 3 herramientas más solicitadas por las empresas.</p>

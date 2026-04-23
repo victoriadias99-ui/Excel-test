@@ -99,10 +99,12 @@ function detectarPais($ip, $currencyByCountry, $dataDefault) {
         return ['country_code' => $cfCountry, 'currency' => $currency];
     }
 
-    // Intento 2: ip-api.com (gratis, sin key) — timeout corto para no bloquear el render
+    // Intento 2: ip-api.com (gratis, sin key) — timeout muy corto para no bloquear el render.
+    // 200ms es suficiente en LatAm (mediana ~80ms). Si falla, cae a default AR y no
+    // bloquea el first-paint del home hasta 1s como antes.
     try {
         $ctx = stream_context_create([
-            'http' => ['timeout' => 1, 'ignore_errors' => true],
+            'http' => ['timeout' => 0.2, 'ignore_errors' => true],
         ]);
         $raw = @file_get_contents(
             'http://ip-api.com/json/' . urlencode($ip) . '?fields=countryCode,status',
