@@ -115,6 +115,14 @@ $seo_keywords = 'cursos de excel online, curso excel con certificado, aprender e
 $seo_canonical = 'https://aprende-excel.com/';
 $seo_og_title = 'Aprende Excel | Cursos Online de Excel, Power BI, IA y Capacitaciones Laborales';
 $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
+
+// BUG-12 DEFENSE-IN-DEPTH: si el visitante cae al home vía un path raro (no "/"),
+// emitimos noindex + canonical al home real. El router.php ya debería haber
+// 404'd estos paths, pero si algo se escapa (ej: Apache sirviendo el index sin
+// pasar por router.php), al menos le decimos a los buscadores que no indexen.
+$__uriPath     = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+$__esHomeReal  = $__uriPath === '/' || $__uriPath === '/index.php';
+$__forzarNoIndex = !$__esHomeReal;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -122,6 +130,10 @@ $seo_image = 'https://aprende-excel.com/n-assets/img/logo-excel.png';
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
         <title>Aprende Excel | Cursos Online de Excel, Power BI e Inteligencia Artificial con Certificado</title>
+        <?php if ($__forzarNoIndex): ?>
+        <meta name="robots" content="noindex, nofollow">
+        <?php endif; ?>
+        <link rel="canonical" href="https://aprende-excel.com/">
         <?php include('n-pages/head-main.php') ?>
         <meta name="facebook-domain-verification" content="o3o30mm5uo4a74505h53yhntshexbm" />
 

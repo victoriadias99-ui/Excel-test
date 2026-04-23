@@ -30,6 +30,26 @@ RedirectMatch 403 (?i)^/phpmyadmin(/.*)?$
 # Bloquear acceso al directorio Basura y archivos descartados
 RedirectMatch 403 (?i)^/(Basura|archivos-sin-uso|railway-fixes)(/.*)?$
 
+# ─── ANTI SPIDER TRAP (Apr 2026) ─────────────────────────────────────────
+# Bots de IA (Meta-ExternalAgent, Amazonbot, GPTBot, etc.) estaban inventando
+# URLs tipo /dinamico/excel-promo/microsoft-sql-server/pack-office/... con 10+
+# segmentos. Cada URL devolvía 200 y se consumía egress + CPU de MySQL.
+# Fix: devolver 404 en el edge antes de llegar al PHP.
+
+# Bucket completo /dinamico/* — no existe ninguna ruta legítima así.
+RedirectMatch 404 (?i)^/dinamico(/.*)?$
+
+# Paths con profundidad excesiva: más de 4 segmentos = spider trap.
+# Las rutas legítimas más profundas tienen hasta 4 niveles (p.ej. /clases-en-vivo/assets/img/foo.png).
+RedirectMatch 404 ^/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/.*
+
+# Bloquear user-agents de scrapers/bots de IA conocidos en el edge.
+# El robots.txt cubre los que respetan reglas; esto tapa los que no.
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTP_USER_AGENT} (meta-externalagent|Meta-ExternalAgent|Amazonbot|GPTBot|ChatGPT-User|OAI-SearchBot|anthropic-ai|ClaudeBot|Claude-Web|PerplexityBot|Perplexity-User|Bytespider|CCBot|Diffbot|DataForSeoBot|SemrushBot|AhrefsBot|MJ12bot|Applebot-Extended) [NC]
+  RewriteRule .* - [R=403,L]
+</IfModule>
+
 # Evitar listado de directorios
 Options -Indexes
 

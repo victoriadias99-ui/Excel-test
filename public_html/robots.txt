@@ -1,20 +1,113 @@
 # robots.txt - aprende-excel.com
+# Actualizado Apr 2026 tras spider trap de bots de IA.
+
+# ─── REGLAS PARA TODOS LOS BOTS ─────────────────────────────────────────
 User-agent: *
 Allow: /
 
-# Bloquear directorios internos
+# Directorios internos (código, librerías, includes)
 Disallow: /a-includes/
 Disallow: /n-includes/
 Disallow: /n-libraries/
 Disallow: /a-libraries/
 Disallow: /n-pages/
-Disallow: /archivos-sin-uso/
+Disallow: /a-pages/
 Disallow: /n-site/
+Disallow: /archivos-sin-uso/
+Disallow: /Basura/
+Disallow: /phpmyadmin/
+Disallow: /panel-rama/
+Disallow: /vendor/
+Disallow: /server-tes/
 
-# Bloquear checkouts y paginas internas
+# Checkouts y páginas internas de compra
 Disallow: /*checkout*
 Disallow: /pago_exitoso*
 Disallow: /router.php
+Disallow: /recuperar_carrito.php
+Disallow: /reenviar_credenciales.php
+Disallow: /unirse*
+Disallow: /checkAbandonedUser*
+Disallow: /api-precios*
 
-# Sitemap
+# Paths inventados por bots — spider trap de abril 2026
+Disallow: /dinamico/
+Disallow: /*/dinamico/
+Disallow: /n-img/n-assets/
+Disallow: /plan-empresa/*/*/
+
+# Parámetros de query que multiplican URLs
+Disallow: /*?pago=
+Disallow: /*?test=
+Disallow: /*?idVenta=
+Disallow: /*?*utm_*
+
+# ─── BOTS DE IA / SCRAPERS ABUSIVOS ─────────────────────────────────────
+# Identificados en los logs de Cloudflare como responsables del spider trap.
+# Si no respetan robots.txt, router.php devuelve 404 igual.
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Perplexity-User
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# ─── SITEMAP ────────────────────────────────────────────────────────────
 Sitemap: https://aprende-excel.com/sitemap.xml
