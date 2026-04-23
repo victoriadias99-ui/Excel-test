@@ -59,7 +59,17 @@
       "Bash(python3)",
       "Bash(git fetch *)",
       "Bash(git revert *)",
-      "Bash(php -l public_html/index.php)"
+      "Bash(php -l public_html/index.php)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" remote -v)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" status)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" branch --show-current)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" diff public_html/n-pages/header-main.php)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" log --oneline -5)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" add public_html/n-pages/header-main.php)",
+      "Bash(git -C c:/Users/vicki/Excel-test commit -m ' *)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" push origin main)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" fetch origin)",
+      "Bash(git -C \"c:/Users/vicki/Excel-test\" log --oneline main..origin/main)"
     ]
   }
 }
