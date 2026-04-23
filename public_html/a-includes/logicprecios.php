@@ -130,3 +130,44 @@ function formatearPrecio($precio, $moneda) {
     return number_format($precio, 0, ',', '.');
 }
 endif;
+
+// ─────────────────────────────────────────────
+// 5. CACHÉ DE CURSOS (Redis, TTL 1 hora)
+// ─────────────────────────────────────────────
+
+/**
+ * Versión cacheada de getCursosDetalleBatch().
+ *
+ * Guarda el resultado en Redis con clave 'courses:batch' durante 1 hora.
+ * Si Redis no está disponible, delega directamente a la función de BD.
+ * La firma es idéntica a getCursosDetalleBatch() para ser un drop-in replacement.
+ *
+ * @param  array  $idCursos  Lista de IDs de cursos a consultar
+ * @return array             Array asociativo keyed por CURSO
+ */
+if (!function_exists('getCursosDetalleBatchCached')):
+function getCursosDetalleBatchCached(array $idCursos): array {
+    if (empty($idCursos)) {
+        return [];
+    }
+
+    // Intentar leer desde Redis
+    $cacheKey = 'courses:batch';
+    $cached   = cacheGet($cacheKey);
+    if ($cached !== null) {
+        $decoded = json_decode($cached, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+    }
+
+    // Miss de caché: consultar BD y almacenar resultado
+    $result = getCursosDetalleBatch($idCursos);
+
+    if (!empty($result)) {
+        cacheSet($cacheKey, json_encode($result), 3600); // 1 hora
+    }
+
+    return $result;
+}
+endif;

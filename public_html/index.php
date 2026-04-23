@@ -18,17 +18,25 @@ include("a-includes/funcionsDB.php");
 include("a-includes/logicparametros.php");
 include("a-includes/logicprecios.php");
 
+// Environment variables used by this application:
+//   MYSQL_HOST / MYSQL_PORT / MYSQL_DATABASE / MYSQL_USER / MYSQL_PASSWORD — DB connection
+//   REDIS_URL  — Redis connection (Railway plugin). Used for geo-cache and course-price cache.
+//   WHATSAPP_NUMBER — WhatsApp contact number shown on the page
+//   APP_ENV / APP_DEBUG — set to 'local' / 'true' to enable PHP error display
+
 $numberWhatsapp = getenv('WHATSAPP_NUMBER') ?: '';
 $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hola!%20Te%20escribo%20por%20el%20curso%20de%20Excel';
 
 // Precargar TODOS los cursos del home en una sola query (en lugar de 10+ individuales).
 // Antes: ~20 queries SQL por render del home. Ahora: 1 query.
+// getCursosDetalleBatchCached() añade una capa Redis (TTL 1 h) sobre la query SQL,
+// eliminando la mayoría de las consultas a BD en páginas de alto tráfico.
 $__idsCursosHome = [
     'excel-promo', 'excel-inicial', 'excel-intermedio', 'excel-avanzado',
     'sql-server', 'pack-office', 'power-bi', 'power-bi-avanzado',
     'excel-promo-power-bi', 'plantillas',
 ];
-$__cursosBatch = getCursosDetalleBatch($__idsCursosHome);
+$__cursosBatch = getCursosDetalleBatchCached($__idsCursosHome);
 
 // Helper: extrae precio, precio oficial y URL de checkout desde el batch precargado.
 function extraerDatosCurso($idCurso, $simbolo, $moneda) {
