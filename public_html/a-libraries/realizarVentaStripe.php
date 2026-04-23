@@ -71,8 +71,14 @@ try {
                 try {
                     $stmtIns = $cnx->prepare("INSERT INTO cursos_detalle (CURSO, TITULO, DESCRIPCION, DIR, IMAGEN, PRECIO_UNITARIO, PORCENTAJE_DES, ESTADO, STRIPE_SECRET_KEY) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE STRIPE_SECRET_KEY=VALUES(STRIPE_SECRET_KEY), TITULO=VALUES(TITULO), PRECIO_UNITARIO=VALUES(PRECIO_UNITARIO), PORCENTAJE_DES=VALUES(PORCENTAJE_DES)");
                     $stmtIns->execute(['gemini', 'Curso de Gemini desde Cero', 'Aprende a usar Google Gemini para potenciar tu productividad con Inteligencia Artificial', '../gemini-mockup/', '../a-img/logo-gemini.png', 12999, 23, 1, $stripeKeyFallback]);
-                } catch (\Exception $eIns) {
+                } catch (\Throwable $eIns) {
                     error_log('realizarVentaStripe: auto-create gemini failed - ' . $eIns->getMessage());
+                }
+                try {
+                    $stmtAuto = $cnx->prepare("INSERT IGNORE INTO auto_num (ID, PREFIJO, ULTIMO_NUM, MAX_LEN) VALUES (?, ?, ?, ?)");
+                    $stmtAuto->execute(['gemini', 'GEM', 0, 10]);
+                } catch (\Throwable $eAuto) {
+                    error_log('realizarVentaStripe: auto-create auto_num gemini failed - ' . $eAuto->getMessage());
                 }
                 $rows = [['TITULO' => 'Curso de Gemini desde Cero', 'DESCRIPCION' => 'Aprende a usar Google Gemini para potenciar tu productividad con Inteligencia Artificial', 'PRECIO_UNITARIO' => 12999, 'PORCENTAJE_DES' => 23, 'STRIPE_SECRET_KEY' => $stripeKeyFallback]];
             } else {
@@ -173,8 +179,9 @@ try {
             '', '', '',
             '', '', '', ''
         ]);
-    } catch (Exception $eLead) {
+    } catch (\Throwable $eLead) {
         error_log('realizarVentaStripe: INSERT ventas falló - ' . $eLead->getMessage());
+        $id_venta = uniqid($curso . '_');
     }
 
     // 5. Crear Stripe Checkout Session

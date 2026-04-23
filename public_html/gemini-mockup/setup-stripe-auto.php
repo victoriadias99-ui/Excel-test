@@ -63,6 +63,11 @@ try {
         echo "✅ Curso Gemini CREADO con clave Stripe<br>";
     }
 
+    // 4. Asegurar fila en auto_num (requerida para generar IDs de venta)
+    $stmtAuto = $cnx->prepare("INSERT IGNORE INTO auto_num (ID, PREFIJO, ULTIMO_NUM, MAX_LEN) VALUES (?, ?, ?, ?)");
+    $stmtAuto->execute(['gemini', 'GEM', 0, 10]);
+    echo "✅ Fila auto_num para 'gemini' asegurada<br>";
+
     echo "<br><strong>Detalles del curso:</strong><br>";
     echo "Curso ID: gemini<br>";
     echo "Título: Curso de Gemini desde Cero<br>";
