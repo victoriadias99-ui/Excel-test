@@ -11,8 +11,47 @@ if ($isDebugEnv || $isLocalIP) {
     ini_set('display_errors', 0);
     error_reporting(0);
 }
-    
+
 $dirpage = '../';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Caché de HTML completo (Redis, TTL 10 min) — keyed por país.
+// Salta si hay query params (debug/dev/curso) o método ≠ GET. La salida es
+// idéntica byte a byte: solo evita PHP+SQL+geo cuando hay hit. Output structure
+// no cambia.
+// ─────────────────────────────────────────────────────────────────────────────
+require_once __DIR__ . '/a-includes/redis-client.php';
+
+$__cacheable = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET'
+    && empty($_GET)
+    && empty($_POST);
+
+if ($__cacheable) {
+    $__cfCountry = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? 'AR'));
+    if (!preg_match('/^[A-Z]{2}$/', $__cfCountry)) {
+        $__cfCountry = 'AR';
+    }
+    $__htmlKey   = 'home:html:v1:' . $__cfCountry;
+    $__cachedHtml = cacheGet($__htmlKey);
+    if ($__cachedHtml !== null && $__cachedHtml !== '') {
+        header('Content-Type: text/html; charset=UTF-8');
+        header('Cache-Control: private, no-cache, must-revalidate');
+        header('X-Cache: HIT');
+        echo $__cachedHtml;
+        exit;
+    }
+    header('X-Cache: MISS');
+    ob_start();
+    register_shutdown_function(function () use ($__htmlKey) {
+        $html = ob_get_contents();
+        if (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+        if ($html !== false && strlen($html) > 5000 && function_exists('cacheSet')) {
+            cacheSet($__htmlKey, $html, 600);
+        }
+    });
+}
 
 include("a-includes/funcionsDB.php");
 include("a-includes/logicparametros.php");
