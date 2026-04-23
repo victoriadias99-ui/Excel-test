@@ -72,11 +72,30 @@ function getRedis(): ?Redis {
         $pass   = isset($parsed['pass']) && $parsed['pass'] !== '' ? $parsed['pass'] : null;
         $dbNum  = isset($parsed['path']) ? (int) ltrim($parsed['path'], '/') : 0;
 
-        debugLog("getRedis() - Attempting connection to {$host}:{$port} db={$dbNum}");
+        if (empty($host)) {
+            throw new Exception('Redis host is empty after parsing REDIS_URL');
+        }
+
+        debugLog("getRedis() - Parsed: host={$host}, port={$port}, db={$dbNum}");
 
         $r = new Redis();
-        // Timeout de conexión corto para no bloquear el render si Redis está caído
-        $r->connect($host, (int) $port, 1.0);
+
+        // Attempt connection with a 3-second timeout; retry once on failure
+        // to handle slow hostname resolution on Railway's private network.
+        $connected = false;
+        for ($attempt = 1; $attempt <= 2; $attempt++) {
+            try {
+                $r->connect($host, (int) $port, 3.0);
+                $connected = true;
+                debugLog("getRedis() - TCP connect succeeded on attempt {$attempt}");
+                break;
+            } catch (Exception $ce) {
+                debugLog("getRedis() - Connect attempt {$attempt} failed: " . $ce->getMessage());
+                if ($attempt === 2) {
+                    throw $ce;  // re-throw after final attempt
+                }
+            }
+        }
 
         if ($pass !== null) {
             $r->auth($pass);
@@ -85,7 +104,10 @@ function getRedis(): ?Redis {
             $r->select($dbNum);
         }
 
-        debugLog('getRedis() - Connection successful');
+        // Verify the connection is alive with a PING
+        $r->ping();
+
+        debugLog('getRedis() - Connection successful and verified');
         $redis = $r;
     } catch (Exception $e) {
         // Redis no disponible — continuar sin caché
