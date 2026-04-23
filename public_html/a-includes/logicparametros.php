@@ -154,7 +154,15 @@ if ($cfCountry && $cfCountry !== 'XX' && $cfCountry !== 'T1') {
 }
 
 // Lookup de la fila de tracking por curso (analítica de visitas)
-$existingIP = getIP($ip, $cacheKey);
+// Cacheado en Redis 30 días para eliminar queries MySQL en visitas repetidas.
+$visitKey    = "visit:{$ip}:{$cacheKey}";
+$visitCached = cacheGet($visitKey);
+if ($visitCached !== null) {
+    $existingIP = $visitCached === 'null' ? null : json_decode($visitCached, true);
+} else {
+    $existingIP = getIP($ip, $cacheKey);
+    cacheSet($visitKey, $existingIP === null ? 'null' : json_encode($existingIP), 2592000);
+}
 $__perfMark('getIP');
 
 // ── Capa 1: Redis geo-cache (geo:{ip}, TTL 24 h) ─────────────────────────────
@@ -217,9 +225,12 @@ if ($data === null || $forceRefresh) {
 // Contador de visitas por curso (analítica). Sampleo 1/20 para no escribir en cada page view.
 if ($existingIP === null) {
     insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    cacheSet($visitKey, json_encode(['visitas' => 1]), 2592000);
     $__perfMark('insertIP');
 } elseif (mt_rand(1, 20) === 1) {
-    updateIP($ip, $cacheKey, $existingIP['visitas'] + 20, json_encode($_COOKIE));
+    $newVisitas = $existingIP['visitas'] + 20;
+    updateIP($ip, $cacheKey, $newVisitas, json_encode($_COOKIE));
+    cacheSet($visitKey, json_encode(['visitas' => $newVisitas]), 2592000);
     $__perfMark('updateIP');
 }
 
