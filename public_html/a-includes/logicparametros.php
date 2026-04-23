@@ -8,6 +8,8 @@ $__perfMark = function ($label) use (&$__perf) {
 require_once  dirname(__DIR__) . '/a-libraries/vendor/autoload.php';
 $__perfMark('autoload');
 
+require_once __DIR__ . '/redis-client.php';
+
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -134,12 +136,11 @@ if (isset($productoIP) && $productoIP != null) {
 }
 
 // ─── Detección de país (separada del tracking por curso) ─────────────────────
-// Orden: CF-IPCountry header → caché geo por IP (_geo) → ip-api.com.
-// El caché _geo es UNA fila por IP, compartida entre todas las páginas del
-// sitio. Antes, al estar atado a $cacheKey (curso), cada nueva página del
-// mismo visitante generaba otro miss y —sin Cloudflare— otra llamada HTTP
-// bloqueante de hasta 1s a ip-api.com. Con _geo, el HTTP se hace solo en la
-// primera visita de la IP.
+// Orden: CF-IPCountry header → Redis (geo:{ip}, 24 h) → MySQL _geo → ip-api.com.
+//
+// Redis es la capa más rápida (<1 ms) y elimina la mayoría de las llamadas HTTP
+// a ip-api.com y las queries MySQL de geo-lookup. El _geo de MySQL se mantiene
+// como fallback para cuando Redis no está disponible.
 $data      = null;
 $cfCountry = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
 
@@ -154,29 +155,59 @@ if ($cfCountry && $cfCountry !== 'XX' && $cfCountry !== 'T1') {
 $existingIP = getIP($ip, $cacheKey);
 $__perfMark('getIP');
 
-// Caché geo compartido por IP
-$geoCached = null;
+// ── Capa 1: Redis geo-cache (geo:{ip}, TTL 24 h) ─────────────────────────────
+// Evita tanto la query MySQL _geo como la llamada HTTP a ip-api.com en visitas
+// repetidas. Un hit de Redis tarda <1 ms frente a los ~1 000 ms de ip-api.com.
+$geoCached    = null;   // resultado MySQL _geo (cargado solo si Redis falla)
+$geoFromRedis = false;  // indica si el hit vino de Redis
+
+if ($data === null && !$forceRefresh) {
+    $redisGeoRaw = cacheGet("geo:{$ip}");
+    if ($redisGeoRaw !== null) {
+        $decoded = json_decode($redisGeoRaw, true);
+        if (is_array($decoded) && !empty($decoded['country_code'])) {
+            $data         = normalizarDataIP($decoded, $currencyByCountry, $dataDefault);
+            $geoFromRedis = true;
+            $__perfMark('geoCacheHit_redis');
+        }
+    }
+}
+
+// ── Capa 2: MySQL _geo (fallback cuando Redis no disponible o miss) ───────────
+// El caché _geo es UNA fila por IP, compartida entre todas las páginas del
+// sitio. Antes, al estar atado a $cacheKey (curso), cada nueva página del
+// mismo visitante generaba otro miss y —sin Cloudflare— otra llamada HTTP
+// bloqueante de hasta 1s a ip-api.com. Con _geo, el HTTP se hace solo en la
+// primera visita de la IP.
 if ($data === null && !$forceRefresh) {
     $geoCached = getIP($ip, '_geo');
     if ($geoCached !== null && !empty($geoCached['data'])) {
         $decoded = json_decode($geoCached['data'], true);
         if (is_array($decoded) && !empty($decoded['country_code'])) {
             $data = normalizarDataIP($decoded, $currencyByCountry, $dataDefault);
-            $__perfMark('geoCacheHit');
+            $__perfMark('geoCacheHit_db');
+            // Rellenar Redis para que la próxima visita no toque MySQL
+            cacheSet("geo:{$ip}", json_encode($data), 86400);
         }
     }
 }
 
-// Último recurso: detección fresca (CF header dentro de detectarPais + ip-api.com)
+// ── Capa 3: Detección fresca (CF header + ip-api.com) ────────────────────────
 if ($data === null || $forceRefresh) {
     $data = detectarPais($ip, $currencyByCountry, $dataDefault);
     $__perfMark('detectarPais');
-    // Persistir en _geo para que las próximas visitas de esta IP no re-llamen HTTP
+
+    $geoJson = json_encode($data);
+
+    // Persistir en Redis (24 h) para evitar futuras llamadas HTTP
+    cacheSet("geo:{$ip}", $geoJson, 86400);
+
+    // Persistir en MySQL _geo como fallback si Redis no está disponible
     $geoExisting = $geoCached !== null ? $geoCached : getIP($ip, '_geo');
     if ($geoExisting === null) {
-        insertIP($ip, '_geo', json_encode($data), null);
+        insertIP($ip, '_geo', $geoJson, null);
     } else {
-        refreshIP($ip, '_geo', json_encode($data), null);
+        refreshIP($ip, '_geo', $geoJson, null);
     }
     $__perfMark('geoPersist');
 }
@@ -217,14 +248,19 @@ $curso          = isset($_GET['curso']) ? $_GET['curso'] : $idCursoDefault;
 // ─── DEBUG: barra de diagnóstico con ?dev o ?resetip ─────────────────────────
 if (isset($_GET['dev']) || isset($_GET['resetip'])) {
     $__perfMark('end');
-    $cfRaw = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? 'N/A'));
+    $cfRaw    = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? 'N/A'));
+    $redisOk  = getRedis() !== null ? 'OK' : 'N/A';
+    $cacheSource = $forceRefresh
+        ? 'FRESH'
+        : ($geoFromRedis ? 'REDIS' : (isset($geoCached) && $geoCached !== null ? 'DB' : 'FRESH'));
     echo '<div style="position:fixed;top:0;left:0;right:0;background:#1a1a2e;color:#00ff88;font-family:monospace;font-size:13px;padding:10px 16px;z-index:99999;border-bottom:2px solid #00ff88">';
     echo '<strong>GEO DEBUG</strong> &nbsp;|&nbsp; ';
     echo 'IP: <strong>' . htmlspecialchars($ip) . '</strong> &nbsp;|&nbsp; ';
     echo 'CF-Country: <strong>' . htmlspecialchars($cfRaw) . '</strong> &nbsp;|&nbsp; ';
     echo 'Pais: <strong>' . htmlspecialchars($country) . '</strong> &nbsp;|&nbsp; ';
     echo 'Moneda: <strong>' . htmlspecialchars($moneda) . '</strong> &nbsp;|&nbsp; ';
-    echo 'Cache: <strong>' . ($forceRefresh ? 'FRESH' : 'DB') . '</strong><br>';
+    echo 'Redis: <strong>' . $redisOk . '</strong> &nbsp;|&nbsp; ';
+    echo 'Cache: <strong>' . $cacheSource . '</strong><br>';
     echo '<strong>PERF (ms desde start):</strong> ';
     foreach ($__perf['marks'] as $label => $ms) {
         echo htmlspecialchars($label) . '=<strong>' . $ms . '</strong> &nbsp; ';
