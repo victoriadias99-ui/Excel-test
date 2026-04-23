@@ -189,7 +189,7 @@ if ($data === null && !$forceRefresh) {
             $data = normalizarDataIP($decoded, $currencyByCountry, $dataDefault);
             $__perfMark('geoCacheHit_db');
             // Rellenar Redis para que la próxima visita no toque MySQL
-            cacheSet("geo:{$ip}", json_encode($data), 86400);
+            cacheSet("geo:{$ip}", json_encode($data), 2592000);
         }
     }
 }
@@ -201,8 +201,8 @@ if ($data === null || $forceRefresh) {
 
     $geoJson = json_encode($data);
 
-    // Persistir en Redis (24 h) para evitar futuras llamadas HTTP
-    cacheSet("geo:{$ip}", $geoJson, 86400);
+    // Persistir en Redis (30 días) para evitar futuras llamadas HTTP
+    cacheSet("geo:{$ip}", $geoJson, 2592000);
 
     // Persistir en MySQL _geo como fallback si Redis no está disponible
     $geoExisting = $geoCached !== null ? $geoCached : getIP($ip, '_geo');
