@@ -133,30 +133,61 @@ if (isset($productoIP) && $productoIP != null) {
         : (isset($_GET['curso']) ? $_GET['curso'] : '_global');
 }
 
-// ─── Leer de caché o hacer lookup ────────────────────────────────────────────
+// ─── Detección de país (separada del tracking por curso) ─────────────────────
+// Orden: CF-IPCountry header → caché geo por IP (_geo) → ip-api.com.
+// El caché _geo es UNA fila por IP, compartida entre todas las páginas del
+// sitio. Antes, al estar atado a $cacheKey (curso), cada nueva página del
+// mismo visitante generaba otro miss y —sin Cloudflare— otra llamada HTTP
+// bloqueante de hasta 1s a ip-api.com. Con _geo, el HTTP se hace solo en la
+// primera visita de la IP.
+$data      = null;
+$cfCountry = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
+
+if ($cfCountry && $cfCountry !== 'XX' && $cfCountry !== 'T1') {
+    $currency = isset($currencyByCountry[$cfCountry])
+        ? $currencyByCountry[$cfCountry]
+        : ['code' => 'USD', 'symbol' => '$'];
+    $data = ['country_code' => $cfCountry, 'currency' => $currency];
+}
+
+// Lookup de la fila de tracking por curso (analítica de visitas)
 $existingIP = getIP($ip, $cacheKey);
 $__perfMark('getIP');
 
-if ($forceRefresh || $existingIP == null) {
+// Caché geo compartido por IP
+$geoCached = null;
+if ($data === null && !$forceRefresh) {
+    $geoCached = getIP($ip, '_geo');
+    if ($geoCached !== null && !empty($geoCached['data'])) {
+        $decoded = json_decode($geoCached['data'], true);
+        if (is_array($decoded) && !empty($decoded['country_code'])) {
+            $data = normalizarDataIP($decoded, $currencyByCountry, $dataDefault);
+            $__perfMark('geoCacheHit');
+        }
+    }
+}
+
+// Último recurso: detección fresca (CF header dentro de detectarPais + ip-api.com)
+if ($data === null || $forceRefresh) {
     $data = detectarPais($ip, $currencyByCountry, $dataDefault);
     $__perfMark('detectarPais');
-    if ($existingIP === null) {
-        insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
-        $__perfMark('insertIP');
+    // Persistir en _geo para que las próximas visitas de esta IP no re-llamen HTTP
+    $geoExisting = $geoCached !== null ? $geoCached : getIP($ip, '_geo');
+    if ($geoExisting === null) {
+        insertIP($ip, '_geo', json_encode($data), null);
     } else {
-        // Actualiza país/moneda en DB (no re-inserta para evitar error de clave duplicada)
-        refreshIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
-        $__perfMark('refreshIP');
+        refreshIP($ip, '_geo', json_encode($data), null);
     }
-} else {
-    $data = json_decode($existingIP['data'], true);
-    $data = normalizarDataIP($data, $currencyByCountry, $dataDefault);
-    // Sampleo del contador de visitas: solo 1 de cada 20 page views hace el UPDATE.
-    // Es solo analítica, no vale la pena un write en cada navegación.
-    if (mt_rand(1, 20) === 1) {
-        updateIP($ip, $cacheKey, $existingIP['visitas'] + 20, json_encode($_COOKIE));
-        $__perfMark('updateIP');
-    }
+    $__perfMark('geoPersist');
+}
+
+// Contador de visitas por curso (analítica). Sampleo 1/20 para no escribir en cada page view.
+if ($existingIP === null) {
+    insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+    $__perfMark('insertIP');
+} elseif (mt_rand(1, 20) === 1) {
+    updateIP($ip, $cacheKey, $existingIP['visitas'] + 20, json_encode($_COOKIE));
+    $__perfMark('updateIP');
 }
 
 // ─── Redirección de dominios alternativos ─────────────────────────────────────
