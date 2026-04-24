@@ -102,12 +102,12 @@ $urlCheckoutPlantillas          = 'plantillas/finanzas/';
          height="600"
          decoding="async">
 
-    <div class="row"  style="height: 100%;">
+    <div class="row"  style="height: calc(100% - 80px); position: relative; z-index: 1;">
         <div class="col-12 d-block d-md-none mb-5">
             <img class="img-fluid" 
                  src="n-img/image-header-min.png" 
                  alt="Academia Aprende Excel - Líderes en educación online y capacitaciones laborales" 
-                 style="position: absolute; margin-right:-10px;"
+                 style=""
                  width="768" 
                  height="400"
                  decoding="async">

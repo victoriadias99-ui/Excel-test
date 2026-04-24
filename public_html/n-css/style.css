@@ -5,6 +5,7 @@ html, body {
 
 header{
     height: 700px;
+    overflow: hidden;
 }
 
 header h1{
@@ -27,9 +28,10 @@ nav .logo{
 
 #image-header-min{
     position: absolute;
-    right:-100px;
-    top:0px;
-    height: 700px;
+    right: 0;
+    top: 80px;
+    height: calc(700px - 80px);
+    z-index: 0;
 }
 
 .card-with-shaw .icono-trofeo-min{
