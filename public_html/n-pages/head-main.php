@@ -102,19 +102,13 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
-<!-- Bootstrap 4.6 via jsDelivr - Critical CSS (preload → stylesheet on load)
-     FIX: faltaba this.media='all' en onload → Bootstrap quedaba aplicado solo
-     para media=print, rompiendo grid y layout en la pantalla. -->
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.media='all';this.rel='stylesheet'" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" media="print" />
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"></noscript>
+<!-- Bootstrap 4.6 via jsDelivr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
-
-<!-- Montserrat desde Google Fonts - Optimized -->
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<!-- Montserrat desde Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800;900&display=swap"></noscript>
-
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800;900&display=swap" rel="stylesheet">
 
 <!-- Preload solo las 2 fuentes más críticas -->
 <link rel="preload" href="/n-assets/fonts/Raleway-Regular.woff" as="font" type="font/woff" crossorigin="anonymous">
@@ -125,24 +119,11 @@
 <?php endif; ?>
 
 <!-- Raleway: solo 6 variantes usadas, font-display:swap -->
-<!-- Local CSS - Critical first, defer non-critical -->
-<link rel="preload" href="n-assets/css/raleway-all.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" href="n-css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript>
 <link rel="stylesheet" href="n-assets/css/raleway-all.css">
-<link rel="stylesheet" href="n-css/style.css">
-</noscript>
-
-<!-- Non-critical CSS - defer loading -->
-<link rel="preload" href="n-assets/css/style.css" as="style" media="print" onload="this.onload=null;this.media='all';this.rel='stylesheet'">
-<link rel="preload" href="n-assets/css/styles.css" as="style" media="print" onload="this.onload=null;this.media='all';this.rel='stylesheet'">
-<link rel="preload" href="n-assets/fonts/font-awesome.min.css" as="style" media="print" onload="this.onload=null;this.media='all';this.rel='stylesheet'">
-<noscript>
+<link rel="stylesheet" href="n-assets/fonts/font-awesome.min.css">
 <link rel="stylesheet" href="n-assets/css/style.css">
 <link rel="stylesheet" href="n-assets/css/styles.css">
-<link rel="stylesheet" href="n-assets/fonts/font-awesome.min.css">
-</noscript>
-
+<link rel="stylesheet" href="n-css/style.css">
 <link rel="apple-touch-icon" sizes="180x180" href="<?= isset($dirpage) ? $dirpage : '' ?>n-img/logo/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= isset($dirpage) ? $dirpage : '' ?>n-img/logo/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="<?= isset($dirpage) ? $dirpage : '' ?>n-img/logo/favicon-16x16.png">
