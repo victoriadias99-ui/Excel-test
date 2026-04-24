@@ -77,7 +77,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-excel-experto.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="img-fluid" src="n-img/c-excel-experto.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">3 Niveles - Pack Experto</p>
                                 <p style="font-size: 0.7em;text-align: left;">Convertite en un Experto en Excel con este pack de 3 cursos. ¡Sé el experto que las empresas están buscando!</p>
@@ -93,7 +93,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-excelinicial.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="img-fluid" src="n-img/c-excelinicial.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Inicial</p>
                                 <p style="font-size: 0.7em;text-align: left;">Sin requisitos previos, éste curso te va a enseñar a usar Microsoft Excel: la herramienta laboral más solicitada por las empresas.</p>
@@ -110,7 +110,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-excelintermedio.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="img-fluid" src="n-img/c-excelintermedio.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Intermedio</p>
                                 <p style="font-size: 0.7em;text-align: left;">Entrenamiento para usuarios que ya tienen los conocimientos básicos de Microsoft Excel, para aprender en profundidad la mayoría de sus funcionalidades.</p>
@@ -127,7 +127,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-excelavanzado.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="img-fluid" src="n-img/c-excelavanzado.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Avanzado</p>
                                 <p style="font-size: 0.7em;text-align: left;">Curso para terminar de conocer Excel y dominar sus funcionalidades más avanzadas. Ser Experto en Excel otorga una gran ventaja y abre las puertas a empleos muy bien pagos.</p>
@@ -149,7 +149,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="" src="n-img/c-sql.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="" src="n-img/c-sql.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft SQL Server</p>
                                 <p style="font-size: 0.7em;text-align: left;">Aprendé a programar en base de datos desde cero. Recomendable para principiantes</p>
@@ -166,7 +166,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-office2.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="img-fluid" src="n-img/c-office2.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Pack Office</p>
                                 <p style="font-size: 0.7em;text-align: left;">Pack de conocimientos clave e infaltables en un Currículum. Dominá las 3 herramientas más solicitadas por las empresas.</p>
@@ -182,7 +182,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-powerbi.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="img-fluid" src="n-img/c-powerbi.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft Power BI</p>
                                 <p style="font-size: 0.7em;text-align: left;">Un especialista en Power BI gana un sueldo 3 vecess mayor a la media. Ésta herramienta de Inteligencia Empresarial permite crear tableros para visualizar datos. Sin requisitos previos</p>
@@ -199,7 +199,7 @@ $urlWhatsApp = 'https://api.whatsapp.com/send?phone=5491168787291&text=Hola!%20T
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img class="img-fluid" src="n-img/c-powerbi-avanzado.jpeg" style="width:100%">
+                            <img loading="lazy" decoding="async" class="img-fluid" src="n-img/c-powerbi-avanzado.jpeg" style="width:100%">
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft Power BI Avanzado</p>
                                 <p style="font-size: 0.7em;text-align: left;">Profundizá tus conocimientos a través de este Curso Avanzado de Power BI en 4.5 horas de curso</p>
