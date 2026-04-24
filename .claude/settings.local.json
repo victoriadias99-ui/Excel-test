@@ -70,7 +70,13 @@
       "Bash(git -C \"c:/Users/vicki/Excel-test\" push origin main)",
       "Bash(git -C \"c:/Users/vicki/Excel-test\" fetch origin)",
       "Bash(git -C \"c:/Users/vicki/Excel-test\" log --oneline main..origin/main)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | size %{size_download}B | time %{time_total}s\\\\n\" https://aprende-excel.com/)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | size %{size_download}B | time %{time_total}s\\\\n\" https://aprende-excel.com/excel-inicial/)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | size %{size_download}B | time %{time_total}s\\\\n\" \"https://aprende-excel.com/dinamico/excel-promo/excel-inicial/microsoft-sql-server/pack-office/\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | size %{size_download}B | time %{time_total}s\\\\n\" \"https://aprende-excel.com/excel-promo/excel-inicial/power-bi/pack-office/suscripcion-acceso-ilimitado/\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | size %{size_download}B | time %{time_total}s\\\\n\" \"https://aprende-excel.com/plan-empresa/microsoft-sql-server/microsoft-sql-server/pack-office/\")",
+      "Bash(curl -s -I \"https://aprende-excel.com/dinamico/test\")"
     ]
   }
 }
