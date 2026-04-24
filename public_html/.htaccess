@@ -44,9 +44,10 @@ RedirectMatch 404 (?i)^/dinamico(/.*)?$
 RedirectMatch 404 ^/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/.*
 
 # Bloquear user-agents de scrapers/bots de IA conocidos en el edge.
-# El robots.txt cubre los que respetan reglas; esto tapa los que no.
+# NO incluye GPTBot/ChatGPT-User/OAI-SearchBot/PerplexityBot: esos devuelven
+# tráfico medible vía citas en ChatGPT Search y Perplexity. Revaluar en 60 días.
 <IfModule mod_rewrite.c>
-  RewriteCond %{HTTP_USER_AGENT} (meta-externalagent|Meta-ExternalAgent|Amazonbot|GPTBot|ChatGPT-User|OAI-SearchBot|anthropic-ai|ClaudeBot|Claude-Web|PerplexityBot|Perplexity-User|Bytespider|CCBot|Diffbot|DataForSeoBot|SemrushBot|AhrefsBot|MJ12bot|Applebot-Extended) [NC]
+  RewriteCond %{HTTP_USER_AGENT} (ClaudeBot|anthropic-ai|Claude-Web|Bytespider|Amazonbot|Meta-ExternalAgent|meta-externalagent|CCBot|Diffbot|DataForSeoBot|SemrushBot|AhrefsBot|MJ12bot|Applebot-Extended|Bytedance) [NC]
   RewriteRule .* - [R=403,L]
 </IfModule>
 
@@ -57,65 +58,52 @@ Options -Indexes
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
   AddOutputFilterByType DEFLATE text/javascript application/javascript application/x-javascript
-  AddOutputFilterByType DEFLATE application/json application/xml application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/json application/xml application/xhtml+xml application/rss+xml
   AddOutputFilterByType DEFLATE font/woff font/woff2 application/font-woff application/font-woff2
   AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
-# ─── BROWSER CACHING ───
+# ─── BROWSER CACHING (mod_expires) ───
+# TTLs agresivos para assets estáticos que nunca cambian (con hash en el filename
+# idealmente). HTML corto para que los cambios se propaguen rápido.
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresDefault "access plus 1 month"
-
-  # CSS & JS
-  ExpiresByType text/css "access plus 1 year"
-  ExpiresByType text/javascript "access plus 1 year"
-  ExpiresByType application/javascript "access plus 1 year"
-
-  # Images
+  ExpiresByType image/jpg "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
   ExpiresByType image/x-icon "access plus 1 year"
-
-  # Fonts
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/pdf "access plus 1 month"
   ExpiresByType font/woff "access plus 1 year"
   ExpiresByType font/woff2 "access plus 1 year"
-  ExpiresByType application/font-woff "access plus 1 year"
-  ExpiresByType application/font-woff2 "access plus 1 year"
-
-  # HTML (short cache - content changes)
-  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresDefault "access plus 2 days"
 </IfModule>
 
 # ─── CACHE-CONTROL HEADERS ───
 <IfModule mod_headers.c>
-  # Static assets: cache 1 year
+  # Assets estáticos: cache 1 año, immutable
   <FilesMatch "\.(css|js|woff|woff2|ttf|eot|ico|jpg|jpeg|png|gif|webp|svg)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
-
-  # HTML/PHP: no cache (dynamic content)
+  # HTML/PHP: sin cache persistente (contenido dinámico)
   <FilesMatch "\.(html|php)$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
 </IfModule>
 
-# ─── KEEP-ALIVE ───
-<IfModule mod_headers.c>
-  Header set Connection keep-alive
-</IfModule>
-
-# ─── ETAG (disable - Expires is enough) ───
+# ─── ETAG (disable - Expires es suficiente) ───
 <IfModule mod_headers.c>
   Header unset ETag
 </IfModule>
 FileETag None
 
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php74” package as the default “PHP” programming language.
+# Set the "ea-php74" package as the default "PHP" programming language.
 <IfModule mime_module>
   AddHandler application/x-httpd-ea-php74___lsphp .php .php7 .phtml
 </IfModule>

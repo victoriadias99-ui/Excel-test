@@ -20,6 +20,39 @@
  */
 ob_start();
 
+// ───────────────────────────────────────────────────────────────────────────
+// 0) Bloqueo de bots de IA abusivos por User-Agent (defense in depth).
+//    La primera línea de defensa es Cloudflare (AI Crawl Control + robots.txt
+//    gestionado). Si algún bot rota UA o pasa el edge, acá lo rechazamos
+//    antes de tocar whitelist, DB o index.php.
+//
+//    Política:
+//    - BLOQUEADOS: bots de entrenamiento puro (training-only, no devuelven
+//      tráfico medible al sitio).
+//    - PERMITIDOS (no aparecen acá): Googlebot, BingBot, Applebot (Siri),
+//      GPTBot/ChatGPT-User/OAI-SearchBot (ChatGPT Search → sí da tráfico),
+//      PerplexityBot (citas con click-through), FacebookBot (link previews),
+//      Twitterbot, LinkedInBot.
+//
+//    Si OpenAI/Perplexity no traen tráfico medible en 60 días (chequear
+//    Search Console por referrer chatgpt.com y perplexity.ai), agregarlos
+//    a la lista.
+// ───────────────────────────────────────────────────────────────────────────
+$ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+if ($ua !== '' && preg_match(
+    '/(ClaudeBot|anthropic-ai|Claude-Web|Bytespider|Amazonbot|Meta-ExternalAgent|meta-externalagent|CCBot|Diffbot|DataForSeoBot|SemrushBot|AhrefsBot|MJ12bot|Applebot-Extended|Bytedance)/i',
+    $ua
+)) {
+    ob_end_clean();
+    http_response_code(403);
+    header('X-Robots-Tag: noindex, nofollow');
+    header('Cache-Control: public, max-age=86400'); // Cloudflare cachea el 403 por 24h
+    header('Content-Type: text/plain; charset=utf-8');
+    error_log('[router] 403 UA-blocked: ' . substr($ua, 0, 120) . ' | ' . ($_SERVER['REQUEST_URI'] ?? ''));
+    echo "Forbidden\n";
+    exit;
+}
+
 $uri      = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $uriClean = trim($uri, '/');
 $segments = $uriClean === '' ? [] : explode('/', $uriClean);

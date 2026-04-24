@@ -87,11 +87,11 @@ function n_detectarPais($ip, $currencyByCountry, $dataDefault) {
         return ['country_code' => $cfCountry, 'currency' => $currency];
     }
 
-    // 2° ip-api.com (gratis, sin key) — timeout corto para no bloquear el render
-    // Nota: el plan free de ip-api.com es HTTP-only, HTTPS requiere plan pro.
+    // 2° ip-api.com — timeout MUY corto (200ms) para no bloquear render
+    // Si falla, retorna default y permite que JS lo actualice luego si es necesario
     try {
         $ctx = stream_context_create([
-            'http'  => ['timeout' => 1, 'ignore_errors' => true],
+            'http'  => ['timeout' => 0.2, 'ignore_errors' => true],
         ]);
         $raw = @file_get_contents(
             'http://ip-api.com/json/' . urlencode($ip) . '?fields=countryCode,status',
@@ -112,29 +112,47 @@ function n_detectarPais($ip, $currencyByCountry, $dataDefault) {
     return $dataDefault;
 }
 
-// ─── Caché de IP ──────────────────────────────────────────────────────────────
+// ─── Caché de IP (OPTIMIZADO para no bloquear render) ──────────────────────
 $forceRefresh = isset($_GET['resetip']) || isset($_GET['dev']);
-
 $cacheKey = isset($productoIP) && $productoIP != null
     ? $productoIP
     : (isset($idcurso) ? $idcurso : (isset($_GET['curso']) ? $_GET['curso'] : '_global'));
 
-$existingIP = getIP($ip, $cacheKey);
+// Intentar obtener cache — con timeout para no bloquear
+$existingIP = null;
+try {
+    $existingIP = getIP($ip, $cacheKey);
+} catch (\Exception $e) {
+    // Si la BD no responde, usar default inmediatamente
+    $existingIP = null;
+}
 
 if ($forceRefresh || $existingIP == null) {
+    // No hay cache — detectar país pero con fallback rápido
     $data = n_detectarPais($ip, $currencyByCountry, $dataDefault);
-    if ($existingIP === null) {
-        insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
-    } else {
-        refreshIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+
+    // Guardar en cache (en background, no bloquear si falla)
+    try {
+        if ($existingIP === null) {
+            @insertIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+        } else {
+            @refreshIP($ip, $cacheKey, json_encode($data), json_encode($_COOKIE));
+        }
+    } catch (\Exception $e) {
+        // Ignorar errores de BD — no bloquear el render
     }
 } else {
+    // Hay cache — usarlo inmediatamente
     $data = json_decode($existingIP['data'], true);
     $data = n_normalizarDataIP($data, $currencyByCountry, $dataDefault);
-    // Sampleamos el contador de visitas: solo 1 de cada 20 page views hace el UPDATE.
-    // Es solo analítica, no vale la pena hacer un write en cada navegación.
-    if (mt_rand(1, 20) === 1) {
-        updateIP($ip, $cacheKey, $existingIP['visitas'] + 20, json_encode($_COOKIE));
+
+    // Actualizar contador de visitas (async, sin bloquear)
+    if (mt_rand(1, 50) === 1) {
+        try {
+            @updateIP($ip, $cacheKey, $existingIP['visitas'] + 50, json_encode($_COOKIE));
+        } catch (\Exception $e) {
+            // Ignorar errores
+        }
     }
 }
 

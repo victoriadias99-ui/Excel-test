@@ -76,6 +76,9 @@ $urlCheckoutPlantillas          = 'plantillas/finanzas/';
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $urlCheckoutSqlServer ?>">Sql Server</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/gemini-mockup/">Gemini</a>
+                </li>
 				<!--<li class="nav-item">
                     <a class="nav-link" href="https://aprende-excel.com/clases-en-vivo/">Clases en vivo</a>
                 </li>-->
@@ -91,11 +94,25 @@ $urlCheckoutPlantillas          = 'plantillas/finanzas/';
             </ul>
         </div>
     </nav>
-    <img id="image-header-min" src="n-img/image-header-min.png" alt="Cursos online de Excel, Power BI e Inteligencia Artificial con certificado oficial" class="d-none d-md-block">
+    <img id="image-header-min" src="n-img/image-header-min.png" 
+         alt="Cursos online de Excel, Power BI e Inteligencia Artificial con certificado oficial" 
+         class="d-none d-md-block" 
+         fetchpriority="high"
+         width="1920" 
+         height="600"
+         decoding="async">
+
     <div class="row"  style="height: 100%;">
         <div class="col-12 d-block d-md-none mb-5">
-            <img class="img-fluid" src="n-img/image-header-min.png" alt="Academia Aprende Excel - Líderes en educación online y capacitaciones laborales" style="position: absolute; margin-right:-10px;">
+            <img class="img-fluid" 
+                 src="n-img/image-header-min.png" 
+                 alt="Academia Aprende Excel - Líderes en educación online y capacitaciones laborales" 
+                 style="position: absolute; margin-right:-10px;"
+                 width="768" 
+                 height="400"
+                 decoding="async">
         </div>
+
         <div class="col-md-5 p-md-5 m-md-5 d-flex align-items-center text-center text-md-left">
             <div class="container">
                 <h1 style="font-family: 'Raleway Black'; color:#00173B;">Líderes en Cursos Online de <span style="color: #008B69;">Excel</span>, Power BI e IA</h1>

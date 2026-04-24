@@ -11,24 +11,71 @@ if ($isDebugEnv || $isLocalIP) {
     ini_set('display_errors', 0);
     error_reporting(0);
 }
-    
+
 $dirpage = '../';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Caché de HTML completo (Redis, TTL 10 min) — keyed por país.
+// Salta si hay query params (debug/dev/curso) o método ≠ GET. La salida es
+// idéntica byte a byte: solo evita PHP+SQL+geo cuando hay hit. Output structure
+// no cambia.
+// ─────────────────────────────────────────────────────────────────────────────
+require_once __DIR__ . '/a-includes/redis-client.php';
+
+$__cacheable = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET'
+    && empty($_GET)
+    && empty($_POST);
+
+if ($__cacheable) {
+    $__cfCountry = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? 'AR'));
+    if (!preg_match('/^[A-Z]{2}$/', $__cfCountry)) {
+        $__cfCountry = 'AR';
+    }
+    $__htmlKey   = 'home:html:v1:' . $__cfCountry;
+    $__cachedHtml = cacheGet($__htmlKey);
+    if ($__cachedHtml !== null && $__cachedHtml !== '') {
+        header('Content-Type: text/html; charset=UTF-8');
+        header('Cache-Control: private, no-cache, must-revalidate');
+        header('X-Cache: HIT');
+        echo $__cachedHtml;
+        exit;
+    }
+    header('X-Cache: MISS');
+    ob_start();
+    register_shutdown_function(function () use ($__htmlKey) {
+        $html = ob_get_contents();
+        if (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+        if ($html !== false && strlen($html) > 5000 && function_exists('cacheSet')) {
+            cacheSet($__htmlKey, $html, 600);
+        }
+    });
+}
 
 include("a-includes/funcionsDB.php");
 include("a-includes/logicparametros.php");
 include("a-includes/logicprecios.php");
+
+// Environment variables used by this application:
+//   MYSQL_HOST / MYSQL_PORT / MYSQL_DATABASE / MYSQL_USER / MYSQL_PASSWORD — DB connection
+//   REDIS_URL  — Redis connection (Railway plugin). Used for geo-cache and course-price cache.
+//   WHATSAPP_NUMBER — WhatsApp contact number shown on the page
+//   APP_ENV / APP_DEBUG — set to 'local' / 'true' to enable PHP error display
 
 $numberWhatsapp = getenv('WHATSAPP_NUMBER') ?: '';
 $urlWhatsApp = 'https://api.whatsapp.com/send?phone='.$numberWhatsapp.'&text=Hola!%20Te%20escribo%20por%20el%20curso%20de%20Excel';
 
 // Precargar TODOS los cursos del home en una sola query (en lugar de 10+ individuales).
 // Antes: ~20 queries SQL por render del home. Ahora: 1 query.
+// getCursosDetalleBatchCached() añade una capa Redis (TTL 1 h) sobre la query SQL,
+// eliminando la mayoría de las consultas a BD en páginas de alto tráfico.
 $__idsCursosHome = [
     'excel-promo', 'excel-inicial', 'excel-intermedio', 'excel-avanzado',
     'sql-server', 'pack-office', 'power-bi', 'power-bi-avanzado',
     'excel-promo-power-bi', 'plantillas',
 ];
-$__cursosBatch = getCursosDetalleBatch($__idsCursosHome);
+$__cursosBatch = getCursosDetalleBatchCached($__idsCursosHome);
 
 // Helper: extrae precio, precio oficial y URL de checkout desde el batch precargado.
 function extraerDatosCurso($idCurso, $simbolo, $moneda) {
@@ -328,8 +375,15 @@ $__forzarNoIndex = !$__esHomeReal;
             <img class="background-verde-min" src="n-img/background-verde-min.jpg">
             <div class="row py-5">
                 <div class="col-md-6 ">
-                    <img class="img-fluid" src="n-img/imagen-laptop-web-min.png">
+                    <img class="img-fluid" 
+                         src="n-img/imagen-laptop-web-min.png" 
+                         fetchpriority="high" 
+                         alt="Cursos online Aprende Excel"
+                         width="600" 
+                         height="400"
+                         decoding="async">
                 </div>
+
                 <div class="col-md-6 d-flex align-items-center m-5 m-md-0" style="color:#fff;">
                     <div>
                         <h2 style="font-family: 'Raleway Black';">Cursos cortos con amplia salida laboral</h2>
@@ -349,8 +403,36 @@ $__forzarNoIndex = !$__esHomeReal;
             <div class="row p-3 p-md-5">
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
+                      <div>
+                           <img loading="lazy" class="img-fluid" 
+                                src="a-img/logo-gemini.png" 
+                                style="width:100%"
+                                width="300" 
+                                height="200"
+                                alt="Logo Gemini">
+
+                           <div class="p-3">
+                               <p style="font-family: 'Raleway Bold'; color:#00173B">Curso de Gemini desde Cero</p>
+                               <p style="font-size: 0.7em;text-align: left;">Aprendé a usar Google Gemini para potenciar tu productividad con Inteligencia Artificial. Curso paso a paso, sin requisitos previos.</p>
+                               <p class="d-xl-flex align-items-xl-center m-0"><span class="texto-precio-head mr-2" style="font-family: Montserrat, sans-serif;font-weight: bold;color: #008B69;"><?= $simbolo ?> <?= convertirPrecio(12999, $moneda) ?><br></span></p>
+                               <p style="color: #FF0000;font-family: 'Raleway SemiBold';">&nbsp;</p>
+                               <p>
+                                    <a href="/gemini-mockup/" class="btn btn-primary px-5" style="background: #007A6A; width:100%">Ver curso</a>
+                               </p>
+                           </div>
+                       </div>
+                   </div>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/excel-inicial-nueva-2024_11zon.webp" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/excel-inicial-nueva-2024_11zon.webp" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Excel 3 niveles pack experto">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">3 Niveles - Pack Experto</p>
                                 <p style="font-size: 0.7em;text-align: left;">Convertite en un Experto en Excel con este pack de 3 cursos. ¡Sé el experto que las empresas están buscando!</p>
@@ -366,7 +448,13 @@ $__forzarNoIndex = !$__esHomeReal;
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-excelinicial.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-excelinicial.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso Excel Inicial">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Inicial</p>
                                 <p style="font-size: 0.7em;text-align: left;">Sin requisitos previos, éste curso te va a enseñar a usar Microsoft Excel: la herramienta laboral más solicitada por las empresas.</p>
@@ -383,7 +471,13 @@ $__forzarNoIndex = !$__esHomeReal;
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-excelintermedio.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-excelintermedio.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso Excel Intermedio">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Intermedio</p>
                                 <p style="font-size: 0.7em;text-align: left;">Entrenamiento para usuarios que ya tienen los conocimientos básicos de Microsoft Excel, para aprender en profundidad la mayoría de sus funcionalidades.</p>
@@ -400,7 +494,13 @@ $__forzarNoIndex = !$__esHomeReal;
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-excelavanzado.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-excelavanzado.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso Excel Avanzado">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Excel Avanzado</p>
                                 <p style="font-size: 0.7em;text-align: left;">Curso para terminar de conocer Excel y dominar sus funcionalidades más avanzadas. Ser Experto en Excel otorga una gran ventaja y abre las puertas a empleos muy bien pagos.</p>
@@ -413,16 +513,17 @@ $__forzarNoIndex = !$__esHomeReal;
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="row p-3 p-md-5">
-
-
 
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="" src="n-img/c-sql.jpeg" style="width:100%">
+                            <img loading="lazy" class="" 
+                                 src="n-img/c-sql.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Curso SQL Server">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Microsoft SQL Server</p>
                                 <p style="font-size: 0.7em;text-align: left;">Aprendé a programar en base de datos desde cero. Recomendable para principiantes</p>
@@ -439,7 +540,13 @@ $__forzarNoIndex = !$__esHomeReal;
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="" style="border-radius: 10px;box-shadow: 10px 10px 20px 14px rgb(205,205,205);background: #ffffff;">
                         <div>
-                            <img loading="lazy" class="img-fluid" src="n-img/c-office2.jpeg" style="width:100%">
+                            <img loading="lazy" class="img-fluid" 
+                                 src="n-img/c-office2.jpeg" 
+                                 style="width:100%"
+                                 width="300" 
+                                 height="200"
+                                 alt="Pack Office Completo">
+
                             <div class="p-3">
                                 <p style="font-family: 'Raleway Bold'; color:#00173B">Pack Office</p>
                                 <p style="font-size: 0.7em;text-align: left;">Pack de conocimientos clave e infaltables en un Currículum. Dominá las 3 herramientas más solicitadas por las empresas.</p>
@@ -519,6 +626,7 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
                         </div>
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -687,8 +795,8 @@ Con estas plantillas entras en el mundo profesional. Administra tu empresa o pre
         </section>
         <?php include('n-pages/footer-main.php') ?>
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+        <script defer src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
     </body>
 </html>

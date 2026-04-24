@@ -43,7 +43,6 @@ if ($pack !== $curso) {
 }
 
 if (empty($curso) || empty($email)) {
-    http_response_code(400);
     echo 'error:datos_incompletos';
     exit;
 }
@@ -62,9 +61,34 @@ try {
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($rows)) {
-        http_response_code(404);
-        echo 'error:curso_no_encontrado';
-        exit;
+        // Course not found — try to auto-create it (gemini course) or fail gracefully
+        if ($curso === 'gemini') {
+            $stmtKey = $cnx->prepare("SELECT STRIPE_SECRET_KEY FROM cursos_detalle WHERE STRIPE_SECRET_KEY != '' AND STRIPE_SECRET_KEY IS NOT NULL LIMIT 1");
+            $stmtKey->execute();
+            $otherCurso = $stmtKey->fetch(PDO::FETCH_ASSOC);
+            $stripeKeyFallback = $otherCurso['STRIPE_SECRET_KEY'] ?? '';
+            if (!empty($stripeKeyFallback)) {
+                try {
+                    $stmtIns = $cnx->prepare("INSERT INTO cursos_detalle (CURSO, TITULO, DESCRIPCION, DIR, IMAGEN, PRECIO_UNITARIO, PORCENTAJE_DES, ESTADO, STRIPE_SECRET_KEY) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE STRIPE_SECRET_KEY=VALUES(STRIPE_SECRET_KEY), TITULO=VALUES(TITULO), PRECIO_UNITARIO=VALUES(PRECIO_UNITARIO), PORCENTAJE_DES=VALUES(PORCENTAJE_DES)");
+                    $stmtIns->execute(['gemini', 'Curso de Gemini desde Cero', 'Aprende a usar Google Gemini para potenciar tu productividad con Inteligencia Artificial', '../gemini-mockup/', '../a-img/logo-gemini.png', 12999, 23, 1, $stripeKeyFallback]);
+                } catch (\Throwable $eIns) {
+                    error_log('realizarVentaStripe: auto-create gemini failed - ' . $eIns->getMessage());
+                }
+                try {
+                    $stmtAuto = $cnx->prepare("INSERT IGNORE INTO auto_num (ID, PREFIJO, ULTIMO_NUM, MAX_LEN) VALUES (?, ?, ?, ?)");
+                    $stmtAuto->execute(['gemini', 'GEM', 0, 10]);
+                } catch (\Throwable $eAuto) {
+                    error_log('realizarVentaStripe: auto-create auto_num gemini failed - ' . $eAuto->getMessage());
+                }
+                $rows = [['TITULO' => 'Curso de Gemini desde Cero', 'DESCRIPCION' => 'Aprende a usar Google Gemini para potenciar tu productividad con Inteligencia Artificial', 'PRECIO_UNITARIO' => 12999, 'PORCENTAJE_DES' => 23, 'STRIPE_SECRET_KEY' => $stripeKeyFallback]];
+            } else {
+                echo 'error:curso_no_encontrado';
+                exit;
+            }
+        } else {
+            echo 'error:curso_no_encontrado';
+            exit;
+        }
     }
 
     $precioBase = $rows[0]['PRECIO_UNITARIO'];
@@ -155,8 +179,9 @@ try {
             '', '', '',
             '', '', '', ''
         ]);
-    } catch (Exception $eLead) {
+    } catch (\Throwable $eLead) {
         error_log('realizarVentaStripe: INSERT ventas falló - ' . $eLead->getMessage());
+        $id_venta = uniqid($curso . '_');
     }
 
     // 5. Crear Stripe Checkout Session
@@ -209,7 +234,6 @@ try {
 
 } catch (PDOException $e) {
     error_log('DB Error en realizarVentaStripe: ' . $e->getMessage());
-    http_response_code(500);
     if (isset($_GET['test'])) echo 'DB Error: ' . $e->getMessage();
     else echo 'error:db_' . $e->getCode();
 } catch (\Stripe\Exception\ApiErrorException $e) {
