@@ -98,8 +98,8 @@ $urlCheckoutPlantillas          = 'plantillas/finanzas/';
          alt="Cursos online de Excel, Power BI e Inteligencia Artificial con certificado oficial" 
          class="d-none d-md-block" 
          fetchpriority="high"
-         width="1920" 
-         height="600"
+         width="1209"
+         height="1000"
          decoding="async">
 
     <div class="row"  style="height: 100%; position: relative; z-index: 1;">
