@@ -29,8 +29,8 @@ nav .logo{
 #image-header-min{
     position: absolute;
     right: 0;
-    top: 80px;
-    height: calc(700px - 80px);
+    top: 0px;
+    height: 700px;
     z-index: 0;
 }
 

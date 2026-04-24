@@ -102,7 +102,7 @@ $urlCheckoutPlantillas          = 'plantillas/finanzas/';
          height="600"
          decoding="async">
 
-    <div class="row"  style="height: calc(100% - 80px); position: relative; z-index: 1;">
+    <div class="row"  style="height: 100%; position: relative; z-index: 1;">
         <div class="col-12 d-block d-md-none mb-5">
             <img class="img-fluid" 
                  src="n-img/image-header-min.png" 
