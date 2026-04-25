@@ -117,7 +117,11 @@
       "Bash(sort -k5 -h -r)",
       "Bash(awk '{print $5, $NF}')",
       "Bash(identify /Users/federicofuertes/Documents/Excel-test/public_html/n-img/c-powerbi-avanzado.jpeg)",
-      "Bash(python3 /tmp/add_lazy_loading.py)"
+      "Bash(python3 /tmp/add_lazy_loading.py)",
+      "Bash(railway --version)",
+      "Bash(railway whoami *)",
+      "Bash(railway list *)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
